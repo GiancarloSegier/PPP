@@ -15,17 +15,48 @@ __In the app that I'm about to develop, you can do all of this:__
   * set reminders to pay
 * linking a shared account with another person
 * a short graph / display where you have an overview of all income and expenses
+* (find nearby ATM's + set route to it)
 
 __In a perfect world you'll be able to do this:__
 * scan your receipt
 * connect your bankaccounts
 
-Beside the mobile app, there'll also be a *__desktop web app__*. On this webapp you'll be able to manage and see your income and expenses just a little more precisely.
-*__The mobile app__* will be more for quick use and input of income / expenses.
-
-## Deliverables
-* Desktop Web Application
+## Minimum Deliverables
 * Mobile application working on IOS & Android
 
 ## Blog
 https://medium.com/personal-passion-project
+
+# Schedule
+## Sprint 1: 24/11
+You'll be able to: 
+* add multiple bank accounts / bank cards
+* give input (income, expenses) to correct bank account
+* show data (income, expenses) (all data | per bank account | only income | only expenses)
+* basic styling
+
+## Sprint 2: 1/12
+You'll be able to: 
+* give input in categories
+* make your own categorie
+* see data in categories + filter them
+* set fixed costs + reminders
+* see an overview of your transactions
+* basic styling
+
+## Sprint 3: 8/12
+You'll be able to: 
+* get your weekly overview (your income and expenses during the last week + summary)
+* make a profile / login / logout
+* onboarding
+* accountsettings
+* (link two profiles to one bank account)
+* basic styling
+
+
+## Sprint 4: 15/12
+The last mile is the longest
+* link two profiles to one bank account
+* final styling
+* final checkups
+* *extra: nearby ATM's* 
