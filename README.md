@@ -26,3 +26,6 @@ Beside the mobile app, there'll also be a *__desktop web app__*. On this webapp 
 ## Deliverables
 * Desktop Web Application
 * Mobile application working on IOS & Android
+
+## Blog
+https://medium.com/personal-passion-project
