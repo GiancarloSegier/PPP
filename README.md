@@ -10,7 +10,6 @@
 ## Core Project Statement
 "What's this monument?".
 
-
 "I can't find any information on this".
 
 "Stupid tourguide, I can't find it...".
@@ -41,14 +40,17 @@ https://medium.com/personal-passion-project
 
 
 ## Todo
-### 1. Login / register / logout
+### 1. Authentication
+* login / register / logout
 * using facebook / twitter / email
 * onboarding
+
 ### 2. Scanner
 * Scan buildings
 * take picture of buildings to scan
 * picture from library to scan
 * get correct information of building
+
 ### 3. Trip planner
 * read google maps for landmarks
 * see map with landmarks to check
@@ -64,6 +66,7 @@ https://medium.com/personal-passion-project
 * Save route
 * Share route
 * Add pictures to your route
+
 ### 4. Explore
 * nearby monuments
 * suggestions / featured trips for this location
@@ -71,11 +74,14 @@ https://medium.com/personal-passion-project
 * shortcut to tripplanner
 * trips you can join
 * new challenges
+
 ### 5. My trips
 * trips you've done
 * upcoming trips
 * saved trips from comunity
 * memories
+  * 'last year you did this trip', ...
+  
 ### 6. Challenges
 * Challenges at this location
 * Common challenges / trophies
@@ -89,6 +95,7 @@ https://medium.com/personal-passion-project
     * **Hiker**: Take 10.000 steps before finishing your trip
     * **Living on the edge**: Go 2km of the route
     * ...
+    
 ### 7. My profile
 * basics
 * trophies / badges
@@ -99,6 +106,7 @@ https://medium.com/personal-passion-project
   * how many trips you've done
   * how many steps you've done
   * ...
+  
 ### 8. Map
 * If on a trip
   * see location
@@ -113,6 +121,7 @@ https://medium.com/personal-passion-project
   * see landmarks
   * search for landmarks / ...
   * filter on radius
+  
 ### 9. Notifications
 * Basic notifications
   * someone liked your ...
@@ -120,20 +129,43 @@ https://medium.com/personal-passion-project
   * ...
 * See trip on lockscreen
 
-
 ## Schedule
 ### Sprint 1: 24/11
-You'll be able to: 
 
+Working on: [Todo 1](#1.-authentication) - [Todo 2](#2.-scanner)
+
+* Wireframe + design basics
+* Basic setup react native app
+  * working on IOS & Android
+* Backend integration
+* Login / register / logout
+* Friend/unfriend someone
+* google vision integration
+* basic styling
 
 ### Sprint 2: 1/12
-You'll be able to: 
+
+Working on: [Todo 3](3.-trip-planner) - [Todo 5](#5.-my-trips)
+
+* Google maps integration
+  * find all relevant landmarks
+* Show correct info for monument / building
+  * create fallback if monument isn't known or can't scan (using gps location?)
+* Create your own trip
+  * with all settings
+* Create a party
+  * can be found by anyone
+  * add friends / only be found by friends
+* See the trips you've done
+* Add someone else's trip to your favourites
+* See your upcoming trips
+* See your memories
 
 
 ### Sprint 3: 8/12
-You'll be able to: 
+Working on: [Todo 4](4.-explore) - [Todo 6](#6.-challenges) - [Todo 8](#6.-map)
 
 
 
 ### Sprint 4: 15/12
-
+Working on: [Todo 7](4.-my-profile) - [Todo 9](#6.-notifications)
