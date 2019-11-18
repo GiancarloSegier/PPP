@@ -209,7 +209,9 @@ https://medium.com/personal-passion-project
 ### Sprint 4: 15/12
 **_Working on:_** [Todo 7](#7-my-profile) - [Todo 9](#9-notifications)
 
-* Advanced styling
+* user testing
+* final checkups
+* Final styling
 
 * **My profile:**
   * Basic information
