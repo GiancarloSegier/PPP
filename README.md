@@ -132,40 +132,90 @@ https://medium.com/personal-passion-project
 ## Schedule
 ### Sprint 1: 24/11
 
-Working on: [Todo 1](#1-authentication) - [Todo 2](#2-scanner)
+**_Working on:_** [Todo 1](#1-authentication) - [Todo 2](#2-scanner)
 
 * Wireframe + design basics
 * Basic setup react native app
   * working on IOS & Android
 * Backend integration
-* Login / register / logout
-* Friend/unfriend someone
-* google vision integration
 * basic styling
+
+* **Authentication:**
+  * Login / register / logout
+  * Friend/unfriend someone
+
+* **Scanner:**
+  * google vision integration
 
 ### Sprint 2: 1/12
 
-Working on: [Todo 3](#3-trip-planner) - [Todo 5](#5-my-trips)
+**_Working on:_** [Todo 3](#3-trip-planner) - [Todo 5](#5-my-trips)
 
 * Google maps integration
   * find all relevant landmarks
 * Show correct info for monument / building
   * create fallback if monument isn't known or can't scan (using gps location?)
-* Create your own trip
-  * with all settings
-* Create a party
-  * can be found by anyone
-  * add friends / only be found by friends
-* See the trips you've done
-* Add someone else's trip to your favourites
-* See your upcoming trips
-* See your memories
-
+* medium styling
+  
+* **Trip planner:**
+  * Create your own trip
+    * with all settings
+  * Create a party
+    * can be found by anyone
+    * add friends / only be found by friends
+  
+* **My trips:**
+  * See the trips you've done
+  * Add someone else's trip to your favourites
+  * See your upcoming trips
+  * See your memories
 
 ### Sprint 3: 8/12
-Working on: [Todo 4](#4-explore) - [Todo 6](#6-challenges) - [Todo 8](#8-map)
+**_Working on:_** [Todo 4](#4-explore) - [Todo 6](#6-challenges) - [Todo 8](#8-map)
 
+* Advanced styling
 
+* **Map:**
+  * See nearby landmarks on the map
+    * If you're on a trip:
+      * you can see your location on the route
+      * you can see the route on the map
+      * you can see the progress of your trip
+    * If not on a trip:
+      * you can see nearby landmarks
+      * you can search for landmarks
+
+* **Explore:**
+  * On the explore page you can see the nearby monuments
+  * Trips from friends / suggested trips in this area
+  * trips you can join (party)
+  * new challenges to do
+
+* **Challenges:**
+  * challenges
+    * to do at this location
+    * to do during a trip
+    * ...
+  * Trophies/badges to collect
+    * overview
+    * progress
 
 ### Sprint 4: 15/12
-Working on: [Todo 7](#7-my-profile) - [Todo 9](#9-notifications)
+**_Working on:_** [Todo 7](#7-my-profile) - [Todo 9](#9-notifications)
+
+* Advanced styling
+
+* **My profile:**
+  * Basic information
+  * Trophies/badges
+    * overview
+    * progress
+  * Stats
+    * How many trips
+    * How many steps
+    * How many Cities
+    * How many countries
+    * ...
+* **Notifications:**
+  * Basic notifications
+  * (See trip on lockscreen)
