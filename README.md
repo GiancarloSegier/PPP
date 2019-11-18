@@ -147,6 +147,8 @@ https://medium.com/personal-passion-project
 * **Scanner:**
   * google vision integration
 
+***
+
 ### Sprint 2: 1/12
 
 **_Working on:_** [Todo 3](#3-trip-planner) - [Todo 5](#5-my-trips)
@@ -169,6 +171,8 @@ https://medium.com/personal-passion-project
   * Add someone else's trip to your favourites
   * See your upcoming trips
   * See your memories
+
+***
 
 ### Sprint 3: 8/12
 **_Working on:_** [Todo 4](#4-explore) - [Todo 6](#6-challenges) - [Todo 8](#8-map)
@@ -199,6 +203,8 @@ https://medium.com/personal-passion-project
   * Trophies/badges to collect
     * overview
     * progress
+    
+***
 
 ### Sprint 4: 15/12
 **_Working on:_** [Todo 7](#7-my-profile) - [Todo 9](#9-notifications)
