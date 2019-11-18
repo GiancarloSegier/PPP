@@ -1,4 +1,7 @@
 # Personal Passion Project
+
+[Client](#client) - [Core Project Statement](#core-project-statement) - [Deliverables](#minimum-deliverables) - [Blog](#blog) - [Todo](#todo) - [Schedule](#schedule)
+
 ## Client
 * Smartphone users who wants to go on a trip and learn more about the city they're in.
 * People that want to make the effort to plan a trip.
@@ -6,6 +9,7 @@
 
 ## Core Project Statement
 "What's this monument?".
+
 
 "I can't find any information on this".
 
@@ -36,16 +40,16 @@ __In the app that I'm about to develop, you can do all of this:__
 https://medium.com/personal-passion-project
 
 
-# Todo
-## 1. Login / register / logout
+## Todo
+### 1. Login / register / logout
 * using facebook / twitter / email
 * onboarding
-## 2. Scanner
+### 2. Scanner
 * Scan buildings
 * take picture of buildings to scan
 * picture from library to scan
 * get correct information of building
-## 3. Trip planner
+### 3. Trip planner
 * read google maps for landmarks
 * see map with landmarks to check
   * filter on radius, search landmarks, ...
@@ -60,19 +64,19 @@ https://medium.com/personal-passion-project
 * Save route
 * Share route
 * Add pictures to your route
-## 4. Explore
+### 4. Explore
 * nearby monuments
 * suggestions / featured trips for this location
 * what your friends been up to
 * shortcut to tripplanner
 * trips you can join
 * new challenges
-## 5. My trips
+### 5. My trips
 * trips you've done
 * upcoming trips
 * saved trips from comunity
 * memories
-## 6. Challenges
+### 6. Challenges
 * Challenges at this location
 * Common challenges / trophies
   * trophies
@@ -85,7 +89,7 @@ https://medium.com/personal-passion-project
     * **Hiker**: Take 10.000 steps before finishing your trip
     * **Living on the edge**: Go 2km of the route
     * ...
-## 7. My profile
+### 7. My profile
 * basics
 * trophies / badges
   * show progress
@@ -95,7 +99,7 @@ https://medium.com/personal-passion-project
   * how many trips you've done
   * how many steps you've done
   * ...
-## 8. Map
+### 8. Map
 * If on a trip
   * see location
   * see your trip / follow your trip
@@ -109,7 +113,7 @@ https://medium.com/personal-passion-project
   * see landmarks
   * search for landmarks / ...
   * filter on radius
-## 9. Notifications
+### 9. Notifications
 * Basic notifications
   * someone liked your ...
   * someone saved your ...
@@ -117,19 +121,19 @@ https://medium.com/personal-passion-project
 * See trip on lockscreen
 
 
-# Schedule
-## Sprint 1: 24/11
+## Schedule
+### Sprint 1: 24/11
 You'll be able to: 
 
 
-## Sprint 2: 1/12
+### Sprint 2: 1/12
 You'll be able to: 
 
 
-## Sprint 3: 8/12
+### Sprint 3: 8/12
 You'll be able to: 
 
 
 
-## Sprint 4: 15/12
+### Sprint 4: 15/12
 
