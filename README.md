@@ -132,7 +132,7 @@ https://medium.com/personal-passion-project
 ## Schedule
 ### Sprint 1: 24/11
 
-Working on: [Todo 1](#1.-authentication) - [Todo 2](#2.-scanner)
+Working on: [Todo 1](#1-authentication) - [Todo 2](#2-scanner)
 
 * Wireframe + design basics
 * Basic setup react native app
@@ -145,7 +145,7 @@ Working on: [Todo 1](#1.-authentication) - [Todo 2](#2.-scanner)
 
 ### Sprint 2: 1/12
 
-Working on: [Todo 3](#3.-trip-planner) - [Todo 5](#5.-my-trips)
+Working on: [Todo 3](#3-trip-planner) - [Todo 5](#5-my-trips)
 
 * Google maps integration
   * find all relevant landmarks
@@ -163,9 +163,9 @@ Working on: [Todo 3](#3.-trip-planner) - [Todo 5](#5.-my-trips)
 
 
 ### Sprint 3: 8/12
-Working on: [Todo 4](#4.-explore) - [Todo 6](#6.-challenges) - [Todo 8](#8.-map)
+Working on: [Todo 4](#4-explore) - [Todo 6](#6-challenges) - [Todo 8](#8-map)
 
 
 
 ### Sprint 4: 15/12
-Working on: [Todo 7](#7.-my-profile) - [Todo 9](#9.-notifications)
+Working on: [Todo 7](#7-my-profile) - [Todo 9](#9-notifications)
