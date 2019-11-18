@@ -130,7 +130,7 @@ https://medium.com/personal-passion-project
 * See trip on lockscreen
 
 ## Schedule
-### Sprint 1: 24/11
+### Sprint 1: untill 24/11
 
 **_Working on:_** [Todo 1](#1-authentication) - [Todo 2](#2-scanner)
 
@@ -149,7 +149,7 @@ https://medium.com/personal-passion-project
 
 ***
 
-### Sprint 2: 1/12
+### Sprint 2: 24/11 - 1/12
 
 **_Working on:_** [Todo 3](#3-trip-planner) - [Todo 5](#5-my-trips)
 
@@ -174,7 +174,7 @@ https://medium.com/personal-passion-project
 
 ***
 
-### Sprint 3: 8/12
+### Sprint 3: 1/12 - 8/12
 **_Working on:_** [Todo 4](#4-explore) - [Todo 6](#6-challenges) - [Todo 8](#8-map)
 
 * Advanced styling
@@ -206,7 +206,7 @@ https://medium.com/personal-passion-project
     
 ***
 
-### Sprint 4: 15/12
+### Sprint 4: 8/12 - 15/12
 **_Working on:_** [Todo 7](#7-my-profile) - [Todo 9](#9-notifications)
 
 * user testing
