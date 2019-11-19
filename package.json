@@ -10,8 +10,18 @@
     "lint": "eslint ."
   },
   "dependencies": {
+    "navigation": "^5.2.0",
+    "navigation-react": "^4.1.1",
+    "navigation-react-native": "^6.4.1",
     "react": "16.9.0",
-    "react-native": "0.61.4"
+    "react-native": "0.61.4",
+    "react-native-gesture-handler": "^1.5.0",
+    "react-native-reanimated": "^1.4.0",
+    "react-native-screens": "^2.0.0-alpha.11",
+    "react-native-svg": "^9.13.3",
+    "react-native-vector-icons": "^6.6.0",
+    "react-navigation": "^4.0.10",
+    "react-navigation-tabs": "^2.5.6"
   },
   "devDependencies": {
     "@babel/core": "^7.7.2",
@@ -21,6 +31,7 @@
     "eslint": "^6.6.0",
     "jest": "^24.9.0",
     "metro-react-native-babel-preset": "^0.57.0",
+    "react-native-svg-transformer": "^0.14.1",
     "react-test-renderer": "16.9.0"
   },
   "jest": {
