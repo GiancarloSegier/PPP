@@ -1,38 +1,19 @@
-import React from 'react';
+import React, {Component} from 'react';
 
-import {createAppContainer} from 'react-navigation';
-import {createBottomTabNavigator} from 'react-navigation-tabs';
+import TabNavigator from './TabNavigator';
+import Header from '../components/Header';
 
-import Home from './Home';
-import Profile from './Profile';
+export default class App extends Component {
+  constructor(props) {
+    super(props);
+  }
 
-import TabBarIcon from '../components/TabBarIcon';
-
-const TabNavigator = createBottomTabNavigator(
-  {
-    Home: {
-      screen: Home,
-      navigationOptions: {
-        tabBarIcon: ({focused}) => (
-          <TabBarIcon active={focused} screen={'home'} />
-        ),
-      },
-    },
-    Profile: {
-      screen: Profile,
-      navigationOptions: {
-        tabBarIcon: ({focused}) => (
-          <TabBarIcon active={focused} screen={'profile'} />
-        ),
-      },
-    },
-  },
-  {
-    tabBarOptions: {
-      activeTintColor: 'red',
-      inactiveTintColor: 'gray',
-    },
-  },
-);
-
-export default createAppContainer(TabNavigator);
+  render() {
+    return (
+      <>
+        <Header />
+        <TabNavigator />
+      </>
+    );
+  }
+}

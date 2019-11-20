@@ -15,6 +15,15 @@ class TabBarIcon extends Component {
         case 'home':
           path = require('../assets/home.png');
           break;
+        case 'scan':
+          path = require('../assets/scan.png');
+          break;
+        case 'map':
+          path = require('../assets/map.png');
+          break;
+        case 'trips':
+          path = require('../assets/trips.png');
+          break;
         case 'profile':
           path = require('../assets/profile.png');
           break;
@@ -23,6 +32,15 @@ class TabBarIcon extends Component {
       switch (screen) {
         case 'home':
           path = require('../assets/home-inactive.png');
+          break;
+        case 'scan':
+          path = require('../assets/scan-inactive.png');
+          break;
+        case 'map':
+          path = require('../assets/map-inactive.png');
+          break;
+        case 'trips':
+          path = require('../assets/trips-inactive.png');
           break;
         case 'profile':
           path = require('../assets/profile-inactive.png');
