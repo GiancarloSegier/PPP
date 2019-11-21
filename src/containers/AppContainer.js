@@ -1,5 +1,6 @@
 import React, {Component} from 'react';
 
+import TabNavigator from './TabNavigator';
 import MainNavigator from '../components/MainNavigator';
 
 export default class App extends Component {
@@ -10,7 +11,7 @@ export default class App extends Component {
   render() {
     return (
       <>
-        <MainNavigator />
+        <TabNavigator />
       </>
     );
   }

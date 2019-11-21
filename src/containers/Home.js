@@ -5,7 +5,7 @@ export class Home extends Component {
   render() {
     return (
       <View style={{justifyContent: 'center', flex: 1}}>
-        <Text style={{textAlign: 'center'}}>This is the home screen</Text>
+        <Text style={{textAlign: 'center'}}>This is the hello screen</Text>
       </View>
     );
   }
