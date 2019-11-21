@@ -1,11 +1,12 @@
 import React, {Component} from 'react';
 import {View, Text} from 'react-native';
+import LogIn from '../components/LogIn';
 
 export class Profile extends Component {
   render() {
     return (
-      <View style={{justifyContent: 'center', flex: 1}}>
-        <Text style={{textAlign: 'center'}}>This is the profile screen</Text>
+      <View style={{height: '100%'}}>
+        <LogIn />
       </View>
     );
   }

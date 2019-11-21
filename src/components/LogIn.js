@@ -1,67 +1,63 @@
-import React, {Component, Fragment} from 'react';
-import {
-  SafeAreaView,
-  StyleSheet,
-  ScrollView,
-  View,
-  Text,
-  StatusBar,
-  Image,
-} from 'react-native';
+import React, {Component} from 'react';
+import {StyleSheet, View, Text, Image, Alert} from 'react-native';
 import {
   LoginButton,
   AccessToken,
   GraphRequestManager,
   GraphRequest,
 } from 'react-native-fbsdk';
+import AppContainer from '../containers/AppContainer';
+import TabNavigator from '../containers/TabNavigator';
 export default class Profile extends Component {
   constructor(props) {
     super(props);
     this.state = {
       pushData: [],
-      info: {},
+      user_name: '',
+      user_img: '',
+      user_mail: '',
       loggedIn: false,
     };
     console.log(props);
-  }
-  componentDidMount() {}
 
-  testRequestGraphAPI = currentToken => {
-    const infoRequest = new GraphRequest(
-      '/me',
-      {
-        parameters: {
-          fields: {
-            string: 'email,name,first_name,middle_name,last_name, picture', // what you want to get
-          },
-          access_token: {
-            string: currentToken.toString(), // put your accessToken here
-          },
-        },
-      },
-      this._responseInfoCallback, // make sure you define _responseInfoCallback in same class
-    );
-    new GraphRequestManager().addRequest(infoRequest).start();
-  };
+    // check if user is logged in or not - if logged in -> show info
+    if (AccessToken.getCurrentAccessToken()) {
+      this.getToken();
+    }
+  }
 
   _responseInfoCallback = (error, result) => {
     if (error) {
-      console.log(Object.keys(error)); // print all enumerable
-      console.log(error.errorMessage); // print error message
-      let json_result = JSON.stringify(error); // error object => json
+      Alert.alert('Error fetching data: ' + error.toString());
     } else {
-      this.setState({info: result});
-      console.log(this.state);
+      this.setState({
+        user_name: result.name,
+        user_img: result.picture.data.url,
+        user_mail: result.email,
+        loggedIn: true,
+      });
     }
+    console.log(this.state);
   };
 
   getToken() {
     AccessToken.getCurrentAccessToken().then(data => {
-      this.setState({
-        loggedIn: true,
-        userID: data.userID,
-      });
-      this.testRequestGraphAPI(data.accessToken);
+      const infoRequest = new GraphRequest(
+        '/me',
+        {
+          parameters: {
+            fields: {
+              string:
+                'email,name,first_name,middle_name,last_name, picture.type(large)', // what you want to get
+            },
+            access_token: {
+              string: data.accessToken.toString(), // put your accessToken here
+            },
+          },
+        },
+        this._responseInfoCallback, // make sure you define _responseInfoCallback in same class
+      );
+      new GraphRequestManager().addRequest(infoRequest).start();
     });
   }
 
@@ -69,6 +65,15 @@ export default class Profile extends Component {
     // this.getToken();
     return (
       <View style={styles.sectionContainer}>
+        {this.state.user_img ? (
+          <Image
+            source={{uri: this.state.user_img}}
+            style={{width: 100, height: 100}}
+          />
+        ) : null}
+
+        <Text style={styles.text}> {this.state.user_name} </Text>
+
         <LoginButton
           onLoginFinished={(error, result) => {
             if (error) {
@@ -76,18 +81,19 @@ export default class Profile extends Component {
             } else if (result.isCancelled) {
               console.log('login is cancelled.');
             } else {
-              console.log(result);
               this.getToken();
-              this.props.navigation.navigate('EnterApp');
             }
           }}
           onLogoutFinished={() =>
             this.setState({
+              user_name: '',
+              user_img: '',
+              user_mail: '',
               loggedIn: false,
-              userID: '',
             })
           }
         />
+        {this.state.loggedIn ? <Text>Ingelogd</Text> : null}
       </View>
     );
   }
@@ -96,7 +102,6 @@ export default class Profile extends Component {
 const styles = StyleSheet.create({
   sectionContainer: {
     height: '100%',
-    flexDirection: 'row',
     justifyContent: 'center',
     alignItems: 'center',
   },
