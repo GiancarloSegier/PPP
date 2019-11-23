@@ -1,19 +1,27 @@
 import React, {Component} from 'react';
 
-import TabNavigator from './TabNavigator';
+import TabNavigator from '../components/TabNavigator';
 
-import {AccessToken} from 'react-native-fbsdk';
-import LogInScreen from '../components/LogInScreen';
-
-import {Text, View} from 'react-native';
-
-export default class App extends Component {
+import {inject, observer} from 'mobx-react';
+import Header from '../components/Header';
+import Login from '../components/LogIn';
+class AppContainer extends Component {
   constructor(props) {
     super(props);
-    console.log(AccessToken.getCurrentAccessToken());
   }
 
   render() {
-    <TabNavigator />;
+    if (!this.props.userStore.loggedIn) {
+      return <Login />;
+    } else {
+      return (
+        <>
+          <Header />
+          <TabNavigator />
+        </>
+      );
+    }
   }
 }
+
+export default inject('userStore')(observer(AppContainer));

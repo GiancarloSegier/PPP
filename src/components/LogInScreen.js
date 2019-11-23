@@ -10,7 +10,7 @@ export default class LogInScreen extends Component {
   render() {
     return (
       <View>
-        <LogIn navigation={this.props.navigation} />
+        <LogIn />
       </View>
     );
   }

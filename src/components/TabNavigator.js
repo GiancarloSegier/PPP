@@ -3,13 +3,13 @@ import React from 'react';
 import {createAppContainer} from 'react-navigation';
 import {createBottomTabNavigator} from 'react-navigation-tabs';
 
-import Home from './Home';
-import Scanner from './Scanner';
-import Map from './Map';
-import MyTrips from './MyTrips';
-import Profile from './Profile';
+import Home from '../containers/Home';
+import Scanner from '../containers/Scanner';
+import Map from '../containers/Map';
+import MyTrips from '../containers/MyTrips';
+import Profile from '../containers/Profile';
 
-import TabBarIcon from '../components/TabBarIcon';
+import TabBarIcon from './TabBarIcon';
 
 const TabNavigator = createBottomTabNavigator(
   {

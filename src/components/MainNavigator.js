@@ -12,7 +12,7 @@ import iosUI from '../styles/ui.ios.style.js';
 
 const RootStack = createStackNavigator(
   {
-    Login: LogInScreen,
+    // Login: LogInScreen,
     EnterApp: AppContainer,
   },
   {
