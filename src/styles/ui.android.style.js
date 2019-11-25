@@ -53,6 +53,9 @@ export default StyleSheet.create({
     width: deviceWidth,
     height: 200,
   },
+  cameraScreen: {
+    alignItems: 'center',
+  },
   camera: {
     height: '100%',
     width: '100%',
@@ -71,6 +74,7 @@ export default StyleSheet.create({
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
+    height: '100%',
   },
   scanAgain: {
     width: 40,

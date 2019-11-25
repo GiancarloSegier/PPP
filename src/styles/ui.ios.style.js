@@ -44,6 +44,9 @@ export default StyleSheet.create({
     width: deviceWidth,
     height: 200,
   },
+  cameraScreen: {
+    alignItems: 'center',
+  },
   camera: {
     height: '100%',
     width: '100%',
