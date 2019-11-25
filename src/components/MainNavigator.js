@@ -1,35 +1,13 @@
 import {createStackNavigator} from 'react-navigation-stack';
 import {createAppContainer} from 'react-navigation';
-import LogInScreen from './LogInScreen';
-import AppContainer from '../containers/AppContainer';
-
-import React from 'react';
-
-import {Image, Platform} from 'react-native';
-import androidUI from '../styles/ui.android.style.js';
-
-import iosUI from '../styles/ui.ios.style.js';
+import TabNavigator from '../components/TabNavigator';
 
 const RootStack = createStackNavigator(
   {
-    // Login: LogInScreen,
-    EnterApp: AppContainer,
+    App: TabNavigator,
   },
   {
-    headerBackImage: 'none',
-    headerBackTitleVisible: false,
-    defaultNavigationOptions: {
-      headerTitle: (
-        <Image
-          style={Platform.OS === 'ios' ? iosUI.logo : androidUI.logo}
-          source={require('../assets/logo.png')}
-        />
-      ),
-
-      headerStyle: {
-        backgroundColor: '#192BC2',
-      },
-    },
+    headerMode: 'none',
   },
 );
 

@@ -1,21 +1,11 @@
 import React, {Component} from 'react';
-import {StyleSheet, View, Text, Image, Alert} from 'react-native';
-import {
-  LoginButton,
-  AccessToken,
-  GraphRequestManager,
-  GraphRequest,
-} from 'react-native-fbsdk';
+import {StyleSheet, View, Text, Image} from 'react-native';
+import {LoginButton} from 'react-native-fbsdk';
 import {inject, observer} from 'mobx-react';
 
 class LogIn extends Component {
   constructor(props) {
     super(props);
-
-    // // check if user is logged in or not - if logged in -> show info
-    if (AccessToken.getCurrentAccessToken()) {
-      props.userStore.getFBToken();
-    }
   }
 
   render() {
