@@ -5,13 +5,14 @@ import {inject, observer} from 'mobx-react';
 import Header from '../components/Header';
 import Login from '../components/LogIn';
 import MainNavigator from '../components/MainNavigator';
+import LoginScreen from '../components/LogInScreen';
 class AppContainer extends Component {
   constructor(props) {
     super(props);
 
-    if (AccessToken.getCurrentAccessToken()) {
-      props.userStore.getFBToken();
-    }
+    // if (AccessToken.getCurrentAccessToken()) {
+    //   props.userStore.getFBToken();
+    // }
   }
 
   render() {
@@ -23,7 +24,7 @@ class AppContainer extends Component {
         </>
       );
     } else {
-      return <Login />;
+      return <LoginScreen />;
     }
   }
 }

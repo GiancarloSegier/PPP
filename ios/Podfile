@@ -37,8 +37,11 @@ target 'Turist' do
   pod 'FBSDKCoreKit'
   pod 'FBSDKLoginKit'
   pod 'FBSDKShareKit'
+  pod 'Firebase/Core', '~> 6.3.0'
+  pod 'Firebase/Auth'
 
 
+pod 'RNFirebase', :path => '../node_modules/react-native-firebase/ios'
   target 'TuristTests' do
     inherit! :search_paths
     # Pods for testing

@@ -1,17 +1,30 @@
 import React, {Component} from 'react';
-import {View, Text, Button} from 'react-native';
+import AuthForm from './AuthForm';
+import {login, signup} from '../api/RootApi';
 
-import LogIn from './LogIn.js';
-export default class LogInScreen extends Component {
-  constructor(props) {
-    super(props);
-  }
+class LoginScreen extends Component {
+  state = {
+    authMode: 'login',
+  };
+
+  // componentDidMount() {}
+  // componentWillMount() {}
+  switchAuthMode = () => {
+    this.setState(prevState => ({
+      authMode: prevState.authMode === 'login' ? 'signup' : 'login',
+    }));
+  };
 
   render() {
     return (
-      <View>
-        <LogIn />
-      </View>
+      <AuthForm
+        login={login}
+        signup={signup}
+        authMode={this.state.authMode}
+        switchAuthMode={this.switchAuthMode}
+      />
     );
   }
 }
+
+export default LoginScreen;

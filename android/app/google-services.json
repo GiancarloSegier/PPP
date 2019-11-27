@@ -30,6 +30,13 @@
             {
               "client_id": "32201739303-jrrcq2vgjujv45ntr5d1fjol3090oc53.apps.googleusercontent.com",
               "client_type": 3
+            },
+            {
+              "client_id": "32201739303-1c3g58ues4opuc9khtp7q575la8mgvs6.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.turist"
+              }
             }
           ]
         }
