@@ -1,0 +1,40 @@
+{
+  "project_info": {
+    "project_number": "32201739303",
+    "firebase_url": "https://turist-259611.firebaseio.com",
+    "project_id": "turist-259611",
+    "storage_bucket": "turist-259611.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:32201739303:android:0914f7487c26090e289202",
+        "android_client_info": {
+          "package_name": "com.turist"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "32201739303-jrrcq2vgjujv45ntr5d1fjol3090oc53.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBLSLqH_qXkSrU5qK1M71zmWU3gpjs8C4g"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "32201739303-jrrcq2vgjujv45ntr5d1fjol3090oc53.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
