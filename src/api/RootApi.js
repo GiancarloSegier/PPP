@@ -19,7 +19,7 @@ export function signup({email, password, displayName}) {
     });
 }
 
-export function signOut(onSignedOut) {
+export function signout(onSignedOut) {
   firebase
     .auth()
     .signOut()
@@ -27,4 +27,11 @@ export function signOut(onSignedOut) {
       console.log('signed out');
       onSignedOut();
     });
+}
+
+export function subscribeToAuthChanges(authStateChanged) {
+  firebase.auth().onAuthStateChanged(user => {
+    console.log(user);
+    authStateChanged(user);
+  });
 }

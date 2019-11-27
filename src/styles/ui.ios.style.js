@@ -5,6 +5,12 @@ const deviceWidth = Dimensions.get('screen').width;
 const deviceHeight = Dimensions.get('screen').height;
 
 export default StyleSheet.create({
+  background: {
+    backgroundColor: '#f4f4f4',
+  },
+  container: {
+    padding: 24,
+  },
   header: {
     padding: 20,
     paddingTop: 50,
@@ -46,6 +52,7 @@ export default StyleSheet.create({
   },
   cameraScreen: {
     alignItems: 'center',
+    height: deviceHeight - 160,
   },
   camera: {
     height: '100%',

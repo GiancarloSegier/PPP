@@ -13,37 +13,37 @@ class TabBarIcon extends Component {
     if (active) {
       switch (screen) {
         case 'home':
-          path = require('../assets/home.png');
+          path = require('../../assets/home.png');
           break;
         case 'scan':
-          path = require('../assets/scan.png');
+          path = require('../../assets/scan.png');
           break;
         case 'map':
-          path = require('../assets/map.png');
+          path = require('../../assets/map.png');
           break;
         case 'trips':
-          path = require('../assets/trips.png');
+          path = require('../../assets/trips.png');
           break;
         case 'profile':
-          path = require('../assets/profile.png');
+          path = require('../../assets/profile.png');
           break;
       }
     } else {
       switch (screen) {
         case 'home':
-          path = require('../assets/home-inactive.png');
+          path = require('../../assets/home-inactive.png');
           break;
         case 'scan':
-          path = require('../assets/scan-inactive.png');
+          path = require('../../assets/scan-inactive.png');
           break;
         case 'map':
-          path = require('../assets/map-inactive.png');
+          path = require('../../assets/map-inactive.png');
           break;
         case 'trips':
-          path = require('../assets/trips-inactive.png');
+          path = require('../../assets/trips-inactive.png');
           break;
         case 'profile':
-          path = require('../assets/profile-inactive.png');
+          path = require('../../assets/profile-inactive.png');
           break;
       }
     }

@@ -26,13 +26,15 @@
                                                    moduleName:@"Turist"
                                             initialProperties:nil];
 
-  rootView.backgroundColor = [[UIColor alloc] initWithRed:0.98f green:0.97f blue:0.97f alpha:1];
+  rootView.backgroundColor = [[UIColor alloc] initWithRed:0.39 green:0.58 blue:0.67 alpha:1];
+
 
   self.window = [[UIWindow alloc] initWithFrame:[UIScreen mainScreen].bounds];
   UIViewController *rootViewController = [UIViewController new];
   rootViewController.view = rootView;
   self.window.rootViewController = rootViewController;
   [self.window makeKeyAndVisible];
+  
   
 
   // Add any custom logic here.

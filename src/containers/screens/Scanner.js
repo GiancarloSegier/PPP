@@ -1,8 +1,10 @@
 import React, {Component} from 'react';
-import Scan from '../components/Scan';
-import config from '../../config.json';
-import androidUI from '../styles/ui.android.style.js';
-import iosUI from '../styles/ui.ios.style.js';
+import {Platform} from 'react-native';
+import Scan from '../../components/Scan';
+import config from '../../../config.json';
+import androidUI from '../../styles/ui.android.style.js';
+import iosUI from '../../styles/ui.ios.style.js';
+import Header from '../../components/interface/Header';
 class CameraContainer extends Component {
   constructor(props) {
     super(props);
@@ -16,7 +18,7 @@ class CameraContainer extends Component {
       googleVisionDetection: undefined,
     };
 
-    if (this.props.platform === 'ios') {
+    if (Platform.OS === 'ios') {
       this.styles = iosUI;
     } else {
       this.styles = androidUI;
@@ -99,17 +101,20 @@ class CameraContainer extends Component {
       image,
     } = this.state;
     return (
-      <Scan
-        camera={camera}
-        cameraResult={cameraResult}
-        clickAgain={this.clickAgain}
-        takePicture={value => this.takePicture(value)}
-        activeCamera={this.activeCamera}
-        googleVisionDetection={googleVisionDetection}
-        loading={loading}
-        image={image}
-        styles={this.styles}
-      />
+      <>
+        <Header />
+        <Scan
+          camera={camera}
+          cameraResult={cameraResult}
+          clickAgain={this.clickAgain}
+          takePicture={value => this.takePicture(value)}
+          activeCamera={this.activeCamera}
+          googleVisionDetection={googleVisionDetection}
+          loading={loading}
+          image={image}
+          styles={this.styles}
+        />
+      </>
     );
   }
 }

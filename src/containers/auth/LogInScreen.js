@@ -1,14 +1,22 @@
 import React, {Component} from 'react';
-import AuthForm from './AuthForm';
-import {login, signup} from '../api/RootApi';
+import AuthForm from '../../components/auth/AuthForm';
+import {login, signup, subscribeToAuthChanges} from '../../api/RootApi';
 
 class LoginScreen extends Component {
   state = {
     authMode: 'login',
   };
 
-  // componentDidMount() {}
-  // componentWillMount() {}
+  componentDidMount() {
+    subscribeToAuthChanges(this.onAuthStateChanged);
+  }
+
+  onAuthStateChanged = user => {
+    if (user !== null) {
+      this.props.navigation.navigate('App');
+    }
+  };
+
   switchAuthMode = () => {
     this.setState(prevState => ({
       authMode: prevState.authMode === 'login' ? 'signup' : 'login',

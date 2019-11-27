@@ -3,11 +3,11 @@ import React from 'react';
 import {createAppContainer} from 'react-navigation';
 import {createBottomTabNavigator} from 'react-navigation-tabs';
 
-import Home from '../containers/Home';
-import Scanner from '../containers/Scanner';
-import Map from '../containers/Map';
-import MyTrips from '../containers/MyTrips';
-import Profile from '../containers/Profile';
+import Home from '../../containers/screens/Home';
+import Scanner from '../../containers/screens/Scanner';
+import Map from '../../containers/screens/Map';
+import MyTrips from '../../containers/screens/MyTrips';
+import Profile from '../../containers/screens/Profile';
 
 import TabBarIcon from './TabBarIcon';
 

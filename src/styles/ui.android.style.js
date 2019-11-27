@@ -5,6 +5,9 @@ const deviceWidth = Dimensions.get('screen').width;
 const deviceHeight = Dimensions.get('screen').height;
 
 export default StyleSheet.create({
+  background: {
+    backgroundColor: '#f4f4f4',
+  },
   container: {
     padding: 24,
   },

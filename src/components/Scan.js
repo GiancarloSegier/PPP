@@ -1,4 +1,4 @@
-import React, {Fragment} from 'react';
+import React from 'react';
 import {RNCamera} from 'react-native-camera';
 import {
   TouchableOpacity,
@@ -22,6 +22,8 @@ const Scan = props => {
 
   return (
     <>
+      {/* Resultscreen */}
+
       {googleVisionDetection && (
         <>
           <ScrollView>
@@ -60,6 +62,8 @@ const Scan = props => {
         </>
       )}
 
+      {/* Scanscreen */}
+
       {camera && (
         <View style={styles.cameraScreen}>
           <RNCamera
@@ -84,6 +88,8 @@ const Scan = props => {
           />
         </View>
       )}
+
+      {/* Loadscreen */}
 
       {!googleVisionDetection && loading && (
         <View style={styles.loadScreen}>
