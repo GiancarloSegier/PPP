@@ -49,6 +49,8 @@ pod 'RNFirebase', :path => '../node_modules/react-native-firebase/ios'
   pod 'GoogleMaps'
   pod 'Google-Maps-iOS-Utils'
 
+pod 'react-native-geolocation', path: '../node_modules/@react-native-community/geolocation'
+
 
 
   target 'TuristTests' do

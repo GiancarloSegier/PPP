@@ -187,4 +187,11 @@ export default StyleSheet.create({
     height: '100%',
     transform: [{scale: 0.5}],
   },
+
+  // Map
+
+  map: {
+    width: deviceWidth,
+    height: deviceHeight - 215,
+  },
 });

@@ -4,6 +4,7 @@ import android.app.Application;
 import android.content.Context;
 import com.facebook.react.PackageList;
 import com.facebook.react.ReactApplication;
+
 import com.airbnb.android.react.maps.MapsPackage;
 import com.facebook.reactnative.androidsdk.FBSDKPackage;
 import com.facebook.react.ReactNativeHost;
@@ -17,6 +18,12 @@ import io.invertase.firebase.auth.RNFirebaseAuthPackage;
 
 import com.facebook.FacebookSdk;
 import com.facebook.appevents.AppEventsLogger;
+
+import com.agontuk.RNFusedLocation.RNFusedLocationPackage;
+
+
+
+
 
 public class MainApplication extends Application implements ReactApplication {
 
@@ -35,7 +42,6 @@ public class MainApplication extends Application implements ReactApplication {
           // packages.add(new MyReactNativePackage());
 
             packages.add(new RNFirebaseAuthPackage());
-
 
           return packages;
         }
@@ -59,6 +65,8 @@ public class MainApplication extends Application implements ReactApplication {
         FacebookSdk.sdkInitialize(getApplicationContext());
     AppEventsLogger.activateApp(this);
   }
+
+  
 
   /**
    * Loads Flipper in React Native templates.

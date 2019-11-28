@@ -1,6 +1,5 @@
 import React, {Component} from 'react';
 import {View, Image, StatusBar, Platform} from 'react-native';
-import {inject, observer} from 'mobx-react';
 
 import androidUI from '../../styles/ui.android.style.js';
 

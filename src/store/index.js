@@ -1,8 +1,8 @@
-import UserStore from './UserStore.js';
+import MapStore from './MapStore.js';
 
 class Store {
   constructor() {
-    this.userStore = new UserStore(this);
+    this.mapStore = new MapStore(this);
   }
 }
 

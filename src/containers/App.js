@@ -9,7 +9,36 @@ import TabNavigator from '../components/interface/TabNavigator';
 import {createStackNavigator} from 'react-navigation-stack';
 import Header from '../components/interface/Header.js';
 
-import {Image, StatusBar} from 'react-native';
+import {Image, StatusBar, PermissionsAndroid} from 'react-native';
+
+const requestLocationPermission = async () => {
+  try {
+    const granted = PermissionsAndroid.request(
+      PermissionsAndroid.PERMISSIONS.ACCESS_FINE_LOCATION,
+    );
+    if (granted === PermissionsAndroid.RESULTS.GRANTED) {
+      console.log('You can use the location');
+    } else {
+      console.log('location permission denied');
+    }
+  } catch (err) {
+    console.warn(err);
+  }
+};
+const requestCameraPermission = async () => {
+  try {
+    const granted = PermissionsAndroid.request(
+      PermissionsAndroid.PERMISSIONS.CAMERA,
+    );
+    if (granted === PermissionsAndroid.RESULTS.GRANTED) {
+      console.log('You can use the camera');
+    } else {
+      console.log('camera permission denied');
+    }
+  } catch (err) {
+    console.warn(err);
+  }
+};
 
 const AppStack = createStackNavigator(
   {
@@ -69,6 +98,10 @@ const AppContainer = createAppContainer(
 );
 
 export default class App extends Component {
+  async componentDidMount() {
+    await requestLocationPermission();
+    await requestCameraPermission();
+  }
   render() {
     return (
       <Provider {...store}>
