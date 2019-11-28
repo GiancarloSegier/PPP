@@ -4,7 +4,6 @@ import Scan from '../../components/Scan';
 import config from '../../../config.json';
 import androidUI from '../../styles/ui.android.style.js';
 import iosUI from '../../styles/ui.ios.style.js';
-import Header from '../../components/interface/Header';
 class CameraContainer extends Component {
   constructor(props) {
     super(props);
@@ -101,20 +100,17 @@ class CameraContainer extends Component {
       image,
     } = this.state;
     return (
-      <>
-        <Header />
-        <Scan
-          camera={camera}
-          cameraResult={cameraResult}
-          clickAgain={this.clickAgain}
-          takePicture={value => this.takePicture(value)}
-          activeCamera={this.activeCamera}
-          googleVisionDetection={googleVisionDetection}
-          loading={loading}
-          image={image}
-          styles={this.styles}
-        />
-      </>
+      <Scan
+        camera={camera}
+        cameraResult={cameraResult}
+        clickAgain={this.clickAgain}
+        takePicture={value => this.takePicture(value)}
+        activeCamera={this.activeCamera}
+        googleVisionDetection={googleVisionDetection}
+        loading={loading}
+        image={image}
+        styles={this.styles}
+      />
     );
   }
 }

@@ -7,15 +7,42 @@ import LoginScreen from './auth/LogInScreen';
 import {createSwitchNavigator, createAppContainer} from 'react-navigation';
 import TabNavigator from '../components/interface/TabNavigator';
 import {createStackNavigator} from 'react-navigation-stack';
+import Header from '../components/interface/Header.js';
+
+import {Image, StatusBar} from 'react-native';
 
 const AppStack = createStackNavigator(
   {
     StartScreen: TabNavigator,
   },
   {
-    headerMode: 'none',
-    navigationOptions: {
-      headerVisible: false,
+    defaultNavigationOptions: {
+      headerStyle: {
+        backgroundColor: '#182ac1',
+        elevation: 0,
+        shadowOpacity: 0,
+        height: 80,
+        paddingTop: 30,
+      },
+      headerTitle: (
+        <>
+          <StatusBar
+            backgroundColor="transparent"
+            translucent
+            barStyle="light-content"
+          />
+          <Image
+            resizeMode="contain"
+            style={{
+              width: 140,
+              height: 24,
+              marginLeft: 'auto',
+              marginRight: 'auto',
+            }}
+            source={require('../assets/logo.png')}
+          />
+        </>
+      ),
     },
   },
 );

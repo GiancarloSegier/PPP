@@ -18,8 +18,9 @@ export default StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-around',
   },
-  logo: {
-    transform: [{scale: 0.5}],
+  logoHeader: {
+    height: 24,
+    resizeMode: 'contain',
   },
   avatar: {
     width: 35,
@@ -42,6 +43,73 @@ export default StyleSheet.create({
   subTitle: {
     fontSize: 20,
     color: '#182AC1',
+  },
+
+  // LoginScreen
+
+  loginScreen: {
+    backgroundColor: '#182AC1',
+    height: '100%',
+  },
+
+  form: {
+    justifyContent: 'space-around',
+  },
+  formTitle: {
+    fontSize: 24,
+    color: '#fff',
+    textAlign: 'center',
+    fontWeight: '300',
+    marginBottom: 16,
+    marginTop: 24,
+  },
+  formField: {
+    borderColor: '#020029',
+    borderWidth: 2,
+    width: deviceWidth - 48,
+    height: 40,
+    paddingHorizontal: 16,
+    paddingVertical: 4,
+    backgroundColor: '#fff',
+    borderRadius: 8,
+    color: '#020029',
+    marginBottom: 2,
+    marginTop: 12,
+  },
+  formError: {
+    color: '#f4f4f4',
+    fontStyle: 'italic',
+    fontSize: 12,
+    fontWeight: '500',
+    marginLeft: 16,
+  },
+
+  primaryFormButton: {
+    backgroundColor: '#110b84',
+    marginTop: 14,
+    marginBottom: 2,
+    height: 40,
+    borderRadius: 8,
+  },
+  primaryFormButtonTitle: {
+    fontSize: 18,
+    fontWeight: 'bold',
+  },
+  secondaryFormButton: {
+    backgroundColor: '#182ac1',
+    marginVertical: 8,
+    height: 40,
+    borderRadius: 8,
+    width: '75%',
+    alignSelf: 'center',
+    // opacity: 0.75,
+  },
+  secondaryFormButtonTitle: {
+    fontSize: 14,
+  },
+  logoLogin: {
+    width: '50%',
+    resizeMode: 'contain',
   },
 
   // Scanner

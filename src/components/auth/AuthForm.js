@@ -1,63 +1,97 @@
 import React, {Component} from 'react';
 
-import {View, TextInput} from 'react-native';
+import {
+  View,
+  TextInput,
+  Platform,
+  Image,
+  StatusBar,
+  ScrollView,
+} from 'react-native';
 import {withFormik} from 'formik';
 import {Button, Text} from 'react-native-elements';
 import * as yup from 'yup';
 
+import androidUI from '../../styles/ui.android.style.js';
+import iosUI from '../../styles/ui.ios.style.js';
+
 const AuthForm = props => {
+  if (Platform.OS === 'ios') {
+    this.styles = iosUI;
+  } else {
+    this.styles = androidUI;
+  }
+
   const displayNameInput = (
-    <View>
+    <>
       <TextInput
         onChangeText={text => props.setFieldValue('displayName', text)}
         placeholder="Display Name"
-        style={{
-          borderWidth: 2,
-          borderColor: 'black',
-          width: '100%',
-          padding: 15,
-        }}
+        style={this.styles.formField}
       />
-    </View>
+      {props.errors.displayName !== '' ? (
+        <Text style={this.styles.formError}>{props.errors.displayName}</Text>
+      ) : null}
+    </>
   );
 
   return (
-    <View style={{marginTop: 100, alignItems: 'center'}}>
-      <Text h3>Login form</Text>
-      {props.authMode === 'signup' ? displayNameInput : null}
-      <TextInput
-        onChangeText={text => props.setFieldValue('email', text)}
-        placeholder="email"
-        style={{
-          borderWidth: 2,
-          borderColor: 'black',
-          width: '100%',
-          padding: 15,
-        }}
+    <>
+      <StatusBar
+        backgroundColor="transparent"
+        barStyle="light-content"
+        translucent
       />
-      <Text>{props.errors.email}</Text>
-      <TextInput
-        onChangeText={text => props.setFieldValue('password', text)}
-        placeholder="password"
-        style={{
-          borderWidth: 2,
-          borderColor: 'black',
-          width: '100%',
-          padding: 15,
-        }}
-      />
-      <Text>{props.errors.password}</Text>
-      <Button
-        onPress={() => props.handleSubmit()}
-        title={props.authMode === 'login' ? 'Login' : 'Create Account'}
-      />
-      <Button
-        onPress={() => props.switchAuthMode()}
-        title={
-          props.authMode === 'login' ? 'Switch to Signup' : 'Switch to login'
-        }
-      />
-    </View>
+      <ScrollView
+        style={this.styles.loginScreen}
+        contentContainerStyle={{
+          alignItems: 'center',
+          alignContent: 'center',
+          justifyContent: 'center',
+          flex: 1,
+        }}>
+        <Image
+          source={require('../../assets/logo.png')}
+          style={this.styles.logoLogin}
+        />
+        <View style={this.styles.form}>
+          <Text style={this.styles.formTitle}>
+            {props.authMode === 'login' ? 'Welcome back!' : 'Welcome new user!'}
+          </Text>
+          {props.authMode === 'signup' ? displayNameInput : null}
+          <TextInput
+            onChangeText={text => props.setFieldValue('email', text)}
+            placeholder="email"
+            style={this.styles.formField}
+          />
+          {props.errors.email !== '' ? (
+            <Text style={this.styles.formError}>{props.errors.email}</Text>
+          ) : null}
+          <TextInput
+            onChangeText={text => props.setFieldValue('password', text)}
+            placeholder="password"
+            style={this.styles.formField}
+          />
+          {props.errors.password !== '' ? (
+            <Text style={this.styles.formError}>{props.errors.password}</Text>
+          ) : null}
+          <Button
+            buttonStyle={this.styles.primaryFormButton}
+            titleStyle={this.styles.primaryFormButtonTitle}
+            onPress={() => props.handleSubmit()}
+            title={props.authMode === 'login' ? 'Login' : 'Create Account'}
+          />
+          <Button
+            buttonStyle={this.styles.secondaryFormButton}
+            titleStyle={this.styles.secondaryFormButtonTitle}
+            onPress={() => props.switchAuthMode()}
+            title={
+              props.authMode === 'login' ? 'new account' : 'I have an account'
+            }
+          />
+        </View>
+      </ScrollView>
+    </>
   );
 };
 

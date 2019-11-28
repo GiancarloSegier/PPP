@@ -1,6 +1,5 @@
 import React, {Component} from 'react';
 import {View, Text, ScrollView, Platform} from 'react-native';
-import Header from '../../components/interface/Header';
 
 import androidUI from '../../styles/ui.android.style.js';
 import iosUI from '../../styles/ui.ios.style.js';
@@ -17,7 +16,6 @@ export class Map extends Component {
   render() {
     return (
       <ScrollView style={this.styles.background}>
-        <Header />
         <View style={this.styles.container}>
           <Text style={this.styles.title}>Mapscreen</Text>
         </View>

@@ -1,6 +1,5 @@
 import React, {Component} from 'react';
 import {View, Text, ScrollView, Platform} from 'react-native';
-import Header from '../../components/interface/Header';
 
 import androidUI from '../../styles/ui.android.style.js';
 import iosUI from '../../styles/ui.ios.style.js';
@@ -20,20 +19,21 @@ class Profile extends Component {
   }
 
   onSignedOut = () => {
-    console.log('signed out');
+    console.log(this.props.navigation.navigate('Auth'));
     this.props.navigation.navigate('Auth');
   };
 
   render() {
     return (
       <ScrollView style={this.styles.background}>
-        <Header />
         <View style={this.styles.container}>
           <Text style={this.styles.title}>Welcome back</Text>
           <Text style={this.styles.subTitle}>
             {firebase.auth().currentUser.displayName}
           </Text>
           <Button
+            buttonStyle={this.styles.secondaryFormButton}
+            titleStyle={this.styles.secondaryFormButtonTitle}
             onPress={() => {
               signout(this.onSignedOut);
             }}

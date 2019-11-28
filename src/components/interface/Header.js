@@ -6,7 +6,7 @@ import androidUI from '../../styles/ui.android.style.js';
 
 import iosUI from '../../styles/ui.ios.style.js';
 
-class Header extends Component {
+export default class Header extends Component {
   constructor(props) {
     super(props);
     if (Platform.OS === 'ios') {
@@ -31,7 +31,10 @@ class Header extends Component {
         />
         <View style={this.styles.header}>
           <View style={this.styles.headerContent}>
-            <Image source={require('../../assets/logo.png')} />
+            <Image
+              source={require('../../assets/logo.png')}
+              style={this.styles.logoHeader}
+            />
 
             {/* <Image
               style={this.styles.avatar}
@@ -43,5 +46,3 @@ class Header extends Component {
     );
   }
 }
-
-export default inject('userStore')(observer(Header));

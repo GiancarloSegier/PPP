@@ -1,6 +1,5 @@
 import React, {Component} from 'react';
 import {View, Text, Platform} from 'react-native';
-import Header from '../../components/interface/Header';
 
 import androidUI from '../../styles/ui.android.style.js';
 import iosUI from '../../styles/ui.ios.style.js';
@@ -18,7 +17,6 @@ class Home extends Component {
   render() {
     return (
       <ScrollView style={this.styles.background}>
-        <Header />
         <View style={this.styles.container}>
           <Text style={this.styles.subTitle}>Welcome to</Text>
           <Text style={this.styles.title}>Brugges</Text>
