@@ -180,6 +180,7 @@ android {
 }
 
 dependencies {
+    implementation project(':react-native-fbsdk')
 
     implementation 'com.facebook.android:facebook-android-sdk:[5,6)'
 
@@ -212,3 +213,4 @@ task copyDownloadableDepsToLibs(type: Copy) {
 
 apply from: file("../../node_modules/@react-native-community/cli-platform-android/native_modules.gradle"); applyNativeModulesAppBuildGradle(project)
 apply plugin: 'com.google.gms.google-services'
+apply from: "../../node_modules/react-native-vector-icons/fonts.gradle"

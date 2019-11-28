@@ -1,12 +1,12 @@
 import {StyleSheet} from 'react-native';
-
+import {colors} from './colors';
 import {Dimensions} from 'react-native';
 const deviceWidth = Dimensions.get('screen').width;
 const deviceHeight = Dimensions.get('screen').height;
 
 export default StyleSheet.create({
   background: {
-    backgroundColor: '#f4f4f4',
+    backgroundColor: colors.darkWhite,
   },
   container: {
     padding: 24,
@@ -14,7 +14,7 @@ export default StyleSheet.create({
   header: {
     padding: 20,
     paddingTop: 50,
-    backgroundColor: '#192BC2',
+    backgroundColor: colors.blue,
     flexDirection: 'row',
     justifyContent: 'space-around',
   },
@@ -26,66 +26,67 @@ export default StyleSheet.create({
     width: 35,
     height: 35,
     borderRadius: 100,
-    borderColor: '#fff',
+    borderColor: colors.white,
     borderWidth: 2,
   },
 
   title: {
     fontSize: 40,
     fontWeight: 'bold',
-    color: '#020029',
+    color: colors.navy,
   },
   heading2: {
     fontSize: 28,
     fontWeight: 'bold',
-    color: '#020029',
+    color: colors.navy,
   },
   subTitle: {
     fontSize: 20,
-    color: '#182AC1',
+    color: colors.blue,
   },
 
   // LoginScreen
 
   loginScreen: {
-    backgroundColor: '#182AC1',
+    backgroundColor: colors.blue,
     height: '100%',
+    alignItems: 'center',
+    justifyContent: 'center',
   },
 
-  form: {
-    justifyContent: 'space-around',
-  },
+  form: {},
   formTitle: {
     fontSize: 24,
-    color: '#fff',
+    color: colors.white,
     textAlign: 'center',
     fontWeight: '300',
     marginBottom: 16,
     marginTop: 24,
   },
   formField: {
-    borderColor: '#020029',
+    borderColor: colors.navy,
     borderWidth: 2,
     width: deviceWidth - 48,
     height: 40,
     paddingHorizontal: 16,
     paddingVertical: 4,
-    backgroundColor: '#fff',
+    backgroundColor: colors.white,
     borderRadius: 8,
-    color: '#020029',
+    color: colors.navy,
     marginBottom: 2,
-    marginTop: 12,
+    marginTop: 0,
   },
   formError: {
-    color: '#f4f4f4',
+    color: colors.darkWhite,
     fontStyle: 'italic',
     fontSize: 12,
     fontWeight: '500',
     marginLeft: 16,
+    marginBottom: 4,
   },
 
   primaryFormButton: {
-    backgroundColor: '#110b84',
+    backgroundColor: colors.darkBlue,
     marginTop: 14,
     marginBottom: 2,
     height: 40,
@@ -96,7 +97,7 @@ export default StyleSheet.create({
     fontWeight: 'bold',
   },
   secondaryFormButton: {
-    backgroundColor: '#182ac1',
+    backgroundColor: colors.blue,
     marginVertical: 8,
     height: 40,
     borderRadius: 8,
@@ -107,9 +108,38 @@ export default StyleSheet.create({
   secondaryFormButtonTitle: {
     fontSize: 14,
   },
+
+  socialLogin: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+  },
+
+  socialFormButton: {
+    backgroundColor: colors.white,
+    marginVertical: 8,
+    height: 40,
+    borderRadius: 8,
+    // opacity: 0.75,
+  },
+  buttonContainer: {
+    flex: 1,
+  },
+  socialFormButtonTitle: {
+    fontSize: 16,
+    color: colors.darkBlue,
+    fontWeight: 'bold',
+  },
+
   logoLogin: {
     width: '50%',
     resizeMode: 'contain',
+  },
+  loginSubtitle: {
+    color: colors.white,
+    textAlign: 'center',
+    fontSize: 18,
+    fontWeight: 'bold',
+    marginBottom: 16,
   },
 
   // Scanner
@@ -130,7 +160,7 @@ export default StyleSheet.create({
     width: 60,
     height: 60,
     borderWidth: 2,
-    borderColor: '#fff',
+    borderColor: colors.white,
     borderRadius: 100,
     position: 'absolute',
     bottom: 50,
@@ -145,7 +175,7 @@ export default StyleSheet.create({
     width: 40,
     height: 40,
     borderWidth: 2,
-    borderColor: '#fff',
+    borderColor: colors.white,
     borderRadius: 100,
     backgroundColor: 'rgba(255, 255, 255, 0.5)',
     position: 'absolute',

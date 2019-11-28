@@ -7,15 +7,13 @@ export function login({email, password}) {
     .then(value => console.log(value));
 }
 
-export function signup({email, password, displayName}) {
+export function signup({email, password, name}) {
   firebase
     .auth()
     .createUserWithEmailAndPassword(email, password)
     .then(userInfo => {
       console.log(userInfo);
-      userInfo.user
-        .updateProfile({displayName: displayName.trim()})
-        .then(() => {});
+      userInfo.user.updateProfile({displayName: name.trim()}).then(() => {});
     });
 }
 
