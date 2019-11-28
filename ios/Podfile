@@ -44,13 +44,26 @@ target 'Turist' do
 pod 'RNFirebase', :path => '../node_modules/react-native-firebase/ios'
   pod 'react-native-fbsdk', :path => '../node_modules/react-native-fbsdk'
 
+  pod 'react-native-maps', :path => '../node_modules/react-native-maps'
+  pod 'react-native-google-maps', :path => '../node_modules/react-native-maps'
+  pod 'GoogleMaps'
+  pod 'Google-Maps-iOS-Utils'
+
+
+
   target 'TuristTests' do
     inherit! :search_paths
     # Pods for testing
   end
 
   use_native_modules!
+  
 end
+
+
+
+
+
 
 target 'Turist-tvOS' do
   # Pods for Turist-tvOS

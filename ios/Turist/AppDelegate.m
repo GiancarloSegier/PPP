@@ -15,6 +15,8 @@
 #import <FBSDKLoginKit/FBSDKLoginKit.h>
 #import <Firebase.h>
 
+#import <GoogleMaps/GoogleMaps.h>
+
 
 @implementation AppDelegate
 
@@ -23,6 +25,9 @@
   [FIRApp configure];
    [[FBSDKApplicationDelegate sharedInstance] application:application
     didFinishLaunchingWithOptions:launchOptions];
+
+    [GMSServices provideAPIKey:@"AIzaSyCPn8IKX986Xj8vyPzVhFDhUg6U7_SGnz4"];
+
 
   RCTBridge *bridge = [[RCTBridge alloc] initWithDelegate:self launchOptions:launchOptions];
   RCTRootView *rootView = [[RCTRootView alloc] initWithBridge:bridge
