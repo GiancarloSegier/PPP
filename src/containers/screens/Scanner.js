@@ -1,6 +1,6 @@
 import React, {Component} from 'react';
 import {Platform} from 'react-native';
-import Scan from '../../components/Scan';
+import Scan from '../../components/scanner/Scan';
 import config from '../../../config.json';
 import androidUI from '../../styles/ui.android.style.js';
 import iosUI from '../../styles/ui.ios.style.js';

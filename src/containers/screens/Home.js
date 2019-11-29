@@ -14,6 +14,7 @@ class Home extends Component {
       this.styles = androidUI;
     }
   }
+
   render() {
     return (
       <ScrollView style={this.styles.background}>

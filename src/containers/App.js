@@ -9,7 +9,7 @@ import TabNavigator from '../components/interface/TabNavigator';
 import {createStackNavigator} from 'react-navigation-stack';
 import Header from '../components/interface/Header.js';
 
-import {Image, StatusBar, PermissionsAndroid} from 'react-native';
+import {Image, StatusBar, PermissionsAndroid, Platform} from 'react-native';
 
 const requestLocationPermission = async () => {
   try {
@@ -99,8 +99,10 @@ const AppContainer = createAppContainer(
 
 export default class App extends Component {
   async componentDidMount() {
-    await requestLocationPermission();
-    await requestCameraPermission();
+    if (Platform.OS === 'android') {
+      await requestLocationPermission();
+      await requestCameraPermission();
+    }
   }
   render() {
     return (
