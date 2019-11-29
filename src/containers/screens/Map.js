@@ -1,21 +1,11 @@
 import React, {Component} from 'react';
-import {
-  View,
-  Text,
-  ScrollView,
-  Platform,
-  Dimensions,
-  PermissionsAndroid,
-  Alert,
-} from 'react-native';
+import {View, Text, Platform, ActivityIndicator} from 'react-native';
 
 import androidUI from '../../styles/ui.android.style.js';
 import iosUI from '../../styles/ui.ios.style.js';
 
 import MapView from 'react-native-maps';
 import MapStyle from '../../config/MapStyle';
-import {inject, observer} from 'mobx-react';
-import {TouchableHighlight} from 'react-native-gesture-handler';
 
 import Geolocation from 'react-native-geolocation-service';
 
@@ -29,10 +19,9 @@ export class Map extends Component {
     }
 
     this.state = {
-      latitudeDelta: 0.5,
-      longitudeDelta: 0.5,
+      latitudeDelta: 0.005,
+      longitudeDelta: 0.005,
     };
-    this.getPosition();
   }
 
   setLocation = position => {
@@ -42,7 +31,7 @@ export class Map extends Component {
     });
   };
 
-  getPosition() {
+  getPosition = () => {
     Geolocation.getCurrentPosition(
       position => {
         this.currentLocation = {
@@ -52,30 +41,52 @@ export class Map extends Component {
         this.setLocation(this.currentLocation);
       },
       error => {
-        // See error code charts below.
         console.log(error.code, error.message);
       },
-      {enableHighAccuracy: true, timeout: 1500, maximumAge: 1000},
+      {enableHighAccuracy: true, timeout: 15000, maximumAge: 1000},
     );
+  };
+
+  componentDidMount() {
+    this.getPosition();
   }
 
+  moveLocation = newLocation => {
+    this.currentLocation = {
+      latitude: newLocation.nativeEvent.coordinate.latitude,
+      longitude: newLocation.nativeEvent.coordinate.longitude,
+    };
+    this.setLocation(this.currentLocation);
+  };
+
   render() {
-    return (
-      <MapView
-        showsUserLocation={true}
-        showsMyLocationButton={true}
-        followsUserLocation
-        style={this.styles.map}
-        customMapStyle={MapStyle}
-        provider="google"
-        initialRegion={{
-          latitude: this.state.latitude,
-          longitude: this.state.longitude,
-          latitudeDelta: this.state.latitudeDelta,
-          longitudeDelta: this.state.longitudeDelta,
-        }}
-      />
-    );
+    if (this.state.latitude && this.state.latitude !== 0) {
+      return (
+        <MapView
+          showsUserLocation
+          followsUserLocation
+          loadingEnabled
+          showsMyLocationButton={true}
+          style={this.styles.map}
+          customMapStyle={MapStyle}
+          provider="google"
+          region={{
+            latitude: this.state.latitude,
+            longitude: this.state.longitude,
+            latitudeDelta: this.state.latitudeDelta,
+            longitudeDelta: this.state.longitudeDelta,
+          }}
+          onUserLocationChange={this.moveLocation}
+        />
+      );
+    } else {
+      return (
+        <View style={this.styles.loadScreen}>
+          <ActivityIndicator size={'large'} color="#192BC2" />
+          <Text>Turist is checking your location!</Text>
+        </View>
+      );
+    }
   }
 }
 
