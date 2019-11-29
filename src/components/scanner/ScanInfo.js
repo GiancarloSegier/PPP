@@ -3,66 +3,112 @@ import React, {Component} from 'react';
 import {TouchableOpacity, Text, ScrollView, View, Image} from 'react-native';
 
 class ScanInfo extends Component {
+  paragraphs = [];
   constructor(props) {
     super(props);
 
     this.state = {
-      title: this.props.googleVisionDetection.webDetection.webEntities[0]
+      title: this.props.googleVisionDetection.landmarkAnnotations[0]
         .description,
-      // searchTerm: 'Eiffel Tower',
       searchContent: {},
     };
   }
   componentDidMount() {
     this.collectInfo();
   }
-  collectInfo = async () => {
+  collectInfo = async searchTerm => {
+    if (searchTerm) {
+      this.setState({title: searchTerm, searchContent: {}});
+    }
     const r = await fetch(
-      `https://en.wikipedia.org/w/api.php?action=query&format=json&prop=extracts%7Cdescription%7Ccoordinates&titles=${
-        this.state.title
-      }&exchars=1200&explaintext=1`,
+      `https://en.wikipedia.org/w/api.php?action=query&format=json&prop=extracts%7Cdescription%7Ccoordinates%7Ccategories&titles=${this.state.title}&explaintext=1&imdir=ascending&inprop=url`,
     );
 
-    console.log(r);
     const text = await r.json();
-    console.log(text.query.pages);
     const pageObject = text.query.pages;
     const pageInformation = pageObject[Object.keys(pageObject)[0]];
-    this.setState({searchContent: pageInformation});
+
+    // // const imageUrl = `${pageInformation.fullurl}/${pageInformation.images[0].title}`;
+    // const imageName = pageInformation.images[0].title;
+    // const fullUrl = pageInformation.fullurl;
+    // const correctImageUrl = imageName.replace(/\s+/g, '_');
+
+    // NEEDS ANOTHER FETCH TO GET IMAGE!!!! OVERKILL!!
+
+    // const imageUrl = `${fullUrl}#/media/${correctImageUrl}`;
+    // console.log(imageUrl);
+
+    const paragraph = {};
+    this.paragraphs = [];
+    if (pageInformation.extract) {
+      const plainText = pageInformation.extract.split('==');
+      const infoArray = plainText[0].split('\n');
+
+      for (let i = 0; i < infoArray.length; i++) {
+        paragraph[i] = {id: i, text: infoArray[i]};
+        if (paragraph[i].text !== '') {
+          this.paragraphs.push(paragraph[i]);
+        }
+      }
+    }
+
+    this.setState({
+      searchContent: pageObject,
+      // imageUrl: imageUrl,
+    });
   };
 
   render() {
     const {activeCamera, googleVisionDetection, image, styles} = this.props;
+    console.log(googleVisionDetection.landmarkAnnotations[0].description);
     return (
       <>
         <ScrollView>
           <Image source={{uri: image}} style={styles.resultImage} />
           <View style={styles.container}>
             <Text style={styles.heading2}>{this.state.title}</Text>
-            {/* {googleVisionDetection.webDetection.webEntities.map(
-              (data, index) => {
+            <Text>Turist thinks it could be this too?</Text>
+            <View
+              style={{
+                flex: 1,
+                flexDirection: 'column',
+                justifyContent: 'space-between',
+              }}>
+              {googleVisionDetection.landmarkAnnotations.map((data, index) => {
                 return (
-                  <View
-                    key={index}
-                    style={{
-                      borderWidth: 2,
-                      borderColor: 'black',
-                      margin: 10,
-                    }}>
-                    <Text>entityId : {data.entityId}</Text>
-                    <Text>score : {data.score}</Text>
-                    <Text numberOfLines={1}>
-                      description: {data.description}
-                    </Text>
-                  </View>
+                  <>
+                    {data.description !== undefined ? (
+                      <TouchableOpacity
+                        key={data.description}
+                        style={{backgroundColor: 'red', height: 50}}
+                        onPress={() => {
+                          this.collectInfo(data.description);
+                        }}>
+                        <Text>{data.description}</Text>
+                      </TouchableOpacity>
+                    ) : null}
+                  </>
                 );
-              },
-            )} */}
-
+              })}
+            </View>
             <Text style={{fontSize: 24, color: '#110b84'}}>
               {this.state.searchContent.description}
             </Text>
-            <Text>{this.state.searchContent.extract}</Text>
+            {this.paragraphs.map(info => {
+              return (
+                <Text key={info.id} style={{marginBottom: 16}}>
+                  {info.text}
+                </Text>
+              );
+            })}
+            <View>
+              {!this.paragraphs[0] && (
+                <Text>
+                  No information was found. Turist is reading every book at the
+                  moment...
+                </Text>
+              )}
+            </View>
           </View>
         </ScrollView>
         <TouchableOpacity onPress={activeCamera} style={styles.scanAgain}>
