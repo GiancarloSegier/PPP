@@ -103,6 +103,7 @@ export default class App extends Component {
       await requestCameraPermission();
     }
   }
+
   render() {
     return (
       <Provider {...store}>

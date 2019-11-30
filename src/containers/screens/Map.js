@@ -7,7 +7,7 @@ import iosUI from '../../styles/ui.ios.style.js';
 import MapView from 'react-native-maps';
 import MapStyle from '../../config/MapStyle';
 
-import Geolocation from 'react-native-geolocation-service';
+import {inject, observer} from 'mobx-react';
 
 export class Map extends Component {
   constructor(props) {
@@ -19,36 +19,28 @@ export class Map extends Component {
     }
 
     this.state = {
-      latitudeDelta: 0.005,
-      longitudeDelta: 0.005,
+      userLocation: {
+        latitude: null,
+        longitude: null,
+        latitudeDelta: 0.005,
+        longitudeDelta: 0.005,
+      },
     };
   }
 
   setLocation = position => {
     this.setState({
-      latitude: position.latitude,
-      longitude: position.longitude,
+      userLocation: {
+        latitude: position.latitude,
+        longitude: position.longitude,
+        latitudeDelta: 0.005,
+        longitudeDelta: 0.005,
+      },
     });
   };
 
-  getPosition = () => {
-    Geolocation.getCurrentPosition(
-      position => {
-        this.currentLocation = {
-          latitude: position.coords.latitude,
-          longitude: position.coords.longitude,
-        };
-        this.setLocation(this.currentLocation);
-      },
-      error => {
-        console.log(error.code, error.message);
-      },
-      {enableHighAccuracy: true, timeout: 15000, maximumAge: 1000},
-    );
-  };
-
   componentDidMount() {
-    this.getPosition();
+    this.setLocation(this.props.mapStore.userLocation);
   }
 
   moveLocation = newLocation => {
@@ -60,21 +52,23 @@ export class Map extends Component {
   };
 
   render() {
-    if (this.state.latitude && this.state.latitude !== 0) {
+    const {userLocation} = this.state;
+    console.log(userLocation.latitude);
+    if (userLocation.latitude && userLocation.latitude !== 0) {
       return (
         <MapView
           showsUserLocation
           followsUserLocation
-          loadingEnabled
+          // loadingEnabled
           showsMyLocationButton={true}
           style={this.styles.map}
           customMapStyle={MapStyle}
           provider="google"
-          region={{
-            latitude: this.state.latitude,
-            longitude: this.state.longitude,
-            latitudeDelta: this.state.latitudeDelta,
-            longitudeDelta: this.state.longitudeDelta,
+          initialRegion={{
+            latitude: userLocation.latitude,
+            longitude: userLocation.longitude,
+            latitudeDelta: userLocation.latitudeDelta,
+            longitudeDelta: userLocation.longitudeDelta,
           }}
           // onUserLocationChange={this.moveLocation}
         />
@@ -90,4 +84,4 @@ export class Map extends Component {
   }
 }
 
-export default Map;
+export default inject('mapStore')(observer(Map));
