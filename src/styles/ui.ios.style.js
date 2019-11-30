@@ -150,7 +150,7 @@ export default StyleSheet.create({
   },
   cameraScreen: {
     alignItems: 'center',
-    height: deviceHeight - 160,
+    flex: 1,
   },
   camera: {
     height: '100%',

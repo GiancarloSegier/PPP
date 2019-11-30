@@ -23,7 +23,9 @@ class ScanInfo extends Component {
       this.setState({title: searchTerm, searchContent: {}});
     }
     const r = await fetch(
-      `https://en.wikipedia.org/w/api.php?action=query&format=json&prop=extracts%7Cdescription%7Ccoordinates%7Ccategories&titles=${this.state.title}&explaintext=1&imdir=ascending&inprop=url`,
+      `https://en.wikipedia.org/w/api.php?action=query&format=json&prop=extracts%7Cdescription%7Ccoordinates%7Ccategories&titles=${
+        this.state.title
+      }&explaintext=1&imdir=ascending&inprop=url`,
     );
 
     const text = await r.json();
