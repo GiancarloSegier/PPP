@@ -7,8 +7,10 @@ class ScanInfo extends Component {
   constructor(props) {
     super(props);
 
+    console.log(this.props.googleVisionDetection);
+
     this.state = {
-      title: this.props.googleVisionDetection.landmarkAnnotations[0]
+      title: this.props.googleVisionDetection.webDetection.webEntities[0]
         .description,
       searchContent: {},
     };
@@ -60,7 +62,7 @@ class ScanInfo extends Component {
 
   render() {
     const {activeCamera, googleVisionDetection, image, styles} = this.props;
-    console.log(googleVisionDetection.landmarkAnnotations[0].description);
+    console.log(googleVisionDetection.landmarkAnnotations);
     return (
       <>
         <ScrollView>
@@ -74,22 +76,24 @@ class ScanInfo extends Component {
                 flexDirection: 'column',
                 justifyContent: 'space-between',
               }}>
-              {googleVisionDetection.landmarkAnnotations.map((data, index) => {
-                return (
-                  <>
-                    {data.description !== undefined ? (
-                      <TouchableOpacity
-                        key={data.description}
-                        style={{backgroundColor: 'red', height: 50}}
-                        onPress={() => {
-                          this.collectInfo(data.description);
-                        }}>
-                        <Text>{data.description}</Text>
-                      </TouchableOpacity>
-                    ) : null}
-                  </>
-                );
-              })}
+              {this.props.googleVisionDetection.webDetection.webEntities.map(
+                (data, index) => {
+                  return (
+                    <>
+                      {data.description !== undefined ? (
+                        <TouchableOpacity
+                          key={data.description}
+                          style={{backgroundColor: 'red', height: 50}}
+                          onPress={() => {
+                            this.collectInfo(data.description);
+                          }}>
+                          <Text>{data.description}</Text>
+                        </TouchableOpacity>
+                      ) : null}
+                    </>
+                  );
+                },
+              )}
             </View>
             <Text style={{fontSize: 24, color: '#110b84'}}>
               {this.state.searchContent.description}

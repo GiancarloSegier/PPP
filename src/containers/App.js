@@ -7,7 +7,6 @@ import LoginScreen from './auth/LogInScreen';
 import {createSwitchNavigator, createAppContainer} from 'react-navigation';
 import TabNavigator from '../components/interface/TabNavigator';
 import {createStackNavigator} from 'react-navigation-stack';
-import Header from '../components/interface/Header.js';
 
 import {Image, StatusBar, PermissionsAndroid, Platform} from 'react-native';
 

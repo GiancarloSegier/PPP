@@ -4,6 +4,7 @@ import Scan from '../../components/scanner/Scan';
 import config from '../../../config.json';
 import androidUI from '../../styles/ui.android.style.js';
 import iosUI from '../../styles/ui.ios.style.js';
+import {withNavigationFocus} from 'react-navigation';
 class CameraContainer extends Component {
   constructor(props) {
     super(props);
@@ -61,7 +62,7 @@ class CameraContainer extends Component {
                 // {type: 'SAFE_SEARCH_DETECTION', maxResults: 3},
                 // {type: 'IMAGE_PROPERTIES', maxResults: 3},
                 // {type: 'CROP_HINTS', maxResults: 3},
-                // {type: 'WEB_DETECTION', maxResults: 3},
+                {type: 'WEB_DETECTION', maxResults: 3},
               ],
             },
           ],
@@ -91,6 +92,14 @@ class CameraContainer extends Component {
     });
   };
 
+  componentWillUnmount() {
+    this.setState({
+      camera: true,
+      googleVisionDetection: false,
+      loading: false,
+    });
+  }
+
   render() {
     const {
       camera,
@@ -99,20 +108,25 @@ class CameraContainer extends Component {
       loading,
       image,
     } = this.state;
-    return (
-      <Scan
-        camera={camera}
-        cameraResult={cameraResult}
-        clickAgain={this.clickAgain}
-        takePicture={value => this.takePicture(value)}
-        activeCamera={this.activeCamera}
-        googleVisionDetection={googleVisionDetection}
-        loading={loading}
-        image={image}
-        styles={this.styles}
-      />
-    );
+    const isFocused = this.props.navigation.isFocused();
+    if (!isFocused) {
+      return null;
+    } else if (isFocused) {
+      return (
+        <Scan
+          camera={camera}
+          cameraResult={cameraResult}
+          clickAgain={this.clickAgain}
+          takePicture={value => this.takePicture(value)}
+          activeCamera={this.activeCamera}
+          googleVisionDetection={googleVisionDetection}
+          loading={loading}
+          image={image}
+          styles={this.styles}
+        />
+      );
+    }
   }
 }
 
-export default CameraContainer;
+export default withNavigationFocus(CameraContainer);

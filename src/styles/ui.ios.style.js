@@ -191,7 +191,6 @@ export default StyleSheet.create({
   // Map
 
   map: {
-    width: deviceWidth,
-    height: deviceHeight - 215,
+    flex: 1,
   },
 });

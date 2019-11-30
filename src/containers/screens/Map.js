@@ -76,7 +76,7 @@ export class Map extends Component {
             latitudeDelta: this.state.latitudeDelta,
             longitudeDelta: this.state.longitudeDelta,
           }}
-          onUserLocationChange={this.moveLocation}
+          // onUserLocationChange={this.moveLocation}
         />
       );
     } else {
