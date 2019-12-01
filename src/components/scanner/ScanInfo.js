@@ -1,6 +1,13 @@
 import React, {Component} from 'react';
 
-import {TouchableOpacity, Text, ScrollView, View, Image} from 'react-native';
+import {
+  TouchableOpacity,
+  Text,
+  ScrollView,
+  View,
+  Image,
+  ActivityIndicator,
+} from 'react-native';
 
 class ScanInfo extends Component {
   paragraphs = [];
@@ -13,19 +20,16 @@ class ScanInfo extends Component {
       title: this.props.googleVisionDetection.webDetection.webEntities[0]
         .description,
       searchContent: {},
+      loadingInfo: true,
     };
   }
   componentDidMount() {
-    this.collectInfo();
+    this.collectInfo(this.state.title);
   }
   collectInfo = async searchTerm => {
-    if (searchTerm) {
-      this.setState({title: searchTerm, searchContent: {}});
-    }
+    this.setState({loadingInfo: true});
     const r = await fetch(
-      `https://en.wikipedia.org/w/api.php?action=query&format=json&prop=extracts%7Cdescription%7Ccoordinates%7Ccategories&titles=${
-        this.state.title
-      }&explaintext=1&imdir=ascending&inprop=url`,
+      `https://en.wikipedia.org/w/api.php?action=query&format=json&prop=extracts%7Cdescription%7Ccoordinates%7Ccategories&titles=${searchTerm}&explaintext=1&imdir=ascending&inprop=url`,
     );
 
     const text = await r.json();
@@ -58,73 +62,88 @@ class ScanInfo extends Component {
 
     this.setState({
       searchContent: pageObject,
+      title: searchTerm,
+      loadingInfo: false,
       // imageUrl: imageUrl,
     });
   };
 
   render() {
     const {activeCamera, googleVisionDetection, image, styles} = this.props;
-    console.log(googleVisionDetection.landmarkAnnotations);
-    return (
-      <>
-        <ScrollView>
+    // console.log(googleVisionDetection.landmarkAnnotations);
+
+    if (!this.state.loadingInfo) {
+      return (
+        <>
           <Image source={{uri: image}} style={styles.resultImage} />
-          <View style={styles.container}>
-            <Text style={styles.heading2}>{this.state.title}</Text>
-            <Text>Turist thinks it could be this too?</Text>
-            <View
-              style={{
-                flex: 1,
-                flexDirection: 'column',
-                justifyContent: 'space-between',
-              }}>
-              {this.props.googleVisionDetection.webDetection.webEntities.map(
-                (data, index) => {
-                  return (
-                    <>
-                      {data.description !== undefined ? (
-                        <TouchableOpacity
-                          key={data.description}
-                          style={{backgroundColor: 'red', height: 50}}
-                          onPress={() => {
-                            this.collectInfo(data.description);
-                          }}>
-                          <Text>{data.description}</Text>
-                        </TouchableOpacity>
-                      ) : null}
-                    </>
-                  );
-                },
-              )}
+          <ScrollView>
+            <View style={styles.container}>
+              <Text style={styles.heading2}>{this.state.title}</Text>
+              <Text>Turist thinks it could be this too?</Text>
+              <View
+                style={{
+                  flex: 1,
+                  flexDirection: 'column',
+                  justifyContent: 'space-between',
+                }}>
+                {googleVisionDetection.webDetection.webEntities.map(
+                  (data, index) => {
+                    return (
+                      <>
+                        {data.description !== undefined ? (
+                          <View key={data.description}>
+                            {data.description !== this.state.title ? (
+                              <TouchableOpacity
+                                style={{backgroundColor: 'red', height: 50}}
+                                onPress={() => {
+                                  this.collectInfo(data.description);
+                                }}>
+                                <Text>{data.description}</Text>
+                              </TouchableOpacity>
+                            ) : null}
+                          </View>
+                        ) : null}
+                      </>
+                    );
+                  },
+                )}
+              </View>
+              <Text style={{fontSize: 24, color: '#110b84'}}>
+                {this.state.searchContent.description}
+              </Text>
+              {this.paragraphs.map(info => {
+                return (
+                  <Text key={info.id} style={{marginBottom: 16}}>
+                    {info.text}
+                  </Text>
+                );
+              })}
+              <View>
+                {!this.paragraphs[0] && (
+                  <Text>
+                    No information was found. Turist is reading every book at
+                    the moment...
+                  </Text>
+                )}
+              </View>
             </View>
-            <Text style={{fontSize: 24, color: '#110b84'}}>
-              {this.state.searchContent.description}
-            </Text>
-            {this.paragraphs.map(info => {
-              return (
-                <Text key={info.id} style={{marginBottom: 16}}>
-                  {info.text}
-                </Text>
-              );
-            })}
-            <View>
-              {!this.paragraphs[0] && (
-                <Text>
-                  No information was found. Turist is reading every book at the
-                  moment...
-                </Text>
-              )}
-            </View>
-          </View>
-        </ScrollView>
-        <TouchableOpacity onPress={activeCamera} style={styles.scanAgain}>
-          <Image
-            source={require('../../assets/scan.png')}
-            style={styles.scanAgain__Icon}
-          />
-        </TouchableOpacity>
-      </>
-    );
+          </ScrollView>
+          <TouchableOpacity onPress={activeCamera} style={styles.scanAgain}>
+            <Image
+              source={require('../../assets/scan.png')}
+              style={styles.scanAgain__Icon}
+            />
+          </TouchableOpacity>
+        </>
+      );
+    } else {
+      return (
+        <View style={styles.loadScreen}>
+          <ActivityIndicator size={'large'} color="#192BC2" />
+          <Text>Turist is collecting info!</Text>
+        </View>
+      );
+    }
   }
 }
 
