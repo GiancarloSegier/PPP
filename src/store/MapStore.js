@@ -37,8 +37,8 @@ class MapStore {
         const currentLocation = {
           latitude: position.coords.latitude,
           longitude: position.coords.longitude,
-          latitudeDelta: 0.005,
-          longitudeDelta: 0.005,
+          latitudeDelta: 0.025,
+          longitudeDelta: 0.025,
         };
         this.userLocation = currentLocation;
       },
