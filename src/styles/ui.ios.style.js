@@ -40,9 +40,22 @@ export default StyleSheet.create({
     fontWeight: 'bold',
     color: colors.navy,
   },
+  heading3: {},
+  heading4: {
+    fontSize: 18,
+    opacity: 0.5,
+    color: colors.navy,
+    marginBottom: 8,
+  },
   subTitle: {
-    fontSize: 20,
+    fontSize: 24,
     color: colors.blue,
+    marginBottom: 16,
+  },
+  body: {
+    fontSize: 16,
+    color: colors.grey,
+    marginBottom: 16,
   },
 
   // LoginScreen
@@ -187,7 +200,24 @@ export default StyleSheet.create({
     height: '100%',
     transform: [{scale: 0.5}],
   },
+  landmarksContainer: {
+    flexDirection: 'row',
+    flex: 1,
+    flexWrap: 'wrap',
+  },
 
+  button: {
+    backgroundColor: colors.lightBlue,
+    paddingHorizontal: 15,
+    paddingVertical: 10,
+    marginRight: 10,
+    marginBottom: 10,
+    borderRadius: 100,
+  },
+  buttonText: {
+    color: colors.navy,
+    fontSize: 16,
+  },
   // Map
 
   map: {

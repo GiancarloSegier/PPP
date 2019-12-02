@@ -7,7 +7,9 @@ import {
   View,
   Image,
   ActivityIndicator,
+  Linking,
 } from 'react-native';
+import {Button} from 'react-native-elements';
 
 class ScanInfo extends Component {
   paragraphs = [];
@@ -21,6 +23,7 @@ class ScanInfo extends Component {
         .description,
       searchContent: {},
       loadingInfo: true,
+      landmarks: this.props.googleVisionDetection.webDetection.webEntities,
     };
   }
   componentDidMount() {
@@ -29,7 +32,7 @@ class ScanInfo extends Component {
   collectInfo = async searchTerm => {
     this.setState({loadingInfo: true});
     const r = await fetch(
-      `https://en.wikipedia.org/w/api.php?action=query&format=json&prop=extracts%7Cdescription%7Ccoordinates%7Ccategories&titles=${searchTerm}&explaintext=1&imdir=ascending&inprop=url`,
+      `https://en.wikipedia.org/w/api.php?action=query&format=json&prop=extracts%7Cdescription%7Cinfo%7Ccoordinates%7Ccategories&titles=${searchTerm}&explaintext=1&imdir=ascending&inprop=url`,
     );
 
     const text = await r.json();
@@ -64,13 +67,24 @@ class ScanInfo extends Component {
       searchContent: pageObject,
       title: searchTerm,
       loadingInfo: false,
+      wikiURL: pageInformation.fullurl,
+
       // imageUrl: imageUrl,
     });
   };
 
+  handleClickUrl = () => {
+    Linking.canOpenURL(this.state.wikiURL).then(supported => {
+      if (supported) {
+        Linking.openURL(this.state.wikiURL);
+      } else {
+        console.log("Don't know how to open URI: " + this.state.wikiURL);
+      }
+    });
+  };
+
   render() {
-    const {activeCamera, googleVisionDetection, image, styles} = this.props;
-    // console.log(googleVisionDetection.landmarkAnnotations);
+    const {activeCamera, image, styles} = this.props;
 
     if (!this.state.loadingInfo) {
       return (
@@ -78,54 +92,62 @@ class ScanInfo extends Component {
           <Image source={{uri: image}} style={styles.resultImage} />
           <ScrollView>
             <View style={styles.container}>
-              <Text style={styles.heading2}>{this.state.title}</Text>
-              <Text>Turist thinks it could be this too?</Text>
-              <View
-                style={{
-                  flex: 1,
-                  flexDirection: 'column',
-                  justifyContent: 'space-between',
-                }}>
-                {googleVisionDetection.webDetection.webEntities.map(
-                  (data, index) => {
-                    return (
-                      <>
-                        {data.description !== undefined ? (
-                          <View key={data.description}>
-                            {data.description !== this.state.title ? (
-                              <TouchableOpacity
-                                style={{backgroundColor: 'red', height: 50}}
-                                onPress={() => {
-                                  this.collectInfo(data.description);
-                                }}>
-                                <Text>{data.description}</Text>
-                              </TouchableOpacity>
-                            ) : null}
-                          </View>
-                        ) : null}
-                      </>
-                    );
-                  },
-                )}
+              <View style={styles.scanUpperContainer}>
+                <Text style={styles.heading2}>{this.state.title}</Text>
+                {this.state.landmarks.length > 1 ? (
+                  <Text style={styles.heading4}>
+                    Maybe you're looking for this?
+                  </Text>
+                ) : null}
+                <View style={styles.landmarksContainer}>
+                  {this.state.landmarks.map((data, index) => {
+                    if (
+                      data.description &&
+                      data.description !== this.state.title
+                    ) {
+                      return (
+                        <View key={data.description}>
+                          <TouchableOpacity
+                            style={styles.button}
+                            onPress={() => {
+                              this.collectInfo(data.description);
+                            }}>
+                            <Text style={styles.buttonText}>
+                              {data.description}
+                            </Text>
+                          </TouchableOpacity>
+                        </View>
+                      );
+                    }
+                  })}
+                </View>
               </View>
-              <Text style={{fontSize: 24, color: '#110b84'}}>
-                {this.state.searchContent.description}
-              </Text>
+
               {this.paragraphs.map(info => {
                 return (
-                  <Text key={info.id} style={{marginBottom: 16}}>
+                  <Text key={info.id} style={styles.body}>
                     {info.text}
                   </Text>
                 );
               })}
               <View>
                 {!this.paragraphs[0] && (
-                  <Text>
+                  <Text style={styles.body}>
                     No information was found. Turist is reading every book at
                     the moment...
                   </Text>
                 )}
               </View>
+              <Button
+                buttonStyle={styles.secondaryFormButton}
+                titleStyle={styles.secondaryFormButtonTitle}
+                title={
+                  this.paragraphs.length > 0
+                    ? 'Go to full information'
+                    : 'Go to wikipediapage'
+                }
+                onPress={this.handleClickUrl}
+              />
             </View>
           </ScrollView>
           <TouchableOpacity onPress={activeCamera} style={styles.scanAgain}>
@@ -140,7 +162,7 @@ class ScanInfo extends Component {
       return (
         <View style={styles.loadScreen}>
           <ActivityIndicator size={'large'} color="#192BC2" />
-          <Text>Turist is collecting info!</Text>
+          <Text style={styles.body}>Turist is collecting info!</Text>
         </View>
       );
     }

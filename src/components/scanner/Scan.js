@@ -60,7 +60,7 @@ const Scan = props => {
       {!googleVisionDetection && loading && (
         <View style={styles.loadScreen}>
           <ActivityIndicator size={'large'} color="#192BC2" />
-          <Text>Turist is checking your image!</Text>
+          <Text style={styles.body}>Turist is checking your image!</Text>
         </View>
       )}
     </>
