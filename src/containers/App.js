@@ -8,7 +8,7 @@ import {createSwitchNavigator, createAppContainer} from 'react-navigation';
 import TabNavigator from '../components/interface/TabNavigator';
 import {createStackNavigator} from 'react-navigation-stack';
 
-import {Image, StatusBar, PermissionsAndroid, Platform} from 'react-native';
+import {Image, StatusBar, PermissionsAndroid, View} from 'react-native';
 
 const requestLocationPermission = async () => {
   try {
@@ -50,10 +50,10 @@ const AppStack = createStackNavigator(
         elevation: 0,
         shadowOpacity: 0,
         height: 80,
-        paddingTop: 30,
       },
+
       headerTitle: (
-        <>
+        <View>
           <StatusBar
             backgroundColor="transparent"
             translucent
@@ -69,7 +69,7 @@ const AppStack = createStackNavigator(
             }}
             source={require('../assets/logo.png')}
           />
-        </>
+        </View>
       ),
     },
   },

@@ -11,25 +11,6 @@ export default StyleSheet.create({
   container: {
     padding: 24,
   },
-  header: {
-    padding: 20,
-    paddingTop: 50,
-    backgroundColor: colors.blue,
-    flexDirection: 'row',
-    justifyContent: 'space-around',
-  },
-  logoHeader: {
-    height: 24,
-    resizeMode: 'contain',
-  },
-  avatar: {
-    width: 35,
-    height: 35,
-    borderRadius: 100,
-    borderColor: colors.white,
-    borderWidth: 2,
-  },
-
   title: {
     fontSize: 40,
     fontWeight: 'bold',
@@ -222,5 +203,51 @@ export default StyleSheet.create({
 
   map: {
     flex: 1,
+  },
+  carouselContainer: {
+    position: 'absolute',
+    bottom: 0,
+    marginBottom: 120,
+  },
+  carouselCard: {
+    backgroundColor: 'rgba(255,255,255,0.9)',
+    width: 300,
+    padding: 24,
+    borderRadius: 24,
+  },
+  carouselTitle: {
+    color: colors.navy,
+    fontSize: 18,
+    fontWeight: '900',
+    marginBottom: 8,
+  },
+  placeType: {
+    color: colors.blue,
+    marginRight: 16,
+    fontSize: 16,
+    marginBottom: 16,
+    fontWeight: '600',
+  },
+  placeAdress: {
+    fontSize: 16,
+    color: colors.body,
+    fontStyle: 'italic',
+  },
+  calloutContainer: {
+    backgroundColor: 'rgba(255,255,255,0.9)',
+    minWidth: 100,
+    maxWidth: 300,
+    paddingVertical: 8,
+    paddingHorizontal: 16,
+    borderRadius: 16,
+  },
+  calloutText: {
+    color: colors.navy,
+    fontWeight: 'bold',
+  },
+  mapSearchRegion: {
+    backgroundColor: colors.darkBlue,
+    paddingVertical: 16,
+    borderRadius: 0,
   },
 });

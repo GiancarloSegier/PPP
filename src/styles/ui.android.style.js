@@ -11,25 +11,6 @@ export default StyleSheet.create({
   container: {
     padding: 24,
   },
-  header: {
-    padding: 20,
-    paddingTop: 50,
-    backgroundColor: colors.blue,
-    flexDirection: 'row',
-    justifyContent: 'space-around',
-  },
-  logoHeader: {
-    height: 24,
-    resizeMode: 'contain',
-  },
-  avatar: {
-    width: 35,
-    height: 35,
-    borderRadius: 100,
-    borderColor: colors.white,
-    borderWidth: 2,
-  },
-
   title: {
     fontSize: 40,
     fontWeight: 'bold',
@@ -39,12 +20,12 @@ export default StyleSheet.create({
     fontSize: 28,
     fontWeight: 'bold',
     color: colors.navy,
-    marginBottom: 16,
   },
   heading3: {},
   heading4: {
-    fontSize: 16,
-    color: colors.blue,
+    fontSize: 18,
+    opacity: 0.5,
+    color: colors.navy,
     marginBottom: 8,
   },
   subTitle: {
@@ -54,7 +35,6 @@ export default StyleSheet.create({
   },
   body: {
     fontSize: 16,
-    lineHeight: 24,
     color: colors.grey,
     marginBottom: 16,
   },
@@ -201,17 +181,10 @@ export default StyleSheet.create({
     height: '100%',
     transform: [{scale: 0.5}],
   },
-
-  scanUpperContainer: {
-    borderBottomColor: colors.lightBlue,
-    borderBottomWidth: 1,
-    marginBottom: 16,
-  },
-
   landmarksContainer: {
     flexDirection: 'row',
+    flex: 1,
     flexWrap: 'wrap',
-    marginBottom: 16,
   },
 
   button: {
@@ -230,5 +203,52 @@ export default StyleSheet.create({
 
   map: {
     flex: 1,
+
+    marginBottom: -30,
+  },
+  carouselContainer: {
+    position: 'absolute',
+    bottom: 80,
+  },
+  carouselCard: {
+    backgroundColor: 'rgba(255,255,255,0.9)',
+    width: 300,
+    padding: 24,
+    borderRadius: 24,
+  },
+  carouselTitle: {
+    color: colors.navy,
+    fontSize: 16,
+    fontWeight: 'bold',
+    marginBottom: 8,
+  },
+  placeType: {
+    color: colors.blue,
+    marginRight: 14,
+    fontSize: 16,
+    marginBottom: 8,
+    fontWeight: '600',
+  },
+  placeAdress: {
+    fontSize: 14,
+    color: colors.body,
+    fontStyle: 'italic',
+  },
+  calloutContainer: {
+    backgroundColor: 'rgba(255,255,255,0.9)',
+    minWidth: 100,
+    maxWidth: 300,
+    paddingVertical: 8,
+    paddingHorizontal: 16,
+    borderRadius: 16,
+  },
+  calloutText: {
+    color: colors.navy,
+    fontWeight: 'bold',
+  },
+  mapSearchRegion: {
+    backgroundColor: colors.darkBlue,
+    paddingVertical: 16,
+    borderRadius: 0,
   },
 });
