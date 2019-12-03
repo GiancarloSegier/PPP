@@ -34,8 +34,8 @@ export class Map extends Component {
       userLocation: {
         latitude: props.mapStore.userLocation.latitude,
         longitude: props.mapStore.userLocation.longitude,
-        latitudeDelta: 0.025,
-        longitudeDelta: 0.025,
+        latitudeDelta: 0.045,
+        longitudeDelta: 0.045,
       },
       regionLocation: {
         latitude: props.mapStore.userLocation.latitude,
@@ -57,7 +57,7 @@ export class Map extends Component {
 
   getPlaces = async () => {
     const {regionLocation, placeType, radius} = this.state;
-    const url = this.getUrlWithParameters(
+    const url = this.props.mapStore.getUrlWithParameters(
       regionLocation.latitude,
       regionLocation.longitude,
       radius,
@@ -84,25 +84,13 @@ export class Map extends Component {
       });
   };
 
-  getUrlWithParameters = (lat, long, radius, type, API) => {
-    if (type === 'all') {
-      type = '';
-    }
-    const url = 'https://maps.googleapis.com/maps/api/place/nearbysearch/json?';
-    const location = `location=${lat},${long}&radius=${radius}`;
-    const typeData = `&types=${type}`;
-    const key = `&key=${API}`;
-    console.log(`${url}${location}${typeData}${key}`);
-    return `${url}${location}${typeData}${key}`;
-  };
-
   setLocation = position => {
     this.setState({
       userLocation: {
         latitude: position.latitude,
         longitude: position.longitude,
-        latitudeDelta: 0.025,
-        longitudeDelta: 0.025,
+        latitudeDelta: 0.045,
+        longitudeDelta: 0.045,
       },
     });
   };
@@ -128,8 +116,8 @@ export class Map extends Component {
     const regionLocation = {
       latitude: this.state.regionLocation.latitude,
       longitude: this.state.regionLocation.longitude,
-      latitudeDelta: 0.025,
-      longitudeDelta: 0.025,
+      latitudeDelta: 0.045,
+      longitudeDelta: 0.045,
     };
     this.setRegion(regionLocation);
     this.getPlaces();
@@ -139,8 +127,8 @@ export class Map extends Component {
     const newRegion = {
       latitude: region.latitude,
       longitude: region.longitude,
-      latitudeDelta: 0.025,
-      longitudeDelta: 0.025,
+      latitudeDelta: 0.045,
+      longitudeDelta: 0.045,
     };
     this.setState({regionLocation: newRegion, markers: []});
   };
@@ -180,8 +168,8 @@ export class Map extends Component {
     this._map.animateToRegion({
       latitude: place.geometry.location.lat,
       longitude: place.geometry.location.lng,
-      latitudeDelta: 0.025,
-      longitudeDelta: 0.025,
+      latitudeDelta: 0.045,
+      longitudeDelta: 0.045,
     });
 
     this.state.markers[index].showCallout();
@@ -190,8 +178,8 @@ export class Map extends Component {
     this._map.animateToRegion({
       latitude: place.geometry.location.lat,
       longitude: place.geometry.location.lng,
-      latitudeDelta: 0.025,
-      longitudeDelta: 0.025,
+      latitudeDelta: 0.045,
+      longitudeDelta: 0.045,
     });
     this._carousel.snapToItem(index);
   };

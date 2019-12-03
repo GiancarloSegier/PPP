@@ -13,32 +13,33 @@ class MapStore {
     this.rootStore = rootStore;
     Geocoder.init('AIzaSyBLSLqH_qXkSrU5qK1M71zmWU3gpjs8C4g'), {language: 'en'};
     this.getCurrentLocation();
+    console.log(this.userLocation);
   }
 
-  // getCurrentCity() {
-  //   Geocoder.from(this.userLocation.latitude, this.userLocation.longitude)
-  //     .then(json => {
-  //       const city = json.results[0].address_components.filter(address =>
-  //         address.types.includes('locality'),
-  //       )[0].long_name;
-  //       console.log(city);
-  //       if (city !== undefined) {
-  //         this.currentCity = city;
-  //       } else {
-  //         this.currentCity = '';
-  //       }
-  //     })
-  //     .catch(error => console.warn(error));
-  // }
+  getCurrentCity() {
+    Geocoder.from(this.userLocation.latitude, this.userLocation.longitude)
+      .then(json => {
+        const city = json.results[0].address_components.filter(address =>
+          address.types.includes('locality'),
+        )[0].long_name;
 
-  getCurrentLocation = async () => {
-    await Geolocation.getCurrentPosition(
+        if (city !== undefined) {
+          this.currentCity = city;
+        } else {
+          this.currentCity = '';
+        }
+      })
+      .catch(error => console.warn(error));
+  }
+
+  getCurrentLocation = () => {
+    Geolocation.getCurrentPosition(
       position => {
         const currentLocation = {
           latitude: position.coords.latitude,
           longitude: position.coords.longitude,
-          latitudeDelta: 0.025,
-          longitudeDelta: 0.025,
+          latitudeDelta: 0.045,
+          longitudeDelta: 0.045,
         };
         this.userLocation = currentLocation;
       },
@@ -47,7 +48,18 @@ class MapStore {
       },
       {enableHighAccuracy: true, timeout: 15000, maximumAge: 1000},
     );
-    // this.getCurrentCity();
+  };
+
+  getUrlWithParameters = (lat, long, radius, type, API) => {
+    if (type === 'all') {
+      type = '';
+    }
+    const url = 'https://maps.googleapis.com/maps/api/place/nearbysearch/json?';
+    const location = `location=${lat},${long}&radius=${radius}`;
+    const typeData = `&types=${type}`;
+    const key = `&key=${API}`;
+    console.log(`${url}${location}${typeData}${key}`);
+    return `${url}${location}${typeData}${key}`;
   };
 }
 
@@ -57,6 +69,7 @@ decorate(MapStore, {
   testFunction: action,
   getCurrentCity: action,
   currentCity: observable,
+  getUrlWithParameters: action,
 });
 
 export default MapStore;
