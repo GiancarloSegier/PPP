@@ -6,6 +6,8 @@ import {
   ActivityIndicator,
   Image,
   Dimensions,
+  Alert,
+  Picker,
 } from 'react-native';
 import {Button} from 'react-native-elements';
 
@@ -18,6 +20,7 @@ import MapStyle from '../../config/MapStyle';
 import Carousel from 'react-native-snap-carousel';
 
 import {inject, observer} from 'mobx-react';
+import Filter from '../../components/map/Filter.js';
 
 export class Map extends Component {
   constructor(props) {
@@ -41,6 +44,9 @@ export class Map extends Component {
       },
       places: [],
       markers: [],
+      placeType: 'all',
+      radius: 1500,
+      filterOpen: false,
     };
   }
 
@@ -50,12 +56,12 @@ export class Map extends Component {
   }
 
   getPlaces = async () => {
-    const {regionLocation} = this.state;
+    const {regionLocation, placeType, radius} = this.state;
     const url = this.getUrlWithParameters(
       regionLocation.latitude,
       regionLocation.longitude,
-      2000,
-      'park',
+      radius,
+      placeType,
       'AIzaSyBLSLqH_qXkSrU5qK1M71zmWU3gpjs8C4g',
     );
 
@@ -74,6 +80,9 @@ export class Map extends Component {
   };
 
   getUrlWithParameters = (lat, long, radius, type, API) => {
+    if (type === 'all') {
+      type = '';
+    }
     const url = 'https://maps.googleapis.com/maps/api/place/nearbysearch/json?';
     const location = `location=${lat},${long}&radius=${radius}`;
     const typeData = `&types=${type}`;
@@ -138,7 +147,10 @@ export class Map extends Component {
         <View style={{flexDirection: 'row', flexWrap: 'wrap', marginBottom: 8}}>
           {item.types.map((type, index) => {
             const correctType = type.replace(/_/g, ' ');
-            if (correctType !== 'point of interest') {
+            if (
+              correctType !== 'point of interest' &&
+              correctType !== 'establishment'
+            ) {
               return (
                 <Text key={index} style={[this.styles.placeType]}>
                   {correctType}
@@ -173,12 +185,39 @@ export class Map extends Component {
     this._carousel.snapToItem(index);
   };
 
+  onPressFilter = () => {
+    console.log('press filter');
+    this.setState(prevState => ({filterOpen: !prevState.filterOpen}));
+    console.log(this.state.filterOpen);
+  };
+
+  onSelectItem = placeType => {
+    console.log(placeType);
+    this.setState({placeType: placeType, filterOpen: false});
+  };
+
+  onSetFilter = async (radius, type) => {
+    await this.setState({radius: radius, placeType: type, filterOpen: false});
+    this.moveRegion();
+  };
+
   render() {
     const {userLocation} = this.state;
 
     if (userLocation.latitude && userLocation.latitude !== 0) {
       return (
         <>
+          <View style={{position: 'absolute', zIndex: 99, width: 50}}>
+            <Button title="filter" onPress={this.onPressFilter} />
+            {this.state.filterOpen ? (
+              <Filter
+                placeType={this.state.placeType}
+                radius={this.state.radius}
+                onSelectItem={this.onSelectItem}
+                onSetFilter={this.onSetFilter}
+              />
+            ) : null}
+          </View>
           <MapView
             ref={map => (this._map = map)}
             toolbarEnabled={false}
