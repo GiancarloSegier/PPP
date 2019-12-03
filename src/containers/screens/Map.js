@@ -6,8 +6,6 @@ import {
   ActivityIndicator,
   Image,
   Dimensions,
-  Alert,
-  Picker,
 } from 'react-native';
 import {Button} from 'react-native-elements';
 
@@ -21,6 +19,7 @@ import Carousel from 'react-native-snap-carousel';
 
 import {inject, observer} from 'mobx-react';
 import Filter from '../../components/map/Filter.js';
+import Icon from 'react-native-vector-icons/FontAwesome';
 
 export class Map extends Component {
   constructor(props) {
@@ -46,6 +45,7 @@ export class Map extends Component {
       markers: [],
       placeType: 'all',
       radius: 1500,
+      checkOpen: false,
       filterOpen: false,
     };
   }
@@ -71,8 +71,13 @@ export class Map extends Component {
         const markers = [];
 
         respons.results.map(place => {
-          // console.log(`place: ${place}`);
-          markers.push(place);
+          if (this.state.checkOpen) {
+            if (place.opening_hours && place.opening_hours.open_now === true) {
+              markers.push(place);
+            }
+          } else {
+            markers.push(place);
+          }
         });
 
         this.setState({places: markers});
@@ -144,12 +149,13 @@ export class Map extends Component {
     return (
       <View style={this.styles.carouselCard}>
         <Text style={this.styles.carouselTitle}>{item.name}</Text>
-        <View style={{flexDirection: 'row', flexWrap: 'wrap', marginBottom: 8}}>
+        <View style={{flexDirection: 'row', flexWrap: 'wrap'}}>
           {item.types.map((type, index) => {
             const correctType = type.replace(/_/g, ' ');
             if (
               correctType !== 'point of interest' &&
-              correctType !== 'establishment'
+              correctType !== 'establishment' &&
+              index < 2
             ) {
               return (
                 <Text key={index} style={[this.styles.placeType]}>
@@ -160,6 +166,11 @@ export class Map extends Component {
           })}
         </View>
         <Text style={this.styles.placeAdress}>{item.vicinity}</Text>
+        {item.opening_hours ? (
+          <Text style={this.styles.placeAdress}>
+            {item.opening_hours.open_now ? 'Opened now' : 'Closed'}
+          </Text>
+        ) : null}
       </View>
     );
   };
@@ -196,8 +207,13 @@ export class Map extends Component {
     this.setState({placeType: placeType, filterOpen: false});
   };
 
-  onSetFilter = async (radius, type) => {
-    await this.setState({radius: radius, placeType: type, filterOpen: false});
+  onSetFilter = async (radius, type, checkOpen) => {
+    await this.setState({
+      radius: radius,
+      placeType: type,
+      filterOpen: false,
+      checkOpen: checkOpen,
+    });
     this.moveRegion();
   };
 
@@ -207,17 +223,6 @@ export class Map extends Component {
     if (userLocation.latitude && userLocation.latitude !== 0) {
       return (
         <>
-          <View style={{position: 'absolute', zIndex: 99, width: 50}}>
-            <Button title="filter" onPress={this.onPressFilter} />
-            {this.state.filterOpen ? (
-              <Filter
-                placeType={this.state.placeType}
-                radius={this.state.radius}
-                onSelectItem={this.onSelectItem}
-                onSetFilter={this.onSetFilter}
-              />
-            ) : null}
-          </View>
           <MapView
             ref={map => (this._map = map)}
             toolbarEnabled={false}
@@ -268,13 +273,13 @@ export class Map extends Component {
           <Button
             title="search this region"
             onPress={this.moveRegion}
-            buttonStyle={this.styles.mapSearchRegion}
+            buttonStyle={this.styles.mapButton}
             titleStyle={this.styles.primaryFormButtonTitle}
           />
           <Carousel
             containerCustomStyle={this.styles.carouselContainer}
             contentContainerCustomStyle={{
-              alignItems: 'center',
+              alignItems: 'flex-end',
             }}
             ref={c => {
               this._carousel = c;
@@ -285,6 +290,28 @@ export class Map extends Component {
             itemWidth={300}
             onSnapToItem={index => this.onCarouselItemChange(index)}
           />
+          <View style={{position: 'absolute', zIndex: 99}}>
+            <Button
+              onPress={this.onPressFilter}
+              buttonStyle={this.styles.filterButton}
+              icon={
+                this.state.filterOpen ? (
+                  <Icon name="times" size={24} color="#110b84" />
+                ) : (
+                  <Icon name="filter" size={24} color="#110b84" />
+                )
+              }
+            />
+            {this.state.filterOpen ? (
+              <Filter
+                placeType={this.state.placeType}
+                radius={this.state.radius}
+                checkOpen={this.state.checkOpen}
+                onSelectItem={this.onSelectItem}
+                onSetFilter={this.onSetFilter}
+              />
+            ) : null}
+          </View>
         </>
       );
     } else {

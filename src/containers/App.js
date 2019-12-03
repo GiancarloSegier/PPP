@@ -8,7 +8,13 @@ import {createSwitchNavigator, createAppContainer} from 'react-navigation';
 import TabNavigator from '../components/interface/TabNavigator';
 import {createStackNavigator} from 'react-navigation-stack';
 
-import {Image, StatusBar, PermissionsAndroid, View} from 'react-native';
+import {
+  Image,
+  StatusBar,
+  PermissionsAndroid,
+  View,
+  Platform,
+} from 'react-native';
 
 const requestLocationPermission = async () => {
   try {
@@ -62,7 +68,6 @@ const AppStack = createStackNavigator(
           <Image
             resizeMode="contain"
             style={{
-              width: 140,
               height: 24,
               marginLeft: 'auto',
               marginRight: 'auto',

@@ -203,11 +203,12 @@ export default StyleSheet.create({
 
   map: {
     flex: 1,
+
+    marginBottom: -30,
   },
   carouselContainer: {
     position: 'absolute',
-    bottom: 0,
-    marginBottom: 120,
+    bottom: 80,
   },
   carouselCard: {
     backgroundColor: 'rgba(255,255,255,0.9)',
@@ -245,9 +246,58 @@ export default StyleSheet.create({
     color: colors.navy,
     fontWeight: 'bold',
   },
-  mapSearchRegion: {
+  mapButton: {
     backgroundColor: colors.darkBlue,
     paddingVertical: 16,
     borderRadius: 0,
+  },
+  filterButton: {
+    margin: 16,
+    backgroundColor: colors.white,
+    borderRadius: 100,
+    height: 48,
+    width: 48,
+    padding: 0,
+    shadowColor: '#000',
+    shadowOffset: {width: 0, height: 2},
+    shadowOpacity: 0.35,
+    shadowRadius: 2,
+    // elevation: 1,
+  },
+  filterContainer: {
+    position: 'relative',
+    top: 0,
+    bottom: 0,
+    right: 0,
+    left: 0,
+    height: Dimensions.get('screen').height,
+    width: Dimensions.get('screen').width,
+    backgroundColor: 'rgba(255,255,255,0.98)',
+    padding: 24,
+  },
+  filterTitle: {
+    fontSize: 24,
+    fontWeight: 'bold',
+    color: colors.navy,
+  },
+  pickerItem: {
+    color: colors.darkBlue,
+  },
+  radiusValue: {
+    marginLeft: 'auto',
+    fontSize: 18,
+    color: colors.blue,
+  },
+  checkBoxFilter: {
+    backgroundColor: 'white',
+    borderWidth: 0,
+    marginBottom: 24,
+    padding: 0,
+  },
+  resetFilter: {
+    backgroundColor: 'transparent',
+    alignSelf: 'flex-end',
+    padding: 0,
+    marginBottom: 16,
   },
 });

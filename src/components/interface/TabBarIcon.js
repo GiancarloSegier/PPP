@@ -48,7 +48,7 @@ class TabBarIcon extends Component {
       }
     }
 
-    return <Image source={path} />;
+    return <Image source={path} style={{height: 24, resizeMode: 'contain'}} />;
   }
 }
 

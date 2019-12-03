@@ -1,17 +1,82 @@
 import React, {Component} from 'react';
 
-import {Dimensions, Picker, View, Text} from 'react-native';
-import {Button, Slider} from 'react-native-elements';
+import {
+  Dimensions,
+  View,
+  ScrollView,
+  Text,
+  Platform,
+  Picker,
+} from 'react-native';
+import {Button, Slider, CheckBox} from 'react-native-elements';
+
+import androidUI from '../../styles/ui.android.style.js';
+import iosUI from '../../styles/ui.ios.style.js';
+import {
+  TouchableHighlight,
+  TouchableOpacity,
+} from 'react-native-gesture-handler';
+import Icon from 'react-native-vector-icons/FontAwesome';
 
 class Filter extends Component {
   constructor(props) {
     super(props);
     console.log(props);
 
+    if (Platform.OS === 'ios') {
+      this.styles = iosUI;
+    } else {
+      this.styles = androidUI;
+    }
+
     this.state = {
       selectedType: this.props.placeType,
       selectedRadius: this.props.radius,
+      openChecked: this.props.checkOpen,
     };
+
+    this.types = [
+      'airport',
+      'amusement_park',
+      'aquarium',
+      'art_gallery',
+      'atm',
+      'bakery',
+      'bank',
+      'bar',
+      'beauty_salon',
+      'bowling_alley',
+      'bus_station',
+      'cafe',
+      'campground',
+      'casino',
+      'cemetery',
+      'church',
+      'city_hall',
+      'doctor',
+      'gas_station',
+      'hospital',
+      'library',
+      'lodging',
+      'movie_theater',
+      'museum',
+      'night_club',
+      'park',
+      'parking',
+      'police',
+      'restaurant',
+      'rv_park',
+      'shopping_mall',
+      'spa',
+      'stadium',
+      'store',
+      'subway_station',
+      'supermarket',
+      'taxi_stand',
+      'tourist_attraction',
+      'train_station',
+      'zoo',
+    ];
   }
 
   onSelectedItem = itemValue => {
@@ -20,52 +85,100 @@ class Filter extends Component {
     console.log(this.props);
   };
 
+  onCheckedOpen = () => {
+    this.setState(prevState => ({openChecked: !prevState.openChecked}));
+    console.log(this.state.openChecked);
+  };
+
+  resetFilter = () => {
+    this.props.onSetFilter(1500, 'all', false);
+  };
+
   render() {
     return (
-      <View
-        style={{
-          position: 'absolute',
-          top: 0,
-          bottom: 0,
-          right: 0,
-          left: 0,
-          height: Dimensions.get('screen').height,
-          width: Dimensions.get('screen').width,
-          backgroundColor: 'white',
-        }}>
-        <Picker
-          selectedValue={this.state.selectedType}
-          style={{
-            backgroundColor: 'red',
-          }}
-          onValueChange={newSelectedType =>
-            this.setState({selectedType: newSelectedType})
-          }>
-          <Picker.Item label="All" value="all" />
-          <Picker.Item label="Park" value="park" />
-        </Picker>
-        <Slider
-          value={this.state.selectedRadius}
-          maximumValue={5000}
-          minimumValue={500}
-          step={500}
-          onValueChange={newRadius => {
-            const chosenRadius = Math.floor(newRadius);
-
-            this.setState({selectedRadius: chosenRadius});
-          }}
-        />
-        <Text>Value: {this.state.selectedRadius} meters</Text>
+      <View style={this.styles.filterContainer}>
         <Button
-          title="search this region"
+          onPress={() => this.props.onSetFilter(1500, 'all', false)}
+          buttonStyle={this.styles.resetFilter}
+          titleStyle={{color: '#7F7F7E'}}
+          title={'Clear all filters'}
+          icon={<Icon name="times" size={16} color="#7F7F7E" />}
+        />
+
+        <View style={{marginBottom: 16}}>
+          <View style={{flexDirection: 'row', alignItems: 'baseline'}}>
+            <Text style={this.styles.filterTitle}>Type of place: </Text>
+            <Text style={this.styles.radiusValue}>
+              {this.state.selectedType.replace(/_/g, ' ')}
+            </Text>
+          </View>
+          <Picker
+            selectedValue={this.state.selectedType}
+            onValueChange={newSelectedType =>
+              this.setState({selectedType: newSelectedType})
+            }
+            lineColor={'red'}
+            itemStyle={this.styles.pickerItem}>
+            <Picker.Item key="all" label="all places" value="all" />
+            {this.types.map((type, index) => {
+              return (
+                <Picker.Item
+                  key={index}
+                  label={type.replace(/_/g, ' ')}
+                  value={type}
+                />
+              );
+            })}
+          </Picker>
+        </View>
+        <View style={{marginBottom: 16}}>
+          <View style={{flexDirection: 'row', alignItems: 'baseline'}}>
+            <Text style={this.styles.filterTitle}>Radius: </Text>
+            <Text style={this.styles.radiusValue}>
+              {this.state.selectedRadius}m.
+            </Text>
+          </View>
+
+          <Slider
+            value={this.state.selectedRadius}
+            maximumValue={5000}
+            minimumValue={500}
+            step={500}
+            thumbTintColor={'#182ac1'}
+            minimumTrackTintColor={'#110b84'}
+            maximumTrackTintColor={'#e4e4e4'}
+            onValueChange={newRadius => {
+              const chosenRadius = Math.floor(newRadius);
+
+              this.setState({selectedRadius: chosenRadius});
+            }}
+          />
+        </View>
+
+        <CheckBox
+          center
+          title="Show only opened places?"
+          checkedIcon="check-square"
+          uncheckedIcon="check-square"
+          checkedColor="#182ac1"
+          uncheckedColor="#e4e4e4"
+          containerStyle={this.styles.checkBoxFilter}
+          textStyle={{color: '#020029'}}
+          onPress={this.onCheckedOpen}
+          checked={this.state.openChecked}
+        />
+
+        <Button
+          title="set filter"
           onPress={() =>
             this.props.onSetFilter(
               this.state.selectedRadius,
               this.state.selectedType,
+              this.state.openChecked,
             )
           }
-          // buttonStyle={this.styles.mapSearchRegion}
-          // titleStyle={this.styles.primaryFormButtonTitle}
+          buttonStyle={this.styles.mapButton}
+          titleStyle={this.styles.primaryFormButtonTitle}
         />
       </View>
     );
