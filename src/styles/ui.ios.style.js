@@ -252,7 +252,8 @@ export default StyleSheet.create({
     borderRadius: 0,
   },
   filterButton: {
-    margin: 16,
+    marginLeft: 16,
+    marginVertical: 8,
     backgroundColor: colors.white,
     borderRadius: 100,
     height: 48,
