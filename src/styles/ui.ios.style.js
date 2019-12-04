@@ -199,6 +199,51 @@ export default StyleSheet.create({
     color: colors.navy,
     fontSize: 16,
   },
+
+  // Home
+
+  carouselPlaceCard: {
+    backgroundColor: 'rgba(255,255,255,0.9)',
+
+    borderRadius: 24,
+  },
+  carouselPlaceContainer: {
+    padding: 24,
+  },
+  placeImage: {
+    width: '100%',
+    height: Dimensions.get('screen').height * 0.2,
+    borderTopRightRadius: 24,
+    borderTopLeftRadius: 24,
+  },
+  homeHeader: {
+    position: 'relative',
+    height: 130,
+    overflow: 'hidden',
+    justifyContent: 'center',
+  },
+  overlayCity: {
+    position: 'absolute',
+    height: '100%',
+    width: '100%',
+    backgroundColor: 'rgba(2,0,41,0.4)',
+  },
+  cityName: {
+    color: 'white',
+    fontSize: 38,
+    fontWeight: 'bold',
+    bottom: 0,
+    position: 'absolute',
+    paddingHorizontal: 24,
+    paddingVertical: 16,
+  },
+  // carouselTitle: {
+  //   color: colors.navy,
+  //   fontSize: 18,
+  //   fontWeight: '900',
+  //   marginBottom: 8,
+  // },
+
   // Map
 
   map: {
@@ -226,7 +271,7 @@ export default StyleSheet.create({
     color: colors.blue,
     marginRight: 16,
     fontSize: 16,
-    marginBottom: 16,
+
     fontWeight: '600',
   },
   placeAdress: {

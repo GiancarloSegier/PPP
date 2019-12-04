@@ -207,6 +207,23 @@ export default StyleSheet.create({
     color: colors.navy,
     fontSize: 16,
   },
+
+  // Home
+
+  carouselPlaceCard: {
+    backgroundColor: 'rgba(255,255,255,0.9)',
+    borderRadius: 24,
+  },
+  carouselPlaceContainer: {
+    padding: 24,
+  },
+  placeImage: {
+    width: '100%',
+    height: Dimensions.get('screen').height * 0.18,
+    borderTopRightRadius: 24,
+    borderTopLeftRadius: 24,
+  },
+
   // Map
 
   map: {
@@ -234,7 +251,7 @@ export default StyleSheet.create({
     color: colors.blue,
     marginRight: 16,
     fontSize: 16,
-    marginBottom: 16,
+
     fontWeight: '600',
   },
   placeAdress: {
