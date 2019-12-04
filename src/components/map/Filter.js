@@ -119,7 +119,6 @@ class Filter extends Component {
             }
             lineColor={'red'}
             itemStyle={this.styles.pickerItem}>
-            <Picker.Item key="all" label="all places" value="all" />
             {this.types.map((type, index) => {
               return (
                 <Picker.Item

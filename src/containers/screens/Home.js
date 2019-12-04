@@ -25,8 +25,9 @@ export class Home extends Component {
       userLocation: props.mapStore.userLocation,
       currentCity: '',
       nearbyPlaces: [],
+      googleAPI: props.mapStore.googleAPI,
     };
-    Geocoder.init('AIzaSyBLSLqH_qXkSrU5qK1M71zmWU3gpjs8C4g'), {language: 'en'};
+    Geocoder.init(props.mapStore.googleAPI), {language: 'en'};
   }
 
   async componentDidMount() {
@@ -56,7 +57,7 @@ export class Home extends Component {
       this.props.mapStore.userLocation.longitude,
       1500,
       'tourist_attraction',
-      'AIzaSyBLSLqH_qXkSrU5qK1M71zmWU3gpjs8C4g',
+      this.state.googleAPI,
     );
 
     await fetch(url)
@@ -66,6 +67,7 @@ export class Home extends Component {
 
         respons.results.map(place => {
           places.push(place);
+          console.log(place.photos);
         });
 
         this.setState({nearbyPlaces: places});

@@ -31,6 +31,7 @@ export class Map extends Component {
     }
 
     this.state = {
+      googleAPI: props.mapStore.googleAPI,
       userLocation: {
         latitude: props.mapStore.userLocation.latitude,
         longitude: props.mapStore.userLocation.longitude,
@@ -43,7 +44,7 @@ export class Map extends Component {
       },
       places: [],
       markers: [],
-      placeType: 'all',
+      placeType: 'tourist_attraction',
       radius: 1500,
       checkOpen: false,
       filterOpen: false,
@@ -62,7 +63,7 @@ export class Map extends Component {
       regionLocation.longitude,
       radius,
       placeType,
-      'AIzaSyBLSLqH_qXkSrU5qK1M71zmWU3gpjs8C4g',
+      this.state.googleAPI,
     );
 
     await fetch(url)

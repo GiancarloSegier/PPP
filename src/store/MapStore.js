@@ -9,9 +9,10 @@ class MapStore {
   longitude;
   userLocation = {};
   currentCity = '';
+  googleAPI = 'AIzaSyBLSLqH_qXkSrU5qK1M71zmWU3gpjs8C4g';
   constructor(rootStore) {
     this.rootStore = rootStore;
-    Geocoder.init('AIzaSyBLSLqH_qXkSrU5qK1M71zmWU3gpjs8C4g'), {language: 'en'};
+    Geocoder.init(this.googleAPI), {language: 'en'};
     this.getCurrentLocation();
     console.log(this.userLocation);
   }

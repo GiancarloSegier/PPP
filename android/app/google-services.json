@@ -10,7 +10,7 @@
       "client_info": {
         "mobilesdk_app_id": "1:32201739303:android:0914f7487c26090e289202",
         "android_client_info": {
-          "package_name": "com.turist"
+          "package_name": be.devine.turist
         }
       },
       "oauth_client": [
@@ -35,7 +35,7 @@
               "client_id": "32201739303-1c3g58ues4opuc9khtp7q575la8mgvs6.apps.googleusercontent.com",
               "client_type": 2,
               "ios_info": {
-                "bundle_id": "com.turist"
+                "bundle_id": be.devine.turist
               }
             }
           ]
