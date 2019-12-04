@@ -81,7 +81,9 @@ export class Home extends Component {
         const places = [];
 
         respons.results.map(place => {
-          places.push(place);
+          if (place.photos) {
+            places.push(place);
+          }
         });
 
         this.setState({nearbyPlaces: places});
@@ -112,9 +114,7 @@ export class Home extends Component {
 
   renderCarouselPlace = ({item}) => {
     const maxWidth = 500;
-    const placeImage = `https://maps.googleapis.com/maps/api/place/photo?maxwidth=${maxWidth}&photoreference=${
-      item.photos[0].photo_reference
-    }&key=${this.state.googleAPI}`;
+    const placeImage = `https://maps.googleapis.com/maps/api/place/photo?maxwidth=${maxWidth}&photoreference=${item.photos[0].photo_reference}&key=${this.state.googleAPI}`;
     return (
       <View style={this.styles.carouselPlaceCard}>
         <Image source={{uri: placeImage}} style={this.styles.placeImage} />
@@ -156,9 +156,7 @@ export class Home extends Component {
         console.log(respons.results[0].types);
         const maxWidth = Dimensions.get('screen').width;
         const cityImageReference = respons.results[0].photos[0].photo_reference;
-        const cityImageUrl = `https://maps.googleapis.com/maps/api/place/photo?maxwidth=${maxWidth}&photoreference=${cityImageReference}&key=${
-          this.state.googleAPI
-        }`;
+        const cityImageUrl = `https://maps.googleapis.com/maps/api/place/photo?maxwidth=${maxWidth}&photoreference=${cityImageReference}&key=${this.state.googleAPI}`;
 
         this.setState({
           cityImage: cityImageUrl,
@@ -192,29 +190,37 @@ export class Home extends Component {
               </Text>
             </View>
           </View>
-          <View style={this.styles.container}>
-            <Text style={this.styles.heading2}>Nearby places</Text>
-          </View>
-          <Carousel
-            contentContainerCustomStyle={{
-              alignItems: 'center',
-              marginBottom: 24,
-            }}
-            ref={c => {
-              this._carousel = c;
-            }}
-            data={this.state.nearbyPlaces}
-            renderItem={this.renderCarouselPlace}
-            sliderWidth={Dimensions.get('screen').width}
-            itemWidth={Dimensions.get('screen').width * 0.8}
-            onSnapToItem={index => this.setState({activeSlide: index})}
-          />
+          {this.state.nearbyPlaces.length > 0 ? (
+            <>
+              <View style={this.styles.container}>
+                <Text style={this.styles.heading2}>Nearby places</Text>
+              </View>
+              <Carousel
+                contentContainerCustomStyle={{
+                  alignItems: 'center',
+                  marginBottom: 24,
+                }}
+                ref={c => {
+                  this._carousel = c;
+                }}
+                data={this.state.nearbyPlaces}
+                renderItem={this.renderCarouselPlace}
+                sliderWidth={Dimensions.get('screen').width}
+                itemWidth={Dimensions.get('screen').width * 0.8}
+                onSnapToItem={index => this.setState({activeSlide: index})}
+              />
+            </>
+          ) : null}
           <View style={this.styles.container}>
             <Button
               buttonStyle={this.styles.primaryFormButton}
               titleStyle={this.styles.primaryFormButtonTitle}
               onPress={() => this.props.navigation.navigate('Map')}
-              title={'see all nearby places'}
+              title={
+                this.state.nearbyPlaces > 0
+                  ? 'See all nearby places'
+                  : 'Look for nearby places'
+              }
             />
           </View>
         </ScrollView>
