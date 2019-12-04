@@ -16,8 +16,6 @@ class ScanInfo extends Component {
   constructor(props) {
     super(props);
 
-    console.log(this.props.googleVisionDetection);
-
     this.state = {
       title: this.props.googleVisionDetection.webDetection.webEntities[0]
         .description,
@@ -32,7 +30,7 @@ class ScanInfo extends Component {
   collectInfo = async searchTerm => {
     this.setState({loadingInfo: true});
     const r = await fetch(
-      `https://en.wikipedia.org/w/api.php?action=query&format=json&prop=extracts%7Cdescription%7Cinfo%7Ccoordinates%7Ccategories&titles=${searchTerm}&explaintext=1&imdir=ascending&inprop=url`,
+      `https://en.wikipedia.org//w/api.php?action=query&format=json&prop=extracts&description&titles=${searchTerm}&exchars=1200&explaintext=1`,
     );
 
     const text = await r.json();
@@ -67,10 +65,11 @@ class ScanInfo extends Component {
       searchContent: pageObject,
       title: searchTerm,
       loadingInfo: false,
-      wikiURL: pageInformation.fullurl,
+      wikiURL: `https://en.wikipedia.org/wiki/${searchTerm}`,
 
       // imageUrl: imageUrl,
     });
+    console.log(text.query);
   };
 
   handleClickUrl = () => {
@@ -93,7 +92,14 @@ class ScanInfo extends Component {
           <ScrollView>
             <View style={styles.container}>
               <View style={styles.scanUpperContainer}>
-                <Text style={styles.heading2}>{this.state.title}</Text>
+                <Text style={styles.heading2}>
+                  {this.state.title === '' ||
+                  this.state.title === undefined ||
+                  this.state.title === ' ' ||
+                  this.state.title === 'undefined'
+                    ? 'Turist is not sure...'
+                    : this.state.title}
+                </Text>
                 {this.state.landmarks.length > 1 ? (
                   <Text style={styles.heading4}>
                     Maybe you're looking for this?
@@ -123,31 +129,38 @@ class ScanInfo extends Component {
                 </View>
               </View>
 
-              {this.paragraphs.map(info => {
-                return (
-                  <Text key={info.id} style={styles.body}>
-                    {info.text}
-                  </Text>
-                );
-              })}
-              <View>
-                {!this.paragraphs[0] && (
-                  <Text style={styles.body}>
-                    No information was found. Turist is reading every book at
-                    the moment...
-                  </Text>
-                )}
-              </View>
-              <Button
-                buttonStyle={styles.secondaryFormButton}
-                titleStyle={styles.secondaryFormButtonTitle}
-                title={
-                  this.paragraphs.length > 0
-                    ? 'Go to full information'
-                    : 'Go to wikipediapage'
-                }
-                onPress={this.handleClickUrl}
-              />
+              {this.state.title === '' ||
+              this.state.title === undefined ||
+              this.state.title === ' ' ||
+              this.state.title === 'undefined' ? null : (
+                <>
+                  {this.paragraphs.map(info => {
+                    return (
+                      <Text key={info.id} style={styles.body}>
+                        {info.text}
+                      </Text>
+                    );
+                  })}
+                  <View>
+                    {!this.paragraphs[0] && (
+                      <Text style={styles.body}>
+                        No information was found. Turist is reading every book
+                        at the moment...
+                      </Text>
+                    )}
+                  </View>
+                  <Button
+                    buttonStyle={styles.secondaryFormButton}
+                    titleStyle={styles.secondaryFormButtonTitle}
+                    title={
+                      this.paragraphs.length > 0
+                        ? 'Go to full information'
+                        : 'Go to wikipediapage'
+                    }
+                    onPress={this.handleClickUrl}
+                  />
+                </>
+              )}
             </View>
           </ScrollView>
           <TouchableOpacity onPress={activeCamera} style={styles.scanAgain}>

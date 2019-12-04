@@ -59,7 +59,7 @@ class MapStore {
     const location = `location=${lat},${long}&radius=${radius}`;
     const typeData = `&types=${type}`;
     const key = `&key=${API}`;
-    console.log(`${url}${location}${typeData}${key}&rankBy=distance`);
+    console.log(`${url}${location}${typeData}${key}`);
     return `${url}${location}${typeData}${key}`;
   };
 }

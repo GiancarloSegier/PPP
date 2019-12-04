@@ -1,4 +1,4 @@
-package be.devine.turist;
+package com.turist;
 
 import android.app.Application;
 import android.content.Context;

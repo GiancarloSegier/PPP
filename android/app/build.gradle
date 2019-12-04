@@ -128,7 +128,7 @@ android {
     }
 
     defaultConfig {
-        applicationId "be.devine.turist"
+        applicationId "com.turist"
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
         versionCode 1

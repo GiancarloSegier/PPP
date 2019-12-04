@@ -18,6 +18,9 @@ import {Button} from 'react-native-elements';
 import Carousel from 'react-native-snap-carousel';
 import Icon from 'react-native-vector-icons/FontAwesome';
 
+import MapView, {Marker, Callout} from 'react-native-maps';
+import MapStyle from '../../config/MapStyle';
+
 export class Home extends Component {
   constructor(props) {
     super(props);
@@ -51,8 +54,10 @@ export class Home extends Component {
   }
 
   checkLoading = () => {
-    this.setState({loading: false});
-    console.log(this.state.places);
+    setTimeout(() => {
+      this.setState({loading: false});
+      console.log(this.state.places);
+    }, 1000);
   };
 
   setLocation = position => {
@@ -222,6 +227,50 @@ export class Home extends Component {
                   : 'Look for nearby places'
               }
             />
+          </View>
+          <View>
+            <MapView
+              ref={map => (this._map = map)}
+              toolbarEnabled={false}
+              showsUserLocation={true}
+              followsUserLocation={true}
+              loadingEnabled
+              scrollEnabled={false}
+              pitchEnabled={false}
+              rotateEnabled={false}
+              showsPointsOfInterest={false}
+              showsMyLocationButton={false}
+              customMapStyle={MapStyle}
+              onPress={() => this.props.navigation.navigate('Map')}
+              style={{height: 250, width: Dimensions.get('screen').width}}
+              provider={MapView.PROVIDER_GOOGLE}
+              initialRegion={{
+                latitude: this.props.mapStore.userLocation.latitude,
+                longitude: this.props.mapStore.userLocation.longitude,
+                latitudeDelta: 0.015,
+                longitudeDelta: 0.015,
+              }}
+              onRegionChangeComplete={this.onChangeRegion}>
+              {this.state.nearbyPlaces ? (
+                <>
+                  {this.state.nearbyPlaces.map((place, index) => {
+                    return (
+                      <Marker
+                        key={index}
+                        coordinate={{
+                          latitude: place.geometry.location.lat,
+                          longitude: place.geometry.location.lng,
+                        }}>
+                        <Image
+                          source={require('../../assets/googlepin.png')}
+                          style={{height: 50, resizeMode: 'contain'}}
+                        />
+                      </Marker>
+                    );
+                  })}
+                </>
+              ) : null}
+            </MapView>
           </View>
         </ScrollView>
       );

@@ -1,4 +1,4 @@
-package be.devine.turist;
+package com.turist;
 
 import com.facebook.react.ReactActivity;
 
