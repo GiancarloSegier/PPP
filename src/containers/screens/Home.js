@@ -11,14 +11,14 @@ import {
 import androidUI from '../../styles/ui.android.style.js';
 import iosUI from '../../styles/ui.ios.style.js';
 import {ScrollView} from 'react-native-gesture-handler';
-import {inject, observer, PropTypes} from 'mobx-react';
+import {inject, observer} from 'mobx-react';
 import Geocoder from 'react-native-geocoding';
 
 import {Button} from 'react-native-elements';
 import Carousel from 'react-native-snap-carousel';
 import Icon from 'react-native-vector-icons/FontAwesome';
 
-import MapView, {Marker, Callout} from 'react-native-maps';
+import MapView, {Marker} from 'react-native-maps';
 import MapStyle from '../../config/MapStyle';
 
 export class Home extends Component {
@@ -80,19 +80,46 @@ export class Home extends Component {
       this.state.googleAPI,
     );
 
+    const places = [];
+
     await fetch(url)
       .then(data => data.json())
       .then(respons => {
-        const places = [];
-
         respons.results.map(place => {
           if (place.photos) {
             places.push(place);
           }
         });
-
-        this.setState({nearbyPlaces: places});
       });
+
+    if (places.length > 5) {
+      this.setState({nearbyPlaces: places});
+    } else {
+      this.getAllPlaces();
+    }
+  };
+
+  getAllPlaces = async () => {
+    const url = await this.props.mapStore.getUrlWithParameters(
+      this.props.mapStore.userLocation.latitude,
+      this.props.mapStore.userLocation.longitude,
+      5000,
+      'tourist_attraction',
+      this.state.googleAPI,
+    );
+
+    const places = [];
+
+    await fetch(url)
+      .then(data => data.json())
+      .then(respons => {
+        respons.results.map(place => {
+          if (place.photos) {
+            places.push(place);
+          }
+        });
+      });
+    this.setState({nearbyPlaces: places});
   };
 
   getCurrentCity = async () => {
@@ -101,15 +128,19 @@ export class Home extends Component {
       this.props.mapStore.userLocation.longitude,
     )
       .then(json => {
-        const currentCity = json.results[0].address_components.filter(
-          address =>
-            address.types.includes('locality') ||
-            address.types.includes('postal_town'),
-        )[0].long_name;
-        console.log(currentCity);
+        if (json.results[0].length !== 0) {
+          const currentCity = json.results[0].address_components.filter(
+            address =>
+              address.types.includes('locality') ||
+              address.types.includes('postal_town'),
+          )[0].long_name;
+          console.log(currentCity);
 
-        if (currentCity !== undefined) {
-          this.setState({currentCity: currentCity});
+          if (currentCity !== undefined) {
+            this.setState({currentCity: currentCity});
+          } else {
+            this.setState({currentCity: ''});
+          }
         } else {
           this.setState({currentCity: ''});
         }
@@ -158,14 +189,18 @@ export class Home extends Component {
     await fetch(url)
       .then(data => data.json())
       .then(respons => {
-        console.log(respons.results[0].types);
         const maxWidth = Dimensions.get('screen').width;
-        const cityImageReference = respons.results[0].photos[0].photo_reference;
-        const cityImageUrl = `https://maps.googleapis.com/maps/api/place/photo?maxwidth=${maxWidth}&photoreference=${cityImageReference}&key=${this.state.googleAPI}`;
+        console.log(respons.results);
 
-        this.setState({
-          cityImage: cityImageUrl,
-        });
+        if (this.state.currentCity !== '') {
+          const cityImageReference =
+            respons.results[0].photos[0].photo_reference;
+          const cityImageUrl = `https://maps.googleapis.com/maps/api/place/photo?maxwidth=${maxWidth}&photoreference=${cityImageReference}&key=${this.state.googleAPI}`;
+
+          this.setState({
+            cityImage: cityImageUrl,
+          });
+        }
       });
   };
 
@@ -180,21 +215,31 @@ export class Home extends Component {
     } else {
       return (
         <ScrollView style={this.styles.background}>
-          <View style={this.styles.homeHeader}>
-            <Image
-              source={{uri: this.state.cityImage}}
-              style={{
-                width: '100%',
-                height: 300,
-              }}
-            />
-            <View style={this.styles.overlayCity}>
+          {this.state.currentCity ? (
+            <View style={this.styles.homeHeader}>
+              <Image
+                source={{uri: this.state.cityImage}}
+                style={{
+                  width: '100%',
+                  height: 300,
+                }}
+              />
+              <View style={this.styles.overlayCity}>
+                <Text style={this.styles.cityName}>
+                  <Icon name="map-marker" size={38} color="#ffffff" />{' '}
+                  {this.state.currentCity}
+                </Text>
+              </View>
+            </View>
+          ) : (
+            <View style={[this.styles.homeHeader, this.styles.noCity]}>
               <Text style={this.styles.cityName}>
-                <Icon name="map-marker" size={38} color="#ffffff" />{' '}
-                {this.state.currentCity}
+                <Icon name="map-marker" size={38} color="#ffffff" /> Are you
+                hiding?
               </Text>
             </View>
-          </View>
+          )}
+
           {this.state.nearbyPlaces.length > 0 ? (
             <>
               <View style={this.styles.container}>
@@ -203,7 +248,6 @@ export class Home extends Component {
               <Carousel
                 contentContainerCustomStyle={{
                   alignItems: 'center',
-                  marginBottom: 24,
                 }}
                 ref={c => {
                   this._carousel = c;
@@ -215,7 +259,13 @@ export class Home extends Component {
                 onSnapToItem={index => this.setState({activeSlide: index})}
               />
             </>
-          ) : null}
+          ) : (
+            <View style={this.styles.container}>
+              <Text style={this.styles.heading2}>
+                Not so much to do here...
+              </Text>
+            </View>
+          )}
           <View style={this.styles.container}>
             <Button
               buttonStyle={this.styles.primaryFormButton}
@@ -242,7 +292,7 @@ export class Home extends Component {
               showsMyLocationButton={false}
               customMapStyle={MapStyle}
               onPress={() => this.props.navigation.navigate('Map')}
-              style={{height: 250, width: Dimensions.get('screen').width}}
+              style={{height: 150, width: Dimensions.get('screen').width}}
               provider={MapView.PROVIDER_GOOGLE}
               initialRegion={{
                 latitude: this.props.mapStore.userLocation.latitude,
@@ -271,6 +321,27 @@ export class Home extends Component {
                 </>
               ) : null}
             </MapView>
+            <View style={[this.styles.container, this.styles.blueBox]}>
+              <Text
+                style={[
+                  this.styles.heading2,
+                  this.styles.white,
+                  this.styles.center,
+                ]}>
+                Plan your tour?
+              </Text>
+              <View style={this.styles.divider} />
+              <Text style={[this.styles.body, this.styles.lightBlue]}>
+                Use our tourgenerator to create your own tours. To use right
+                away or to plan it for your next citytrip.{' '}
+              </Text>
+              <Button
+                buttonStyle={this.styles.socialFormButton}
+                titleStyle={this.styles.socialFormButtonTitle}
+                onPress={() => this.props.navigation.navigate('MyTrips')}
+                title={'go to generator'}
+              />
+            </View>
           </View>
         </ScrollView>
       );

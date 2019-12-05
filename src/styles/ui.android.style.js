@@ -11,6 +11,26 @@ export default StyleSheet.create({
   container: {
     padding: 24,
   },
+  blueBox: {
+    backgroundColor: colors.blue,
+    paddingVertical: 40,
+  },
+  white: {
+    color: colors.white,
+  },
+  lightBlue: {
+    color: colors.lightBlue,
+  },
+  center: {
+    textAlign: 'center',
+  },
+  divider: {
+    height: 3,
+    width: 50,
+    backgroundColor: colors.white,
+    marginVertical: 24,
+    alignSelf: 'center',
+  },
   header: {
     padding: 20,
     paddingTop: 50,
@@ -45,6 +65,7 @@ export default StyleSheet.create({
     fontSize: 16,
     color: colors.grey,
     marginBottom: 16,
+    lineHeight: 24,
   },
 
   // LoginScreen
@@ -89,7 +110,7 @@ export default StyleSheet.create({
 
   primaryFormButton: {
     backgroundColor: colors.darkBlue,
-    marginTop: 14,
+
     marginBottom: 2,
     height: 40,
     borderRadius: 8,
@@ -212,23 +233,51 @@ export default StyleSheet.create({
 
   carouselPlaceCard: {
     backgroundColor: 'rgba(255,255,255,0.9)',
+
     borderRadius: 24,
   },
   carouselPlaceContainer: {
-    padding: 24,
+    paddingHorizontal: 24,
+    paddingVertical: 16,
   },
   placeImage: {
     width: '100%',
-    height: Dimensions.get('screen').height * 0.18,
+    height: Dimensions.get('screen').height * 0.2,
     borderTopRightRadius: 24,
     borderTopLeftRadius: 24,
   },
+  homeHeader: {
+    position: 'relative',
+    height: 130,
+    overflow: 'hidden',
+    justifyContent: 'center',
+  },
+  overlayCity: {
+    position: 'absolute',
+    height: '100%',
+    width: '100%',
+    backgroundColor: 'rgba(2,0,41,0.4)',
+  },
+  cityName: {
+    color: 'white',
+    fontSize: 38,
+    fontWeight: 'bold',
+    bottom: 0,
+    position: 'absolute',
+    paddingHorizontal: 24,
+    paddingVertical: 16,
+  },
+  // carouselTitle: {
+  //   color: colors.navy,
+  //   fontSize: 18,
+  //   fontWeight: '900',
+  //   marginBottom: 8,
+  // },
 
   // Map
 
   map: {
     flex: 1,
-
     marginBottom: -30,
   },
   carouselContainer: {
@@ -244,7 +293,7 @@ export default StyleSheet.create({
   carouselTitle: {
     color: colors.navy,
     fontSize: 18,
-    fontWeight: '900',
+    fontWeight: 'bold',
     marginBottom: 8,
   },
   placeType: {

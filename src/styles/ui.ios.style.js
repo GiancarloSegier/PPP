@@ -11,11 +11,32 @@ export default StyleSheet.create({
   container: {
     padding: 24,
   },
+  blueBox: {
+    backgroundColor: colors.blue,
+    paddingVertical: 32,
+  },
+  white: {
+    color: colors.white,
+  },
+  lightBlue: {
+    color: colors.lightBlue,
+  },
+  center: {
+    textAlign: 'center',
+  },
+  divider: {
+    height: 3,
+    width: 50,
+    backgroundColor: colors.white,
+    marginVertical: 24,
+    alignSelf: 'center',
+  },
   title: {
     fontSize: 40,
     fontWeight: 'bold',
     color: colors.navy,
   },
+
   heading2: {
     fontSize: 28,
     fontWeight: 'bold',
@@ -37,6 +58,7 @@ export default StyleSheet.create({
     fontSize: 16,
     color: colors.grey,
     marginBottom: 16,
+    lineHeight: 24,
   },
 
   // LoginScreen
@@ -81,7 +103,6 @@ export default StyleSheet.create({
 
   primaryFormButton: {
     backgroundColor: colors.darkBlue,
-    marginTop: 14,
     marginBottom: 2,
     height: 40,
     borderRadius: 8,
@@ -222,6 +243,9 @@ export default StyleSheet.create({
     overflow: 'hidden',
     justifyContent: 'center',
   },
+  noCity: {
+    backgroundColor: colors.darkBlue,
+  },
   overlayCity: {
     position: 'absolute',
     height: '100%',
@@ -249,11 +273,11 @@ export default StyleSheet.create({
   map: {
     flex: 1,
 
-    marginBottom: -30,
+    // marginBottom: -30,
   },
   carouselContainer: {
     position: 'absolute',
-    bottom: 80,
+    bottom: 130,
   },
   carouselCard: {
     backgroundColor: 'rgba(255,255,255,0.9)',
