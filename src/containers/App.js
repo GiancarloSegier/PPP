@@ -15,6 +15,7 @@ import {
   View,
   Platform,
 } from 'react-native';
+import CreateTripScreen from './screens/Trips/CreateTripScreen.js';
 
 const requestLocationPermission = async () => {
   try {
@@ -48,6 +49,7 @@ const requestCameraPermission = async () => {
 const AppStack = createStackNavigator(
   {
     StartScreen: TabNavigator,
+    CreateRouteScreen: CreateTripScreen,
   },
   {
     defaultNavigationOptions: {

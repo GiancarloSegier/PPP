@@ -56,7 +56,6 @@ export class Home extends Component {
   checkLoading = () => {
     setTimeout(() => {
       this.setState({loading: false});
-      console.log(this.state.places);
     }, 1000);
   };
 
@@ -134,7 +133,6 @@ export class Home extends Component {
               address.types.includes('locality') ||
               address.types.includes('postal_town'),
           )[0].long_name;
-          console.log(currentCity);
 
           if (currentCity !== undefined) {
             this.setState({currentCity: currentCity});
@@ -150,7 +148,9 @@ export class Home extends Component {
 
   renderCarouselPlace = ({item}) => {
     const maxWidth = 500;
-    const placeImage = `https://maps.googleapis.com/maps/api/place/photo?maxwidth=${maxWidth}&photoreference=${item.photos[0].photo_reference}&key=${this.state.googleAPI}`;
+    const placeImage = `https://maps.googleapis.com/maps/api/place/photo?maxwidth=${maxWidth}&photoreference=${
+      item.photos[0].photo_reference
+    }&key=${this.state.googleAPI}`;
     return (
       <View style={this.styles.carouselPlaceCard}>
         <Image source={{uri: placeImage}} style={this.styles.placeImage} />
@@ -190,12 +190,13 @@ export class Home extends Component {
       .then(data => data.json())
       .then(respons => {
         const maxWidth = Dimensions.get('screen').width;
-        console.log(respons.results);
 
         if (this.state.currentCity !== '') {
           const cityImageReference =
             respons.results[0].photos[0].photo_reference;
-          const cityImageUrl = `https://maps.googleapis.com/maps/api/place/photo?maxwidth=${maxWidth}&photoreference=${cityImageReference}&key=${this.state.googleAPI}`;
+          const cityImageUrl = `https://maps.googleapis.com/maps/api/place/photo?maxwidth=${maxWidth}&photoreference=${cityImageReference}&key=${
+            this.state.googleAPI
+          }`;
 
           this.setState({
             cityImage: cityImageUrl,
