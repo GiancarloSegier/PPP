@@ -1,21 +1,14 @@
 import React, {Component} from 'react';
-import {
-  View,
-  Text,
-  ScrollView,
-  Platform,
-  FlatList,
-  TextInput,
-  TouchableHighlight,
-  Alert,
-} from 'react-native';
-import {Button} from 'react-native-elements';
+import {View, Platform, Alert} from 'react-native';
+import {Button, Overlay, ButtonGroup} from 'react-native-elements';
 
 import androidUI from '../../../styles/ui.android.style.js';
 import iosUI from '../../../styles/ui.ios.style.js';
 import firebase from 'react-native-firebase';
 
-import DatePicker from 'react-native-datepicker';
+import CreateSoloTour from './CreateSoloTour.js';
+import CreatePartyTour from './CreatePartyTour.js';
+
 export class CreateTripScreen extends Component {
   constructor(props) {
     super(props);
@@ -25,94 +18,52 @@ export class CreateTripScreen extends Component {
       this.styles = androidUI;
     }
 
+    const day = new Date().getDate();
+    const month = new Date().getMonth() + 1;
+    const year = new Date().getFullYear();
+
     this.state = {
+      selectedIndex: 0,
       trips: [],
       newTripTitle: '',
-      date: Date.now(),
+      date: new Date(),
+      currentDate: new Date(),
+      currentDateString: `${day}/${month}/${year}`,
+      pickedhour: null,
+      pickedDateString: null,
       userId: firebase.auth().currentUser.uid,
+      isDatePickerVisible: false,
     };
+    console.log(this.state.date.getTime());
 
     this.ref = firebase.firestore().collection('trips');
   }
-  onPressAdd = () => {
-    if (this.state.newTripTitle.trim() === '') {
-      Alert.alert('task name is blank');
-      return;
-    }
-    this.ref
-      .add({
-        userId: this.state.userId,
-        tripTitle: this.state.newTripTitle,
-        dateAdded: Date.now(),
-      })
-      .then(data => {
-        this.setState({newTripTitle: ''});
-      })
-      .catch(error => {
-        console.log(`error loading: ${error}`);
-        this.setState({newTripTitle: ''});
-      })
-      .then(() => {
-        this.props.navigation.goBack(null);
-      });
+
+  updateIndex = selectedIndex => {
+    this.setState({selectedIndex});
   };
 
   render() {
+    const buttons = ['Solo', 'Party'];
+
     return (
       <View>
-        <View style={{backgroundColor: 'grey', padding: 24}}>
-          <TextInput
-            style={{backgroundColor: 'white', padding: 24}}
-            keyboardType="default"
-            placeholder="enter triptitle"
-            value={
-              this.state.newTripTitle === '' ? '' : this.state.newTripTitle
-            }
-            onChangeText={text => this.setState({newTripTitle: text})}
-          />
+        <ButtonGroup
+          onPress={this.updateIndex}
+          selectedIndex={this.state.selectedIndex}
+          buttons={buttons}
+          containerStyle={{borderWidth: 0, width: '100%', left: 0}}
+          buttonStyle={{borderWidth: 0}}
+          selectedButtonStyle={{backgroundColor: '#110b84'}}
+        />
 
-          <DatePicker
-            style={{width: 200}}
-            date={() => {
-              const day = this.state.date.getDate();
-              const month = this.state.date.getMonth();
-              const year = this.state.date.getYear();
-              console.log(this.state.date);
-
-              return `${day}/${month}/${year}`;
-            }} //initial date from state
-            mode="date" //The enum of date, datetime and time
-            placeholder="select date"
-            format="DD-MM-YYYY"
-            minDate="01-01-2016"
-            maxDate="01-01-2019"
-            confirmBtnText="Confirm"
-            cancelBtnText="Cancel"
-            customStyles={{
-              dateIcon: {
-                position: 'absolute',
-                left: 0,
-                top: 4,
-                marginLeft: 0,
-              },
-              dateInput: {
-                marginLeft: 36,
-              },
-            }}
-            onDateChange={date => {
-              this.setState({date: date});
-            }}
-          />
-
-          <TouchableHighlight
-            onPress={this.onPressAdd}
-            style={{backgroundColor: '#ddd', padding: 24}}>
-            <Text>Add trip</Text>
-          </TouchableHighlight>
-        </View>
+        {this.state.selectedIndex === 0 ? (
+          <CreateSoloTour navigation={this.props.navigation} />
+        ) : (
+          <CreatePartyTour navigation={this.props.navigation} />
+        )}
       </View>
     );
   }
 }
-
 export default CreateTripScreen;
