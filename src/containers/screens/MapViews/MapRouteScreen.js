@@ -21,6 +21,8 @@ import MapViewDirections from 'react-native-maps-directions';
 const origin = {latitude: 37.3318456, longitude: -122.0296002};
 const destination = {latitude: 37.771707, longitude: -122.4053769};
 
+import haversine from 'haversine';
+
 let seconds = 0;
 
 export class MapRouteScreen extends Component {
@@ -50,27 +52,35 @@ export class MapRouteScreen extends Component {
       },
       duration: null,
       distance: null,
+      distanceTravelled: 0,
+      distanceLeft: null,
+      time: {
+        hours: '00',
+        minutes: '00',
+        sec: '00',
+      },
+      prevLoc: {},
       coordinates: [
         {
           latitude: props.mapStore.userLocation.latitude,
           longitude: props.mapStore.userLocation.longitude,
         },
-        {
-          latitude: 41.8958,
-          longitude: 12.4826,
-        },
-        {
-          latitude: 41.8902,
-          longitude: 12.4922,
-        },
         // {
-        //   latitude: 37.3317876,
-        //   longitude: -122.0054812,
+        //   latitude: 41.8958,
+        //   longitude: 12.4826,
         // },
         // {
-        //   latitude: 37.771707,
-        //   longitude: -122.4053769,
+        //   latitude: 41.8902,
+        //   longitude: 12.4922,
         // },
+        {
+          latitude: 37.3317876,
+          longitude: -122.0054812,
+        },
+        {
+          latitude: 37.771707,
+          longitude: -122.4053769,
+        },
       ],
     };
   }
@@ -86,45 +96,138 @@ export class MapRouteScreen extends Component {
       latitudeDelta: 0.055,
       longitudeDelta: 0.055,
     };
-    this.setState({userLocation: this.currentLocation});
-    const haversine = require('haversine');
 
-    const start = this.state.userLocation;
-    const end = this.state.coordinates[this.state.coordinates.length - 1];
-    const distanceLeft = haversine(start, end);
-    let readableDistance;
-    if (distanceLeft > 1) {
-      readableDistance = parseFloat(distanceLeft).toFixed(1);
-    } else {
-      readableDistance = parseFloat(distanceLeft);
-    }
+    this.calcDistanceLeft(newLocation);
 
-    this.setState({leftDistance: readableDistance});
+    this.setState({
+      userLocation: this.currentLocation,
+    });
   };
 
-  timer = () => {};
+  calcDistanceLeft = newLocation => {
+    this.prevLoc = {
+      latitude: this.state.userLocation.latitude,
+      longitude: this.state.userLocation.longitude,
+    };
+    this.currentLoc = {
+      latitude: newLocation.nativeEvent.coordinate.latitude,
+      longitude: newLocation.nativeEvent.coordinate.longitude,
+    };
+
+    this.currentTravelled = this.state.distanceTravelled;
+    this.newDistanceTravelled =
+      this.currentTravelled + haversine(this.prevLoc, this.currentLoc);
+
+    this.totalDistance = this.state.distance;
+
+    this.distanceLeft = parseFloat(
+      this.totalDistance - this.newDistanceTravelled,
+    ).toFixed(1);
+
+    this.setState({
+      distanceTravelled: this.newDistanceTravelled,
+      distanceLeft: this.distanceLeft,
+    });
+  };
+
+  timer = () => {
+    setInterval(() => {
+      seconds++;
+      this.getElapsedTime(seconds);
+    }, 1000);
+  };
+
+  getElapsedTime = timeInSeconds => {
+    let time = parseFloat(timeInSeconds).toFixed(3);
+    let hours = Math.floor(time / 60 / 60);
+    let minutes = Math.floor(time / 60) % 60;
+    let sec = Math.floor(time - minutes * 60);
+    this.setState({
+      time: {
+        hours: this.calcTime(hours, 2),
+        minutes: this.calcTime(minutes, 2),
+        sec: this.calcTime(sec, 2),
+      },
+    });
+  };
+
+  calcTime(num, size) {
+    return ('000' + num).slice(size * -1);
+  }
 
   render() {
-    this.timer();
-    const {userLocation, googleAPI, currentRegion} = this.state;
-    console.log(currentRegion);
+    const {
+      userLocation,
+      googleAPI,
+      currentRegion,
+      distance,
+      distanceLeft,
+      time,
+    } = this.state;
     return (
       <>
         <View
           style={{
-            backgroundColor: 'white',
+            justifyContent: 'space-between',
+            flexDirection: 'row',
+            position: 'absolute',
+            width: '100%',
+            padding: 24,
+            zIndex: 99,
           }}>
-          <Text>Total distance: {this.state.distance}km</Text>
-          <Text>
-            Time elapsed:{' '}
-            {setInterval(() => {
-              seconds++;
-            }, 1000)}
-          </Text>
-          <Text>
-            Distance left: {this.state.leftDistance}{' '}
-            {this.state.leftDistance < 1 ? 'meters' : 'km'}
-          </Text>
+          <View
+            style={{
+              borderRadius: 24,
+              width: '30%',
+              backgroundColor: 'rgba(255,255,255,0.96)',
+              alignItems: 'center',
+              padding: 16,
+            }}>
+            <Text
+              style={[
+                this.styles.heading2,
+                {textAlign: 'center', lineHeight: 28, fontSize: 24},
+              ]}>
+              {distance} {this.state.leftDistance < 1 ? 'meters' : 'km'}
+            </Text>
+            <Text>total</Text>
+          </View>
+          <View
+            style={{
+              borderRadius: 24,
+              width: '30%',
+              backgroundColor: 'rgba(255,255,255,0.96)',
+              alignItems: 'center',
+              padding: 16,
+            }}>
+            <Text
+              style={[
+                this.styles.heading2,
+                {textAlign: 'center', lineHeight: 28, fontSize: 24},
+              ]}>
+              {distanceLeft} {this.state.leftDistance < 1 ? 'meters' : 'km'}
+            </Text>
+            <Text>left to go</Text>
+          </View>
+          <View
+            style={{
+              borderRadius: 24,
+              width: '30%',
+              backgroundColor: 'rgba(255,255,255,0.96)',
+              alignItems: 'center',
+              padding: 16,
+            }}>
+            <Text
+              style={[
+                this.styles.heading2,
+                {textAlign: 'center', lineHeight: 28, fontSize: 24},
+              ]}>
+              {time.hours !== '00' || time.hours !== 0
+                ? `${time.minutes}:${time.sec}`
+                : `${time.hours}:${time.minutes}:${time.sec}`}
+            </Text>
+            <Text>elapsed</Text>
+          </View>
         </View>
         <MapView
           ref={map => (this._map = map)}
@@ -169,6 +272,7 @@ export class MapRouteScreen extends Component {
               this.setState({
                 distance: this.distance,
                 duration: result.duration,
+                distanceLeft: this.distance,
               });
             }}
           />
