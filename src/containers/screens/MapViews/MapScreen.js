@@ -106,14 +106,6 @@ export class MapScreen extends Component {
     });
   };
 
-  moveUserLocation = newLocation => {
-    this.currentLocation = {
-      latitude: newLocation.nativeEvent.coordinate.latitude,
-      longitude: newLocation.nativeEvent.coordinate.longitude,
-    };
-    this.setLocation(this.currentLocation);
-  };
-
   moveRegion = () => {
     const regionLocation = {
       latitude: this.state.regionLocation.latitude,
@@ -136,31 +128,46 @@ export class MapScreen extends Component {
   };
 
   renderCarouselItem = ({item}) => {
+    const placeImage = `https://maps.googleapis.com/maps/api/place/photo?maxwidth=200&photoreference=${item.photos[0].photo_reference}&key=${this.state.googleAPI}`;
     return (
-      <View style={this.styles.carouselCard}>
-        <Text style={this.styles.carouselTitle}>{item.name}</Text>
-        <View style={{flexDirection: 'row', flexWrap: 'wrap'}}>
-          {item.types.map((type, index) => {
-            const correctType = type.replace(/_/g, ' ');
-            if (
-              correctType !== 'point of interest' &&
-              correctType !== 'establishment' &&
-              index < 2
-            ) {
-              return (
-                <Text key={index} style={[this.styles.placeType]}>
-                  {correctType}
-                </Text>
-              );
-            }
-          })}
+      <View
+        style={[
+          this.styles.carouselCard,
+          {
+            flexDirection: 'row',
+            flex: 1,
+            justifyContent: 'space-between',
+            padding: 0,
+          },
+        ]}>
+        <Image
+          source={{uri: placeImage}}
+          style={{height: '100%', width: '48%'}}
+        />
+        <View style={{width: '48%'}}>
+          <Text style={this.styles.carouselTitle}>{item.name}</Text>
+          <View style={{flexDirection: 'row', flexWrap: 'wrap'}}>
+            {item.types.map((type, index) => {
+              const correctType = type.replace(/_/g, ' ');
+              if (
+                correctType !== 'point of interest' &&
+                correctType !== 'establishment' &&
+                index < 2
+              ) {
+                return (
+                  <Text key={index} style={[this.styles.placeType]}>
+                    {correctType}
+                  </Text>
+                );
+              }
+            })}
+          </View>
+          {item.opening_hours ? (
+            <Text style={this.styles.placeAdress}>
+              {item.opening_hours.open_now ? 'Opened now' : 'Closed'}
+            </Text>
+          ) : null}
         </View>
-        <Text style={this.styles.placeAdress}>{item.vicinity}</Text>
-        {item.opening_hours ? (
-          <Text style={this.styles.placeAdress}>
-            {item.opening_hours.open_now ? 'Opened now' : 'Closed'}
-          </Text>
-        ) : null}
       </View>
     );
   };
@@ -207,6 +214,10 @@ export class MapScreen extends Component {
     this.moveRegion();
   };
 
+  onPressGo = () => {
+    console.log('go');
+  };
+
   render() {
     const {userLocation} = this.state;
 
@@ -234,6 +245,7 @@ export class MapScreen extends Component {
             {this.state.places ? (
               <>
                 {this.state.places.map((place, index) => {
+                  console.log(place);
                   return (
                     <Marker
                       key={index}
