@@ -147,6 +147,12 @@ export class MyTrips extends Component {
       return (
         <View style={this.styles.container}>
           <Text>Create a trip!</Text>
+          <Button
+            onPress={() => this.props.navigation.navigate('CreateRouteScreen')}
+            title={'Create my trip'}
+            buttonStyle={this.styles.mapButton}
+            titleStyle={this.styles.primaryFormButtonTitle}
+          />
         </View>
       );
     }
