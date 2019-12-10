@@ -140,9 +140,9 @@ class Filter extends Component {
 
           <Slider
             value={this.state.selectedRadius}
-            maximumValue={5000}
-            minimumValue={500}
-            step={500}
+            maximumValue={2000}
+            minimumValue={200}
+            step={100}
             thumbTintColor={'#182ac1'}
             minimumTrackTintColor={'#110b84'}
             maximumTrackTintColor={'#e4e4e4'}
