@@ -15,6 +15,8 @@ import haversine from 'haversine';
 
 let seconds = 0;
 const googlepin = require('../../../assets/googlepin.png');
+const googlePinStart = require('../../../assets/googlepinStart.png');
+const googlePinFinish = require('../../../assets/googlepinFinish.png');
 
 export class MapRouteScreen extends Component {
   constructor(props) {
@@ -289,7 +291,13 @@ export class MapRouteScreen extends Component {
           {this.state.coordinates.map((place, index) => {
             return (
               <Marker
-                icon={googlepin}
+                icon={
+                  place.latitude === this.state.userLocation.latitude
+                    ? googlePinStart
+                    : index === this.state.coordinates.length - 1
+                    ? googlePinFinish
+                    : googlepin
+                }
                 key={index}
                 coordinate={{
                   latitude: place.latitude,

@@ -78,8 +78,8 @@ export class Home extends Component {
       userLocation: {
         latitude: position.latitude,
         longitude: position.longitude,
-        latitudeDelta: 0.045,
-        longitudeDelta: 0.045,
+        latitudeDelta: 0.015,
+        longitudeDelta: 0.015,
       },
     });
   };
@@ -88,7 +88,7 @@ export class Home extends Component {
     const url = await this.props.mapStore.getUrlWithParameters(
       this.props.mapStore.userLocation.latitude,
       this.props.mapStore.userLocation.longitude,
-      2500,
+      1000,
       'tourist_attraction',
       this.state.googleAPI,
     );
@@ -116,7 +116,7 @@ export class Home extends Component {
     const url = await this.props.mapStore.getUrlWithParameters(
       this.props.mapStore.userLocation.latitude,
       this.props.mapStore.userLocation.longitude,
-      5000,
+      3000,
       'tourist_attraction',
       this.state.googleAPI,
     );
@@ -163,9 +163,7 @@ export class Home extends Component {
   renderCarouselPlace = ({item}) => {
     if (item.photos[0].photo_reference) {
       const maxWidth = 500;
-      this.placeImage = `https://maps.googleapis.com/maps/api/place/photo?maxwidth=${maxWidth}&photoreference=${
-        item.photos[0].photo_reference
-      }&key=${this.state.googleAPI}`;
+      this.placeImage = `https://maps.googleapis.com/maps/api/place/photo?maxwidth=${maxWidth}&photoreference=${item.photos[0].photo_reference}&key=${this.state.googleAPI}`;
     }
     return (
       <View style={this.styles.carouselPlaceCard}>
@@ -218,9 +216,7 @@ export class Home extends Component {
         ) {
           const cityImageReference =
             respons.results[0].photos[0].photo_reference;
-          const cityImageUrl = `https://maps.googleapis.com/maps/api/place/photo?maxwidth=${maxWidth}&photoreference=${cityImageReference}&key=${
-            this.state.googleAPI
-          }`;
+          const cityImageUrl = `https://maps.googleapis.com/maps/api/place/photo?maxwidth=${maxWidth}&photoreference=${cityImageReference}&key=${this.state.googleAPI}`;
 
           this.setState({
             cityImage: cityImageUrl,
@@ -254,6 +250,7 @@ export class Home extends Component {
             <RefreshControl
               tintColor="#182ac1"
               progressBackgroundColor={'rgba(255,255,255, 0.8)'}
+              size="large"
               title="Turist is searching for more!"
               refreshing={this.state.refreshing}
               onRefresh={this.onRefreshHandler}

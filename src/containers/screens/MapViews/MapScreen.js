@@ -112,8 +112,8 @@ export class MapScreen extends Component {
     const regionLocation = {
       latitude: this.state.regionLocation.latitude,
       longitude: this.state.regionLocation.longitude,
-      latitudeDelta: 0.045,
-      longitudeDelta: 0.045,
+      latitudeDelta: 0.015,
+      longitudeDelta: 0.015,
     };
     this.setRegion(regionLocation);
     this.getPlaces();
@@ -123,17 +123,15 @@ export class MapScreen extends Component {
     const newRegion = {
       latitude: region.latitude,
       longitude: region.longitude,
-      latitudeDelta: 0.045,
-      longitudeDelta: 0.045,
+      latitudeDelta: 0.015,
+      longitudeDelta: 0.015,
     };
     this.setState({regionLocation: newRegion, markers: []});
   };
 
   renderCarouselItem = ({item}) => {
     if (item.photos[0].photo_reference) {
-      this.placeImage = `https://maps.googleapis.com/maps/api/place/photo?maxwidth=200&photoreference=${
-        item.photos[0].photo_reference
-      }&key=${this.state.googleAPI}`;
+      this.placeImage = `https://maps.googleapis.com/maps/api/place/photo?maxwidth=200&photoreference=${item.photos[0].photo_reference}&key=${this.state.googleAPI}`;
     }
     return (
       <View
@@ -185,8 +183,8 @@ export class MapScreen extends Component {
     this._map.animateToRegion({
       latitude: place.geometry.location.lat,
       longitude: place.geometry.location.lng,
-      latitudeDelta: 0.045,
-      longitudeDelta: 0.045,
+      latitudeDelta: 0.015,
+      longitudeDelta: 0.015,
     });
 
     this.state.markers[index].showCallout();
@@ -195,8 +193,8 @@ export class MapScreen extends Component {
     this._map.animateToRegion({
       latitude: place.geometry.location.lat,
       longitude: place.geometry.location.lng,
-      latitudeDelta: 0.045,
-      longitudeDelta: 0.045,
+      latitudeDelta: 0.015,
+      longitudeDelta: 0.015,
     });
     this._carousel.snapToItem(index);
   };
