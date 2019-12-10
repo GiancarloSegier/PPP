@@ -33,7 +33,7 @@ export class Map extends Component {
     }
 
     this.state = {
-      screen: '',
+      screen: 'trip',
       googleAPI: props.mapStore.googleAPI,
     };
   }

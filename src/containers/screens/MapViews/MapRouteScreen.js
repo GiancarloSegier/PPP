@@ -4,7 +4,7 @@ import {View, Text, Platform, Image} from 'react-native';
 import androidUI from '../../../styles/ui.android.style.js';
 import iosUI from '../../../styles/ui.ios.style.js';
 
-import MapView, {Marker} from 'react-native-maps';
+import MapView, {Marker, Callout} from 'react-native-maps';
 import MapStyle from '../../../config/MapStyle';
 
 import {inject, observer} from 'mobx-react';
@@ -14,6 +14,7 @@ import MapViewDirections from 'react-native-maps-directions';
 import haversine from 'haversine';
 
 let seconds = 0;
+const googlepin = require('../../../assets/googlepin.png');
 
 export class MapRouteScreen extends Component {
   constructor(props) {
@@ -52,17 +53,36 @@ export class MapRouteScreen extends Component {
       prevLoc: {},
       coordinates: [
         {
+          name: 'your startlocation',
           latitude: props.mapStore.userLocation.latitude,
           longitude: props.mapStore.userLocation.longitude,
         },
         {
+          name: 'Statua Di Carlo Alberto',
+          latitude: 41.900262,
+          longitude: 12.48864,
+        },
+        {
+          name: 'Piazza Venezia',
           latitude: 41.8958,
           longitude: 12.4826,
         },
         {
+          name: 'Villa Borghesa',
+          latitude: 41.912946,
+          longitude: 12.485033,
+        },
+        {
+          name: 'Colloseo',
           latitude: 41.8902,
           longitude: 12.4922,
         },
+        {
+          name: 'Castel Sant Angelo',
+          latitude: 41.90346,
+          longitude: 12.466345,
+        },
+
         // {
         //   latitude: 37.3317876,
         //   longitude: -122.0054812,
@@ -83,8 +103,8 @@ export class MapRouteScreen extends Component {
     this.currentLocation = {
       latitude: newLocation.nativeEvent.coordinate.latitude,
       longitude: newLocation.nativeEvent.coordinate.longitude,
-      latitudeDelta: 0.055,
-      longitudeDelta: 0.055,
+      latitudeDelta: 0.015,
+      longitudeDelta: 0.015,
     };
 
     this.calcDistanceLeft(newLocation);
@@ -229,8 +249,8 @@ export class MapRouteScreen extends Component {
           customMapStyle={MapStyle}
           style={this.styles.map}
           provider={MapView.PROVIDER_GOOGLE}
-          onUserLocationChange={this.changeLocation}
-          region={userLocation}>
+          // onUserLocationChange={this.changeLocation}
+          initialRegion={userLocation}>
           <MapViewDirections
             mode="WALKING"
             origin={this.state.coordinates[0]}
@@ -244,11 +264,13 @@ export class MapRouteScreen extends Component {
             }
             apikey={googleAPI}
             strokeWidth={3}
-            strokeColor="red"
+            strokeColor="#FFA500"
             optimizeWaypoints={true}
             onStart={params => {
               console.log(
-                `Started routing between "${params.origin}" and "${params.destination}"`,
+                `Started routing between "${params.origin}" and "${
+                  params.destination
+                }"`,
               );
             }}
             onReady={result => {
@@ -267,15 +289,17 @@ export class MapRouteScreen extends Component {
           {this.state.coordinates.map((place, index) => {
             return (
               <Marker
+                icon={googlepin}
                 key={index}
                 coordinate={{
                   latitude: place.latitude,
                   longitude: place.longitude,
                 }}>
-                <Image
-                  source={require('../../../assets/googlepin.png')}
-                  style={{height: 50, resizeMode: 'contain'}}
-                />
+                <Callout tooltip style={this.styles.calloutContainer}>
+                  <View>
+                    <Text style={this.styles.calloutText}>{place.name}</Text>
+                  </View>
+                </Callout>
               </Marker>
             );
           })}

@@ -15,6 +15,8 @@ import java.util.List;
 
 import io.invertase.firebase.RNFirebasePackage;
 import io.invertase.firebase.auth.RNFirebaseAuthPackage;
+import io.invertase.firebase.firestore.RNFirebaseFirestorePackage; 
+
 
 import com.facebook.FacebookSdk;
 import com.facebook.appevents.AppEventsLogger;
@@ -42,6 +44,7 @@ public class MainApplication extends Application implements ReactApplication {
           // packages.add(new MyReactNativePackage());
 
             packages.add(new RNFirebaseAuthPackage());
+            packages.add(new RNFirebaseFirestorePackage());
 
           return packages;
         }
