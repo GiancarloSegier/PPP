@@ -72,6 +72,12 @@ export class CreateSoloTour extends Component {
         <Button
           buttonStyle={this.styles.primaryFormButton}
           titleStyle={this.styles.primaryFormButtonTitle}
+          title={'add more landmarks'}
+          onPress={() => this.props.navigation.navigate('Map')}
+        />
+        <Button
+          buttonStyle={this.styles.primaryFormButton}
+          titleStyle={this.styles.primaryFormButtonTitle}
           title={'Create tour'}
           onPress={this.onPressAdd}
         />

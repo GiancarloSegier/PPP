@@ -1,25 +1,15 @@
 import React, {Component} from 'react';
-import {
-  View,
-  Text,
-  Platform,
-  ActivityIndicator,
-  Image,
-  Dimensions,
-} from 'react-native';
-import {Button} from 'react-native-elements';
+import {View, Text, Platform, Image} from 'react-native';
 
 import androidUI from '../../../styles/ui.android.style.js';
 import iosUI from '../../../styles/ui.ios.style.js';
 
-import MapView, {Marker, Callout} from 'react-native-maps';
+import MapView, {Marker} from 'react-native-maps';
 import MapStyle from '../../../config/MapStyle';
 
 import {inject, observer} from 'mobx-react';
 
 import MapViewDirections from 'react-native-maps-directions';
-const origin = {latitude: 37.3318456, longitude: -122.0296002};
-const destination = {latitude: 37.771707, longitude: -122.4053769};
 
 import haversine from 'haversine';
 
@@ -65,22 +55,22 @@ export class MapRouteScreen extends Component {
           latitude: props.mapStore.userLocation.latitude,
           longitude: props.mapStore.userLocation.longitude,
         },
-        // {
-        //   latitude: 41.8958,
-        //   longitude: 12.4826,
-        // },
-        // {
-        //   latitude: 41.8902,
-        //   longitude: 12.4922,
-        // },
         {
-          latitude: 37.3317876,
-          longitude: -122.0054812,
+          latitude: 41.8958,
+          longitude: 12.4826,
         },
         {
-          latitude: 37.771707,
-          longitude: -122.4053769,
+          latitude: 41.8902,
+          longitude: 12.4922,
         },
+        // {
+        //   latitude: 37.3317876,
+        //   longitude: -122.0054812,
+        // },
+        // {
+        //   latitude: 37.771707,
+        //   longitude: -122.4053769,
+        // },
       ],
     };
   }
@@ -242,7 +232,7 @@ export class MapRouteScreen extends Component {
           onUserLocationChange={this.changeLocation}
           region={userLocation}>
           <MapViewDirections
-            // mode="WALKING"
+            mode="WALKING"
             origin={this.state.coordinates[0]}
             waypoints={
               this.state.coordinates.length > 2
@@ -258,9 +248,7 @@ export class MapRouteScreen extends Component {
             optimizeWaypoints={true}
             onStart={params => {
               console.log(
-                `Started routing between "${params.origin}" and "${
-                  params.destination
-                }"`,
+                `Started routing between "${params.origin}" and "${params.destination}"`,
               );
             }}
             onReady={result => {

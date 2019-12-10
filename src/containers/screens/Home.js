@@ -339,7 +339,9 @@ export class Home extends Component {
               <Button
                 buttonStyle={this.styles.socialFormButton}
                 titleStyle={this.styles.socialFormButtonTitle}
-                onPress={() => this.props.navigation.navigate('MyTrips')}
+                onPress={() =>
+                  this.props.navigation.navigate('CreateRouteScreen')
+                }
                 title={'go to generator'}
               />
             </View>
