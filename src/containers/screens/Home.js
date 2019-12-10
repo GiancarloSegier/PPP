@@ -279,7 +279,7 @@ export class Home extends Component {
               }
             />
           </View>
-          <View>
+          {/* <View>
             <MapView
               ref={map => (this._map = map)}
               toolbarEnabled={false}
@@ -300,8 +300,7 @@ export class Home extends Component {
                 longitude: this.props.mapStore.userLocation.longitude,
                 latitudeDelta: 0.015,
                 longitudeDelta: 0.015,
-              }}
-              onRegionChangeComplete={this.onChangeRegion}>
+              }}>
               {this.state.nearbyPlaces ? (
                 <>
                   {this.state.nearbyPlaces.map((place, index) => {
@@ -321,30 +320,29 @@ export class Home extends Component {
                   })}
                 </>
               ) : null}
-            </MapView>
-            <View style={[this.styles.container, this.styles.blueBox]}>
-              <Text
-                style={[
-                  this.styles.heading2,
-                  this.styles.white,
-                  this.styles.center,
-                ]}>
-                Plan your tour?
-              </Text>
-              <View style={this.styles.divider} />
-              <Text style={[this.styles.body, this.styles.lightBlue]}>
-                Use our tourgenerator to create your own tours. To use right
-                away or to plan it for your next citytrip.{' '}
-              </Text>
-              <Button
-                buttonStyle={this.styles.socialFormButton}
-                titleStyle={this.styles.socialFormButtonTitle}
-                onPress={() =>
-                  this.props.navigation.navigate('CreateRouteScreen')
-                }
-                title={'go to generator'}
-              />
-            </View>
+            </MapView> */}
+          <View style={[this.styles.container, this.styles.blueBox]}>
+            <Text
+              style={[
+                this.styles.heading2,
+                this.styles.white,
+                this.styles.center,
+              ]}>
+              Plan your tour?
+            </Text>
+            <View style={this.styles.divider} />
+            <Text style={[this.styles.body, this.styles.lightBlue]}>
+              Use our tourgenerator to create your own tours. To use right away
+              or to plan it for your next citytrip.{' '}
+            </Text>
+            <Button
+              buttonStyle={this.styles.socialFormButton}
+              titleStyle={this.styles.socialFormButtonTitle}
+              onPress={() =>
+                this.props.navigation.navigate('CreateRouteScreen')
+              }
+              title={'go to generator'}
+            />
           </View>
         </ScrollView>
       );

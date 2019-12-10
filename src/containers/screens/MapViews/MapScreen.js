@@ -21,6 +21,8 @@ import {inject, observer} from 'mobx-react';
 import Filter from '../../../components/map/Filter.js';
 import Icon from 'react-native-vector-icons/FontAwesome';
 
+import GOOGLEPIN from '../../../assets/googlepin.png';
+
 export class MapScreen extends Component {
   constructor(props) {
     super(props);
@@ -36,8 +38,8 @@ export class MapScreen extends Component {
       userLocation: {
         latitude: props.mapStore.userLocation.latitude,
         longitude: props.mapStore.userLocation.longitude,
-        latitudeDelta: 0.045,
-        longitudeDelta: 0.045,
+        latitudeDelta: 0.015,
+        longitudeDelta: 0.015,
       },
       regionLocation: {
         latitude: props.mapStore.userLocation.latitude,
@@ -91,8 +93,8 @@ export class MapScreen extends Component {
       userLocation: {
         latitude: position.latitude,
         longitude: position.longitude,
-        latitudeDelta: 0.045,
-        longitudeDelta: 0.045,
+        latitudeDelta: 0.015,
+        longitudeDelta: 0.015,
       },
     });
   };
@@ -128,7 +130,11 @@ export class MapScreen extends Component {
   };
 
   renderCarouselItem = ({item}) => {
-    const placeImage = `https://maps.googleapis.com/maps/api/place/photo?maxwidth=200&photoreference=${item.photos[0].photo_reference}&key=${this.state.googleAPI}`;
+    if (item.photos[0].photo_reference) {
+      this.placeImage = `https://maps.googleapis.com/maps/api/place/photo?maxwidth=200&photoreference=${
+        item.photos[0].photo_reference
+      }&key=${this.state.googleAPI}`;
+    }
     return (
       <View
         style={[
@@ -140,10 +146,12 @@ export class MapScreen extends Component {
             padding: 0,
           },
         ]}>
-        <Image
-          source={{uri: placeImage}}
-          style={{height: '100%', width: '48%'}}
-        />
+        {this.placeImage ? (
+          <Image
+            source={{uri: this.placeImage}}
+            style={{height: '100%', width: '48%'}}
+          />
+        ) : null}
         <View style={{width: '48%'}}>
           <Text style={this.styles.carouselTitle}>{item.name}</Text>
           <View style={{flexDirection: 'row', flexWrap: 'wrap'}}>
@@ -255,10 +263,10 @@ export class MapScreen extends Component {
                         longitude: place.geometry.location.lng,
                       }}
                       onPress={() => this.onMarkerPressed(place, index)}>
-                      <Image
+                      {/* <Image
                         source={require('../../../assets/googlepin.png')}
                         style={{height: 50, resizeMode: 'contain'}}
-                      />
+                      /> */}
                       <Callout tooltip style={this.styles.calloutContainer}>
                         <View>
                           <Text style={this.styles.calloutText}>
