@@ -2,7 +2,7 @@ import {action, observable, decorate, configure} from 'mobx';
 import Geolocation from 'react-native-geolocation-service';
 import Geocoder from 'react-native-geocoding';
 
-configure({enforceActions: 'observed'});
+// configure({enforceActions: 'observed'});
 
 class MapStore {
   latitude;
@@ -14,7 +14,6 @@ class MapStore {
     this.rootStore = rootStore;
     Geocoder.init(this.googleAPI), {language: 'en'};
     this.getCurrentLocation();
-    console.log(this.userLocation);
   }
 
   getCurrentCity() {
@@ -59,7 +58,6 @@ class MapStore {
     const location = `location=${lat},${long}&radius=${radius}`;
     const typeData = `&types=${type}`;
     const key = `&key=${API}`;
-    console.log(`${url}${location}${typeData}${key}&rankBy=distance`);
     return `${url}${location}${typeData}${key}`;
   };
 }

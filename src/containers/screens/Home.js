@@ -6,6 +6,7 @@ import {
   Dimensions,
   Image,
   ActivityIndicator,
+  RefreshControl,
 } from 'react-native';
 
 import androidUI from '../../styles/ui.android.style.js';
@@ -20,6 +21,7 @@ import Icon from 'react-native-vector-icons/FontAwesome';
 
 import MapView, {Marker} from 'react-native-maps';
 import MapStyle from '../../config/MapStyle';
+const googlepin = require('../../assets/googlepin.png');
 
 export class Home extends Component {
   constructor(props) {
@@ -44,6 +46,11 @@ export class Home extends Component {
   }
 
   async componentDidMount() {
+    await this.fetchData();
+  }
+
+  fetchData = async () => {
+    console.log('fetch data');
     await this.props.mapStore.getCurrentLocation();
     this.setLocation(this.props.mapStore.userLocation);
     await this.getPlaces();
@@ -51,7 +58,14 @@ export class Home extends Component {
     this.getPlaces();
     this.getCurrentCityImage();
     this.checkLoading();
-  }
+
+    this.setState({
+      refreshing: false,
+      pageNo: 1,
+      dataReceived: false,
+    });
+    console.log(this.state.currentCity);
+  };
 
   checkLoading = () => {
     setTimeout(() => {
@@ -147,13 +161,20 @@ export class Home extends Component {
   };
 
   renderCarouselPlace = ({item}) => {
-    const maxWidth = 500;
-    const placeImage = `https://maps.googleapis.com/maps/api/place/photo?maxwidth=${maxWidth}&photoreference=${
-      item.photos[0].photo_reference
-    }&key=${this.state.googleAPI}`;
+    if (item.photos[0].photo_reference) {
+      const maxWidth = 500;
+      this.placeImage = `https://maps.googleapis.com/maps/api/place/photo?maxwidth=${maxWidth}&photoreference=${
+        item.photos[0].photo_reference
+      }&key=${this.state.googleAPI}`;
+    }
     return (
       <View style={this.styles.carouselPlaceCard}>
-        <Image source={{uri: placeImage}} style={this.styles.placeImage} />
+        {this.placeImage ? (
+          <Image
+            source={{uri: this.placeImage}}
+            style={this.styles.placeImage}
+          />
+        ) : null}
         <View style={this.styles.carouselPlaceContainer}>
           <Text style={this.styles.carouselTitle}>{item.name}</Text>
           <View style={{flexDirection: 'row', flexWrap: 'wrap'}}>
@@ -191,7 +212,10 @@ export class Home extends Component {
       .then(respons => {
         const maxWidth = Dimensions.get('screen').width;
 
-        if (this.state.currentCity !== '') {
+        if (
+          this.state.currentCity !== '' &&
+          respons.results[0].photos[0].photo_reference
+        ) {
           const cityImageReference =
             respons.results[0].photos[0].photo_reference;
           const cityImageUrl = `https://maps.googleapis.com/maps/api/place/photo?maxwidth=${maxWidth}&photoreference=${cityImageReference}&key=${
@@ -205,6 +229,15 @@ export class Home extends Component {
       });
   };
 
+  onRefreshHandler = () => {
+    //reset pageNo to 1
+    this.setState({refreshing: true, pageNo: 1, data: [], dataReceived: false});
+    //timeout to simulate loading
+    setTimeout(() => {
+      this.fetchData();
+    }, 1500);
+  };
+
   render() {
     if (this.state.loading) {
       return (
@@ -215,7 +248,17 @@ export class Home extends Component {
       );
     } else {
       return (
-        <ScrollView style={this.styles.background}>
+        <ScrollView
+          style={this.styles.background}
+          refreshControl={
+            <RefreshControl
+              tintColor="#182ac1"
+              progressBackgroundColor={'rgba(255,255,255, 0.8)'}
+              title="Turist is searching for more!"
+              refreshing={this.state.refreshing}
+              onRefresh={this.onRefreshHandler}
+            />
+          }>
           {this.state.currentCity ? (
             <View style={this.styles.homeHeader}>
               <Image
@@ -295,7 +338,7 @@ export class Home extends Component {
               onPress={() => this.props.navigation.navigate('Map')}
               style={{height: 150, width: Dimensions.get('screen').width}}
               provider={MapView.PROVIDER_GOOGLE}
-              initialRegion={{
+              region={{
                 latitude: this.props.mapStore.userLocation.latitude,
                 longitude: this.props.mapStore.userLocation.longitude,
                 latitudeDelta: 0.015,
@@ -306,21 +349,19 @@ export class Home extends Component {
                   {this.state.nearbyPlaces.map((place, index) => {
                     return (
                       <Marker
+                        icon={googlepin}
                         key={index}
                         coordinate={{
                           latitude: place.geometry.location.lat,
                           longitude: place.geometry.location.lng,
-                        }}>
-                        <Image
-                          source={require('../../assets/googlepin.png')}
-                          style={{height: 50, resizeMode: 'contain'}}
-                        />
-                      </Marker>
+                        }}
+                      />
                     );
                   })}
                 </>
               ) : null}
-            </MapView> */}
+            </MapView>
+          </View> */}
           <View style={[this.styles.container, this.styles.blueBox]}>
             <Text
               style={[
