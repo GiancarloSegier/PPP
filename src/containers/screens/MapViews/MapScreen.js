@@ -6,15 +6,12 @@ import {
   ActivityIndicator,
   Image,
   Dimensions,
-  TouchableHighlight,
-  Alert,
 } from 'react-native';
 import {Button} from 'react-native-elements';
 
 import androidUI from '../../../styles/ui.android.style.js';
 import iosUI from '../../../styles/ui.ios.style.js';
 
-import MapView, {Marker, Callout} from 'react-native-maps';
 import MapStyle from '../../../config/MapStyle';
 
 import Carousel from 'react-native-snap-carousel';
@@ -24,8 +21,6 @@ import Filter from '../../../components/map/Filter.js';
 import Icon from 'react-native-vector-icons/FontAwesome';
 
 import MapboxGL from '@react-native-mapbox-gl/maps';
-
-import GOOGLEPIN from '../../../assets/googlepin.png';
 
 MapboxGL.setAccessToken(
   'pk.eyJ1Ijoic2VnaWVyZ2lhY2kiLCJhIjoiY2s0MHp2dGN3MDZydzNtcW5rZzl4MjByaCJ9.dWRZ7UQj1GX3_yUrcBzW8Q',
@@ -50,10 +45,15 @@ export class MapScreen extends Component {
         props.mapStore.userLocation.longitude,
         props.mapStore.userLocation.latitude,
       ],
+      centerCoordinate: [
+        props.mapStore.userLocation.longitude,
+        props.mapStore.userLocation.latitude,
+      ],
       places: [],
       markers: [],
       coordinates: [],
       placeType: 'tourist_attraction',
+      selectedPlace: 'placeSelected0',
       radius: 1500,
       checkOpen: false,
       filterOpen: false,
@@ -62,11 +62,14 @@ export class MapScreen extends Component {
 
   componentDidMount() {
     this.setLocation(this.props.mapStore.userLocation);
-    this.getPlaces();
+    this.getPlaces('tourist_attraction', 1500);
   }
 
-  getPlaces = async () => {
-    const {regionLocation, placeType, radius} = this.state;
+  getPlaces = async (
+    placeType,
+    radius,
+    regionLocation = this.state.regionLocation,
+  ) => {
     const url = this.props.mapStore.getUrlWithParameters(
       regionLocation.slice(1, 2),
       regionLocation.slice(0, 1),
@@ -103,35 +106,43 @@ export class MapScreen extends Component {
           }
         });
 
-        this.setState({places: markers, coordinates: newCoordinates});
+        this.setState({
+          places: markers,
+          coordinates: newCoordinates,
+          placeType: placeType,
+          radius: radius,
+        });
       });
   };
 
   setLocation = position => {
     this.setState({
       userLocation: [position.longitude, position.latitude],
+      regionLocation: [position.longitude, position.latitude],
+      centerCoordinate: [position.longitude, position.latitude],
     });
   };
 
-  moveRegion = () => {
+  moveRegion = async () => {
     this.setState({
       regionLocation: this.state.regionLocation,
+      selectedPlace: 'placeSelected0',
     });
-    console.log(this.state.regionLocation);
-    this.getPlaces();
+    await this.getPlaces(this.state.placeType, this.state.radius);
   };
 
   onChangeRegion = region => {
     const newRegion = region.geometry.coordinates;
-    console.log(region.geometry.coordinates);
-    this.setState({regionLocation: newRegion, markers: []});
+    this.setState({
+      regionLocation: newRegion,
+      markers: [],
+      selectedPlace: 'placeSelected0',
+    });
   };
 
   renderCarouselItem = ({item}) => {
     if (item.photos) {
-      this.placeImage = `https://maps.googleapis.com/maps/api/place/photo?maxwidth=200&photoreference=${
-        item.photos[0].photo_reference
-      }&key=${this.state.googleAPI}`;
+      this.placeImage = `https://maps.googleapis.com/maps/api/place/photo?maxwidth=200&photoreference=${item.photos[0].photo_reference}&key=${this.state.googleAPI}`;
     }
     return (
       <View
@@ -185,38 +196,45 @@ export class MapScreen extends Component {
   };
 
   onCarouselItemChange = index => {
+    console.log(index);
     let place = this.state.places[index];
-    this._map.flyTo([place.geometry.location.lng, place.geometry.location.lat]);
-
+    let coordinates = [
+      place.geometry.location.lng,
+      place.geometry.location.lat,
+    ];
     let selectedPlace = `placeSelected${index}`;
 
-    this.setState({placeSelected: selectedPlace});
-    // this.state.markers[index].showCallout();
+    this.setState({
+      placeSelected: selectedPlace,
+      centerCoordinate: coordinates,
+    });
   };
   onMarkerPressed = (coordinates, index) => {
-    console.log(coordinates);
-    this._map.flyTo(coordinates);
-    this._carousel.snapToItem(index);
+    this.carousel.snapToItem(index);
     let selectedPlace = `placeSelected${index}`;
-    this.setState({placeSelected: selectedPlace});
+    this.setState({
+      placeSelected: selectedPlace,
+      centerCoordinate: coordinates,
+    });
   };
 
   onPressFilter = () => {
     this.setState(prevState => ({filterOpen: !prevState.filterOpen}));
   };
 
-  onSelectItem = placeType => {
-    this.setState({placeType: placeType, filterOpen: false});
-  };
-
   onSetFilter = async (radius, type, checkOpen) => {
-    await this.setState({
+    this.setState({
       radius: radius,
       placeType: type,
       filterOpen: false,
       checkOpen: checkOpen,
+      regionLocation: this.state.regionLocation,
+      selectedPlace: 'placeSelected0',
     });
-    this.moveRegion();
+    console.log(type + ' : ' + this.state.placeType);
+    await this.getPlaces(type, radius);
+
+    // this.moveRegion();
   };
 
   onPressGo = () => {
@@ -260,30 +278,60 @@ export class MapScreen extends Component {
     for (let i = 0; i < this.state.coordinates.length; i++) {
       items.push(this.renderAnnotation(i));
     }
-
-    console.log(items);
     return items;
   }
 
+  setUserLocation = location => {
+    const newUserLocation = [
+      location.coords.longitude,
+      location.coords.latitude,
+    ];
+
+    this.setState({userLocation: newUserLocation});
+  };
+
+  onPressFollowUser = () => {
+    this.setState({
+      centerCoordinate: this.state.userLocation,
+      regionLocation: this.state.userLocation,
+    });
+
+    console.log(this.state.regionLocation + ' : ' + this.state.userLocation);
+    this.camera.setCamera({zoomLevel: 15});
+    this.getPlaces(
+      this.state.placeType,
+      this.state.radius,
+      this.state.userLocation,
+    );
+  };
+
   render() {
-    const {userLocation} = this.state;
+    const {userLocation, centerCoordinate} = this.state;
 
     if (userLocation.slice(0, 1) && userLocation.slice(1, 2) !== 0) {
       return (
         <>
           <View style={{flex: 1}}>
             <MapboxGL.MapView
-              followUserMode={'compass'}
               logoEnabled={false}
-              setMyLocationEnabled={true}
               ref={c => (this._map = c)}
               style={{flex: 1}}
-              zoomLevel={14}
               onRegionDidChange={this.onChangeRegion}
-              showUserLocation={true}
-              styleURL={MapboxGL.StyleURL.Light}
-              userTrackingMode={MapboxGL.UserTrackingModes.Follow}>
+              onLongPress={this.MapPressed}
+              styleURL={MapboxGL.StyleURL.Light}>
               {this.renderAnnotations()}
+              <MapboxGL.UserLocation
+                visible={true}
+                renderMode="normal"
+                animated
+                onUpdate={this.setUserLocation}
+              />
+              <MapboxGL.Camera
+                ref={c => (this.camera = c)}
+                followUserMode="compass"
+                zoomLevel={15}
+                centerCoordinate={centerCoordinate}
+              />
             </MapboxGL.MapView>
           </View>
           <Button
@@ -298,26 +346,34 @@ export class MapScreen extends Component {
               alignItems: 'flex-end',
             }}
             ref={c => {
-              this._carousel = c;
+              this.carousel = c;
             }}
             data={this.state.places}
             renderItem={this.renderCarouselItem}
             sliderWidth={Dimensions.get('window').width}
             itemWidth={300}
+            activeItem
             onSnapToItem={index => this.onCarouselItemChange(index)}
           />
           <View style={{position: 'absolute', zIndex: 99}}>
-            <Button
-              onPress={this.onPressFilter}
-              buttonStyle={this.styles.filterButton}
-              icon={
-                this.state.filterOpen ? (
-                  <Icon name="times" size={24} color="#110b84" />
-                ) : (
-                  <Icon name="filter" size={24} color="#110b84" />
-                )
-              }
-            />
+            <View style={{flexDirection: 'row'}}>
+              <Button
+                onPress={this.onPressFilter}
+                buttonStyle={this.styles.filterButton}
+                icon={
+                  this.state.filterOpen ? (
+                    <Icon name="times" size={24} color="#110b84" />
+                  ) : (
+                    <Icon name="filter" size={24} color="#110b84" />
+                  )
+                }
+              />
+              <Button
+                onPress={this.onPressFollowUser}
+                buttonStyle={this.styles.filterButton}
+                icon={<Icon name="street-view" size={24} color="#110b84" />}
+              />
+            </View>
             {this.state.filterOpen ? (
               <Filter
                 placeType={this.state.placeType}

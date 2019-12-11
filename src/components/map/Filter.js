@@ -79,12 +79,6 @@ class Filter extends Component {
     ];
   }
 
-  onSelectedItem = itemValue => {
-    console.log(itemValue);
-    this.props.onSelectItem(itemValue);
-    console.log(this.props);
-  };
-
   onCheckedOpen = () => {
     this.setState(prevState => ({openChecked: !prevState.openChecked}));
     console.log(this.state.openChecked);

@@ -304,12 +304,17 @@ export default StyleSheet.create({
     fontStyle: 'italic',
   },
   calloutContainer: {
-    backgroundColor: 'rgba(255,255,255,0.9)',
+    backgroundColor: 'rgba(255,255,255,.95)',
     minWidth: 100,
     maxWidth: 300,
     paddingVertical: 8,
     paddingHorizontal: 16,
     borderRadius: 16,
+    borderColor: 'transparent',
+    shadowColor: '#000',
+    shadowOffset: {width: 0, height: 1},
+    shadowOpacity: 0.15,
+    shadowRadius: 1,
   },
   calloutText: {
     color: colors.navy,
