@@ -6,6 +6,8 @@ import {
   ActivityIndicator,
   Image,
   Dimensions,
+  TouchableHighlight,
+  Alert,
 } from 'react-native';
 import {Button} from 'react-native-elements';
 
@@ -21,7 +23,13 @@ import {inject, observer} from 'mobx-react';
 import Filter from '../../../components/map/Filter.js';
 import Icon from 'react-native-vector-icons/FontAwesome';
 
+import MapboxGL from '@react-native-mapbox-gl/maps';
+
 import GOOGLEPIN from '../../../assets/googlepin.png';
+
+MapboxGL.setAccessToken(
+  'pk.eyJ1Ijoic2VnaWVyZ2lhY2kiLCJhIjoiY2s0MHp2dGN3MDZydzNtcW5rZzl4MjByaCJ9.dWRZ7UQj1GX3_yUrcBzW8Q',
+);
 
 export class MapScreen extends Component {
   constructor(props) {
@@ -31,22 +39,20 @@ export class MapScreen extends Component {
     } else {
       this.styles = androidUI;
     }
-    console.log(this.props);
 
     this.state = {
       googleAPI: props.mapStore.googleAPI,
-      userLocation: {
-        latitude: props.mapStore.userLocation.latitude,
-        longitude: props.mapStore.userLocation.longitude,
-        latitudeDelta: 0.015,
-        longitudeDelta: 0.015,
-      },
-      regionLocation: {
-        latitude: props.mapStore.userLocation.latitude,
-        longitude: props.mapStore.userLocation.longitude,
-      },
+      userLocation: [
+        props.mapStore.userLocation.longitude,
+        props.mapStore.userLocation.latitude,
+      ],
+      regionLocation: [
+        props.mapStore.userLocation.longitude,
+        props.mapStore.userLocation.latitude,
+      ],
       places: [],
       markers: [],
+      coordinates: [],
       placeType: 'tourist_attraction',
       radius: 1500,
       checkOpen: false,
@@ -62,8 +68,8 @@ export class MapScreen extends Component {
   getPlaces = async () => {
     const {regionLocation, placeType, radius} = this.state;
     const url = this.props.mapStore.getUrlWithParameters(
-      regionLocation.latitude,
-      regionLocation.longitude,
+      regionLocation.slice(1, 2),
+      regionLocation.slice(0, 1),
       radius,
       placeType,
       this.state.googleAPI,
@@ -73,65 +79,59 @@ export class MapScreen extends Component {
       .then(data => data.json())
       .then(respons => {
         const markers = [];
+        const newCoordinates = [];
 
         respons.results.map(place => {
+          let coordinate = [];
           if (this.state.checkOpen) {
             if (place.opening_hours && place.opening_hours.open_now === true) {
               markers.push(place);
+              coordinate = [
+                place.geometry.location.lng,
+                place.geometry.location.lat,
+              ];
+              newCoordinates.push(coordinate);
             }
           } else {
             markers.push(place);
+            coordinate = [
+              place.geometry.location.lng,
+              place.geometry.location.lat,
+            ];
+
+            newCoordinates.push(coordinate);
           }
         });
 
-        this.setState({places: markers});
+        this.setState({places: markers, coordinates: newCoordinates});
       });
   };
 
   setLocation = position => {
     this.setState({
-      userLocation: {
-        latitude: position.latitude,
-        longitude: position.longitude,
-        latitudeDelta: 0.015,
-        longitudeDelta: 0.015,
-      },
-    });
-  };
-
-  setRegion = position => {
-    this.setState({
-      regionLocation: {
-        latitude: position.latitude,
-        longitude: position.longitude,
-      },
+      userLocation: [position.longitude, position.latitude],
     });
   };
 
   moveRegion = () => {
-    const regionLocation = {
-      latitude: this.state.regionLocation.latitude,
-      longitude: this.state.regionLocation.longitude,
-      latitudeDelta: 0.015,
-      longitudeDelta: 0.015,
-    };
-    this.setRegion(regionLocation);
+    this.setState({
+      regionLocation: this.state.regionLocation,
+    });
+    console.log(this.state.regionLocation);
     this.getPlaces();
   };
 
   onChangeRegion = region => {
-    const newRegion = {
-      latitude: region.latitude,
-      longitude: region.longitude,
-      latitudeDelta: 0.015,
-      longitudeDelta: 0.015,
-    };
+    const newRegion = region.geometry.coordinates;
+    console.log(region.geometry.coordinates);
     this.setState({regionLocation: newRegion, markers: []});
   };
 
   renderCarouselItem = ({item}) => {
-    if (item.photos[0].photo_reference) {
-      this.placeImage = `https://maps.googleapis.com/maps/api/place/photo?maxwidth=200&photoreference=${item.photos[0].photo_reference}&key=${this.state.googleAPI}`;
+    if (item.photos) {
+      this.placeImage = `https://maps.googleapis.com/maps/api/place/photo?maxwidth=200&photoreference=${
+        item.photos[0].photo_reference
+      }&key=${this.state.googleAPI}`;
     }
     return (
       <View
@@ -151,7 +151,13 @@ export class MapScreen extends Component {
           />
         ) : null}
         <View style={{width: '48%'}}>
-          <Text style={this.styles.carouselTitle}>{item.name}</Text>
+          <Text style={this.styles.carouselTitle}>
+            {item.name.split('').length > 20 ? (
+              <Text>{item.name.slice(0, 20)}...</Text>
+            ) : (
+              <Text>{item.name}</Text>
+            )}
+          </Text>
           <View style={{flexDirection: 'row', flexWrap: 'wrap'}}>
             {item.types.map((type, index) => {
               const correctType = type.replace(/_/g, ' ');
@@ -180,33 +186,26 @@ export class MapScreen extends Component {
 
   onCarouselItemChange = index => {
     let place = this.state.places[index];
-    this._map.animateToRegion({
-      latitude: place.geometry.location.lat,
-      longitude: place.geometry.location.lng,
-      latitudeDelta: 0.015,
-      longitudeDelta: 0.015,
-    });
+    this._map.flyTo([place.geometry.location.lng, place.geometry.location.lat]);
 
-    this.state.markers[index].showCallout();
+    let selectedPlace = `placeSelected${index}`;
+
+    this.setState({placeSelected: selectedPlace});
+    // this.state.markers[index].showCallout();
   };
-  onMarkerPressed = (place, index) => {
-    this._map.animateToRegion({
-      latitude: place.geometry.location.lat,
-      longitude: place.geometry.location.lng,
-      latitudeDelta: 0.015,
-      longitudeDelta: 0.015,
-    });
+  onMarkerPressed = (coordinates, index) => {
+    console.log(coordinates);
+    this._map.flyTo(coordinates);
     this._carousel.snapToItem(index);
+    let selectedPlace = `placeSelected${index}`;
+    this.setState({placeSelected: selectedPlace});
   };
 
   onPressFilter = () => {
-    console.log('press filter');
     this.setState(prevState => ({filterOpen: !prevState.filterOpen}));
-    console.log(this.state.filterOpen);
   };
 
   onSelectItem = placeType => {
-    console.log(placeType);
     this.setState({placeType: placeType, filterOpen: false});
   };
 
@@ -224,60 +223,69 @@ export class MapScreen extends Component {
     console.log('go');
   };
 
+  renderAnnotation(counter) {
+    const id = `pointAnnotation${counter}`;
+    const coordinate = this.state.coordinates[counter];
+
+    return (
+      <MapboxGL.PointAnnotation
+        onSelected={() => this.onMarkerPressed(coordinate, counter)}
+        selected={this.state.placeSelected === `placeSelected${counter}`}
+        ref={marker => (this._annotation = marker)}
+        key={id}
+        id={id}
+        title="Test"
+        coordinate={coordinate}>
+        <Image
+          source={require('../../../assets/googlepin.png')}
+          style={{
+            flex: 1,
+            resizeMode: 'contain',
+            width: 45,
+            height: 45,
+          }}
+        />
+        <MapboxGL.Callout
+          title={this.state.places[counter].name}
+          textStyle={this.styles.calloutText}
+          contentStyle={this.styles.calloutContainer}
+        />
+      </MapboxGL.PointAnnotation>
+    );
+  }
+
+  renderAnnotations() {
+    const items = [];
+
+    for (let i = 0; i < this.state.coordinates.length; i++) {
+      items.push(this.renderAnnotation(i));
+    }
+
+    console.log(items);
+    return items;
+  }
+
   render() {
     const {userLocation} = this.state;
 
-    if (userLocation.latitude && userLocation.latitude !== 0) {
+    if (userLocation.slice(0, 1) && userLocation.slice(1, 2) !== 0) {
       return (
         <>
-          <MapView
-            ref={map => (this._map = map)}
-            toolbarEnabled={false}
-            showsUserLocation={true}
-            followsUserLocation={true}
-            loadingEnabled
-            showsPointsOfInterest={false}
-            showsMyLocationButton={true}
-            customMapStyle={MapStyle}
-            style={this.styles.map}
-            provider={MapView.PROVIDER_GOOGLE}
-            initialRegion={{
-              latitude: userLocation.latitude,
-              longitude: userLocation.longitude,
-              latitudeDelta: userLocation.latitudeDelta,
-              longitudeDelta: userLocation.longitudeDelta,
-            }}
-            onRegionChangeComplete={this.onChangeRegion}>
-            {this.state.places ? (
-              <>
-                {this.state.places.map((place, index) => {
-                  console.log(place);
-                  return (
-                    <Marker
-                      key={index}
-                      ref={ref => (this.state.markers[index] = ref)}
-                      coordinate={{
-                        latitude: place.geometry.location.lat,
-                        longitude: place.geometry.location.lng,
-                      }}
-                      onPress={() => this.onMarkerPressed(place, index)}>
-                      {/* <Image
-                        source={require('../../../assets/googlepin.png')}
-                        style={{height: 50, resizeMode: 'contain'}}
-                      /> */}
-                      <Callout tooltip style={this.styles.calloutContainer}>
-                        <View>
-                          <Text style={this.styles.calloutText}>
-                            {place.name}
-                          </Text>
-                        </View>
-                      </Callout>
-                    </Marker>
-                  );
-                })}
-              </>
-            ) : null}
-          </MapView>
+          <View style={{flex: 1}}>
+            <MapboxGL.MapView
+              followUserMode={'compass'}
+              logoEnabled={false}
+              setMyLocationEnabled={true}
+              ref={c => (this._map = c)}
+              style={{flex: 1}}
+              zoomLevel={14}
+              onRegionDidChange={this.onChangeRegion}
+              showUserLocation={true}
+              styleURL={MapboxGL.StyleURL.Light}
+              userTrackingMode={MapboxGL.UserTrackingModes.Follow}>
+              {this.renderAnnotations()}
+            </MapboxGL.MapView>
+          </View>
           <Button
             title="search this region"
             onPress={this.moveRegion}
