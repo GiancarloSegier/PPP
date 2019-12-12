@@ -271,25 +271,60 @@ export default StyleSheet.create({
   // Map
 
   map: {
-    flex: 1,
-
-    // marginBottom: -30,
+    flex: 2.75,
+  },
+  placesBox: {
+    height: 150,
+    backgroundColor: colors.blue,
+  },
+  noPlacesBox: {
+    flex: 0.4,
+    backgroundColor: colors.blue,
+    padding: 24,
+  },
+  emptyPlacesText: {
+    fontSize: 16,
+    fontWeight: 'bold',
+    color: colors.white,
+    textAlign: 'center',
+  },
+  emptyPlacesTip: {
+    color: colors.lightBlue,
+    fontWeight: '600',
   },
   carouselContainer: {
-    position: 'absolute',
-    bottom: 130,
+    paddingVertical: 24,
+    shadowColor: colors.navy,
+    shadowOffset: {width: 0, height: 2},
+    shadowOpacity: 0.5,
+    shadowRadius: 10,
+    elevation: 2,
+    marginLeft: -32,
   },
   carouselCard: {
-    backgroundColor: 'rgba(255,255,255,0.9)',
-    width: 300,
-    padding: 24,
-    borderRadius: 24,
+    backgroundColor: colors.white,
+    width: '100%',
+    padding: 16,
+    borderRadius: 16,
+    flexDirection: 'row',
+    flex: 1,
+    justifyContent: 'space-between',
   },
   carouselTitle: {
     color: colors.navy,
-    fontSize: 18,
+    fontSize: 16,
     fontWeight: '900',
-    marginBottom: 8,
+    marginBottom: 6,
+  },
+  mapPlaceInfo: {
+    flex: 1,
+    justifyContent: 'center',
+  },
+  mapPlaceImage: {
+    height: '100%',
+    width: '30%',
+    borderRadius: 8,
+    marginRight: 16,
   },
   placeType: {
     color: colors.blue,
@@ -306,15 +341,12 @@ export default StyleSheet.create({
   calloutContainer: {
     backgroundColor: 'rgba(255,255,255,.95)',
     minWidth: 100,
-    maxWidth: 300,
+    maxWidth: 200,
     paddingVertical: 8,
     paddingHorizontal: 16,
     borderRadius: 16,
-    borderColor: 'transparent',
-    shadowColor: '#000',
-    shadowOffset: {width: 0, height: 1},
-    shadowOpacity: 0.15,
-    shadowRadius: 1,
+    borderColor: colors.navy,
+    borderWidth: 0.5,
   },
   calloutText: {
     color: colors.navy,
@@ -333,10 +365,10 @@ export default StyleSheet.create({
     height: 48,
     width: 48,
     padding: 0,
-    shadowColor: '#000',
+    shadowColor: colors.navy,
     shadowOffset: {width: 0, height: 2},
     shadowOpacity: 0.35,
-    shadowRadius: 2,
+    shadowRadius: 3,
     // elevation: 1,
   },
   filterContainer: {
@@ -349,6 +381,8 @@ export default StyleSheet.create({
     width: Dimensions.get('screen').width,
     backgroundColor: 'rgba(255,255,255,0.98)',
     padding: 24,
+    paddingTop: 40,
+    zIndex: 99,
   },
   filterTitle: {
     fontSize: 24,

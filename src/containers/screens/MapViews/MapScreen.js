@@ -20,6 +20,8 @@ import {inject, observer} from 'mobx-react';
 import Filter from '../../../components/map/Filter.js';
 import Icon from 'react-native-vector-icons/FontAwesome';
 
+import MapView, {Marker, Callout} from 'react-native-maps';
+
 import GOOGLEPIN from '../../../assets/googlepin.png';
 
 export class MapScreen extends Component {
@@ -30,7 +32,6 @@ export class MapScreen extends Component {
     } else {
       this.styles = androidUI;
     }
-    console.log(this.props);
 
     this.state = {
       googleAPI: props.mapStore.googleAPI,
@@ -43,6 +44,8 @@ export class MapScreen extends Component {
       regionLocation: {
         latitude: props.mapStore.userLocation.latitude,
         longitude: props.mapStore.userLocation.longitude,
+        latitudeDelta: 0.015,
+        longitudeDelta: 0.015,
       },
       places: [],
       markers: [],
@@ -51,6 +54,7 @@ export class MapScreen extends Component {
       radius: 1500,
       checkOpen: false,
       filterOpen: false,
+      activeItem: 2,
     };
   }
 
@@ -107,63 +111,63 @@ export class MapScreen extends Component {
       regionLocation: {
         latitude: position.latitude,
         longitude: position.longitude,
+        latitudeDelta: position.latitudeDelta,
+        longitudeDelta: position.longitudeDelta,
       },
     });
   };
 
-  moveRegion = () => {
+  moveRegion = async () => {
     const regionLocation = {
       latitude: this.state.regionLocation.latitude,
       longitude: this.state.regionLocation.longitude,
-      latitudeDelta: 0.015,
-      longitudeDelta: 0.015,
+      latitudeDelta: this.state.regionLocation.latitudeDelta,
+      longitudeDelta: this.state.regionLocation.longitudeDelta,
     };
     this.setRegion(regionLocation);
-    this.getPlaces();
+    await this.getPlaces(this.state.placeType, this.state.radius);
+    this.onCarouselItemChange(0);
+    await this.carousel.snapToItem(0);
   };
 
   onChangeRegion = region => {
     const newRegion = {
       latitude: region.latitude,
       longitude: region.longitude,
-      latitudeDelta: 0.015,
-      longitudeDelta: 0.015,
+      latitudeDelta: region.latitudeDelta,
+      longitudeDelta: region.longitudeDelta,
     };
     this.setState({regionLocation: newRegion, markers: []});
   };
 
   renderCarouselItem = ({item}) => {
-    if (item.photos[0].photo_reference) {
-      this.placeImage = `https://maps.googleapis.com/maps/api/place/photo?maxwidth=200&photoreference=${
+    let placeImage;
+    if (item.photos) {
+      placeImage = `https://maps.googleapis.com/maps/api/place/photo?maxwidth=200&photoreference=${
         item.photos[0].photo_reference
       }&key=${this.state.googleAPI}`;
     }
+
     return (
-      <View
-        style={[
-          this.styles.carouselCard,
-          {
-            flexDirection: 'row',
-            flex: 1,
-            justifyContent: 'space-between',
-            padding: 0,
-          },
-        ]}>
+      <View style={this.styles.carouselCard}>
         {placeImage ? (
-          <Image
-            source={{uri: placeImage}}
-            style={{height: '100%', width: '48%'}}
-          />
+          <Image source={{uri: placeImage}} style={this.styles.mapPlaceImage} />
         ) : null}
-        <View style={{width: '48%'}}>
-          <Text style={this.styles.carouselTitle}>{item.name}</Text>
+        <View style={this.styles.mapPlaceInfo}>
+          <Text style={this.styles.carouselTitle}>
+            {item.name.split('').length > 20 ? (
+              <Text>{item.name.slice(0, 20)}...</Text>
+            ) : (
+              <Text>{item.name}</Text>
+            )}
+          </Text>
           <View style={{flexDirection: 'row', flexWrap: 'wrap'}}>
             {item.types.map((type, index) => {
               const correctType = type.replace(/_/g, ' ');
               if (
                 correctType !== 'point of interest' &&
                 correctType !== 'establishment' &&
-                index < 2
+                index < 1
               ) {
                 return (
                   <Text key={index} style={[this.styles.placeType]}>
@@ -173,18 +177,12 @@ export class MapScreen extends Component {
               }
             })}
           </View>
-          {item.opening_hours ? (
-            <Text style={this.styles.placeAdress}>
-              {item.opening_hours.open_now ? 'Opened now' : 'Closed'}
-            </Text>
-          ) : null}
         </View>
       </View>
     );
   };
 
   onCarouselItemChange = index => {
-    console.log(index);
     let place = this.state.places[index];
     this._map.animateToRegion({
       latitude: place.geometry.location.lat,
@@ -202,17 +200,14 @@ export class MapScreen extends Component {
       latitudeDelta: 0.015,
       longitudeDelta: 0.015,
     });
-    this._carousel.snapToItem(index);
+    this.carousel.snapToItem(index);
   };
 
   onPressFilter = () => {
-    console.log('press filter');
     this.setState(prevState => ({filterOpen: !prevState.filterOpen}));
-    console.log(this.state.filterOpen);
   };
 
   onSelectItem = placeType => {
-    console.log(placeType);
     this.setState({placeType: placeType, filterOpen: false});
   };
 
@@ -225,46 +220,72 @@ export class MapScreen extends Component {
       regionLocation: this.state.regionLocation,
       selectedPlace: 'placeSelected0',
     });
-    console.log(type + ' : ' + this.state.placeType);
     await this.getPlaces(type, radius);
-
-    // this.moveRegion();
   };
 
-  onPressGo = () => {
-    console.log('go');
+  onPressFollowUser = async () => {
+    await this.props.mapStore.getCurrentLocation();
+    this.currentLocation = await this.props.mapStore.userLocation;
+
+    const newLocation = {
+      latitude: this.currentLocation.latitude,
+      longitude: this.currentLocation.longitude,
+      latitudeDelta: 0.015,
+      longitudeDelta: 0.015,
+    };
+
+    console.log(this.currentLocation);
+
+    this._map.animateToRegion({
+      latitude: this.currentLocation.latitude,
+      longitude: this.currentLocation.longitude,
+      latitudeDelta: 0.015,
+      longitudeDelta: 0.015,
+    });
+
+    this.setState({regionLocation: newLocation});
+    this.getPlaces(this.state.placeType, this.state.radius);
   };
 
   render() {
-    const {userLocation, centerCoordinate} = this.state;
+    const {userLocation, regionLocation} = this.state;
 
     if (userLocation.latitude && userLocation.latitude !== 0) {
       return (
         <>
+          {this.state.filterOpen ? (
+            <Filter
+              placeType={this.state.placeType}
+              radius={this.state.radius}
+              checkOpen={this.state.checkOpen}
+              onSelectItem={this.onSelectItem}
+              onSetFilter={this.onSetFilter}
+            />
+          ) : null}
           <MapView
             ref={map => (this._map = map)}
             toolbarEnabled={false}
             showsUserLocation={true}
-            followsUserLocation={true}
+            showsBuildings
             loadingEnabled
             showsPointsOfInterest={false}
-            showsMyLocationButton={true}
+            showsMyLocationButton={false}
             customMapStyle={MapStyle}
             style={this.styles.map}
             provider={MapView.PROVIDER_GOOGLE}
             initialRegion={{
-              latitude: userLocation.latitude,
-              longitude: userLocation.longitude,
-              latitudeDelta: userLocation.latitudeDelta,
-              longitudeDelta: userLocation.longitudeDelta,
+              latitude: regionLocation.latitude,
+              longitude: regionLocation.longitude,
+              latitudeDelta: regionLocation.latitudeDelta,
+              longitudeDelta: regionLocation.longitudeDelta,
             }}
             onRegionChangeComplete={this.onChangeRegion}>
             {this.state.places ? (
               <>
                 {this.state.places.map((place, index) => {
-                  console.log(place);
                   return (
                     <Marker
+                      icon={GOOGLEPIN}
                       key={index}
                       ref={ref => (this.state.markers[index] = ref)}
                       coordinate={{
@@ -272,10 +293,6 @@ export class MapScreen extends Component {
                         longitude: place.geometry.location.lng,
                       }}
                       onPress={() => this.onMarkerPressed(place, index)}>
-                      {/* <Image
-                        source={require('../../../assets/googlepin.png')}
-                        style={{height: 50, resizeMode: 'contain'}}
-                      /> */}
                       <Callout tooltip style={this.styles.calloutContainer}>
                         <View>
                           <Text style={this.styles.calloutText}>
@@ -289,27 +306,7 @@ export class MapScreen extends Component {
               </>
             ) : null}
           </MapView>
-          <Button
-            title="search this region"
-            onPress={this.moveRegion}
-            buttonStyle={this.styles.mapButton}
-            titleStyle={this.styles.primaryFormButtonTitle}
-          />
-          <Carousel
-            containerCustomStyle={this.styles.carouselContainer}
-            contentContainerCustomStyle={{
-              alignItems: 'flex-end',
-            }}
-            ref={c => {
-              this.carousel = c;
-            }}
-            data={this.state.places}
-            renderItem={this.renderCarouselItem}
-            sliderWidth={Dimensions.get('window').width}
-            itemWidth={300}
-            activeItem
-            onSnapToItem={index => this.onCarouselItemChange(index)}
-          />
+
           <View style={{position: 'absolute', zIndex: 99}}>
             <View style={{flexDirection: 'row'}}>
               <Button
@@ -323,22 +320,50 @@ export class MapScreen extends Component {
                   )
                 }
               />
-              <Button
-                onPress={this.onPressFollowUser}
-                buttonStyle={this.styles.filterButton}
-                icon={<Icon name="street-view" size={24} color="#110b84" />}
-              />
+              {!this.state.filterOpen ? (
+                <Button
+                  onPress={this.onPressFollowUser}
+                  buttonStyle={this.styles.filterButton}
+                  icon={<Icon name="street-view" size={24} color="#110b84" />}
+                />
+              ) : null}
             </View>
-            {this.state.filterOpen ? (
-              <Filter
-                placeType={this.state.placeType}
-                radius={this.state.radius}
-                checkOpen={this.state.checkOpen}
-                onSelectItem={this.onSelectItem}
-                onSetFilter={this.onSetFilter}
-              />
-            ) : null}
           </View>
+          <View
+            style={
+              this.state.places.length > 0
+                ? this.styles.placesBox
+                : this.styles.noPlacesBox
+            }>
+            {this.state.places.length > 0 ? (
+              <Carousel
+                containerCustomStyle={this.styles.carouselContainer}
+                ref={c => {
+                  this.carousel = c;
+                }}
+                data={this.state.places}
+                renderItem={this.renderCarouselItem}
+                sliderWidth={Dimensions.get('window').width + 40}
+                itemWidth={Dimensions.get('window').width * 0.8}
+                onSnapToItem={index => this.onCarouselItemChange(index)}
+              />
+            ) : (
+              <>
+                <Text style={this.styles.emptyPlacesText}>
+                  No places were found. Search somewhere else.
+                </Text>
+                <Text style={this.styles.emptyPlacesTip}>
+                  Tip: use the filter
+                </Text>
+              </>
+            )}
+          </View>
+          <Button
+            title="search this region"
+            onPress={this.moveRegion}
+            buttonStyle={this.styles.mapButton}
+            titleStyle={this.styles.primaryFormButtonTitle}
+          />
         </>
       );
     } else {

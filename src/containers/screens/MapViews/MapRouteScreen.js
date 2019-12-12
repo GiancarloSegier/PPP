@@ -13,6 +13,9 @@ import MapViewDirections from 'react-native-maps-directions';
 
 import haversine from 'haversine';
 
+import {Button} from 'react-native-elements';
+import {Icon} from 'react-native-vector-icons/FontAwesome';
+
 let seconds = 0;
 const googlepin = require('../../../assets/googlepin.png');
 const googlePinStart = require('../../../assets/googlepinStart.png');
@@ -29,7 +32,7 @@ export class MapRouteScreen extends Component {
 
     this.state = {
       seconds: 0,
-      followsUserLocation: true,
+      followUserLocation: true,
       googleAPI: props.mapStore.googleAPI,
       userLocation: {
         latitude: props.mapStore.userLocation.latitude,
@@ -59,40 +62,40 @@ export class MapRouteScreen extends Component {
           latitude: props.mapStore.userLocation.latitude,
           longitude: props.mapStore.userLocation.longitude,
         },
-        {
-          name: 'Statua Di Carlo Alberto',
-          latitude: 41.900262,
-          longitude: 12.48864,
-        },
-        {
-          name: 'Piazza Venezia',
-          latitude: 41.8958,
-          longitude: 12.4826,
-        },
-        {
-          name: 'Villa Borghesa',
-          latitude: 41.912946,
-          longitude: 12.485033,
-        },
-        {
-          name: 'Colloseo',
-          latitude: 41.8902,
-          longitude: 12.4922,
-        },
-        {
-          name: 'Castel Sant Angelo',
-          latitude: 41.90346,
-          longitude: 12.466345,
-        },
+        // {
+        //   name: 'Statua Di Carlo Alberto',
+        //   latitude: 41.900262,
+        //   longitude: 12.48864,
+        // },
+        // {
+        //   name: 'Piazza Venezia',
+        //   latitude: 41.8958,
+        //   longitude: 12.4826,
+        // },
+        // {
+        //   name: 'Villa Borghesa',
+        //   latitude: 41.912946,
+        //   longitude: 12.485033,
+        // },
+        // {
+        //   name: 'Colloseo',
+        //   latitude: 41.8902,
+        //   longitude: 12.4922,
+        // },
+        // {
+        //   name: 'Castel Sant Angelo',
+        //   latitude: 41.90346,
+        //   longitude: 12.466345,
+        // },
 
-        // {
-        //   latitude: 37.3317876,
-        //   longitude: -122.0054812,
-        // },
-        // {
-        //   latitude: 37.771707,
-        //   longitude: -122.4053769,
-        // },
+        {
+          latitude: 37.3317876,
+          longitude: -122.0054812,
+        },
+        {
+          latitude: 37.771707,
+          longitude: -122.4053769,
+        },
       ],
     };
   }
@@ -115,6 +118,27 @@ export class MapRouteScreen extends Component {
       userLocation: this.currentLocation,
     });
   };
+
+  userLocationChanged = newLocation => {
+    this.region = {
+      latitude: newLocation.nativeEvent.coordinate.latitude,
+      longitude: newLocation.nativeEvent.coordinate.longitude,
+      latitudeDelta: 0.015,
+      longitudeDelta: 0.015,
+    };
+
+    this.calcDistanceLeft(newLocation);
+    this.setState({userLocation: this.region});
+  };
+
+  regionChanged(event) {
+    this.region = {
+      longitudeDelta: event.longitudeDelta,
+      latitudeDelta: event.latitudeDelta,
+      latitude: event.latitude,
+      longitude: event.longitude,
+    };
+  }
 
   calcDistanceLeft = newLocation => {
     this.prevLoc = {
@@ -167,6 +191,14 @@ export class MapRouteScreen extends Component {
     return ('000' + num).slice(size * -1);
   }
 
+  onDrag = event => {
+    this.setState({
+      followUserLocation: false,
+    });
+
+    console.log(this.state.followUserLocation);
+  };
+
   render() {
     const {
       userLocation,
@@ -178,6 +210,17 @@ export class MapRouteScreen extends Component {
     } = this.state;
     return (
       <>
+        <Button
+          onPress={this.onPressFollowUser}
+          buttonStyle={this.styles.filterButton}
+          icon={<Icon name="street-view" size={24} color="#110b84" />}
+        />
+
+        {/* <Button
+          onPress={this.onPressFollowUser}
+          buttonStyle={this.styles.filterButton}
+          icon={<Icon name="street-view" size={24} color="#110b84" />}
+        /> */}
         <View
           style={{
             justifyContent: 'space-between',
@@ -242,17 +285,31 @@ export class MapRouteScreen extends Component {
           </View>
         </View>
         <MapView
+          camera={{
+            zoom: 19,
+            pitch: 90,
+            heading: 0,
+            center: userLocation,
+          }}
           ref={map => (this._map = map)}
           toolbarEnabled={false}
           showsUserLocation={true}
+          followsUserLocation={true}
           loadingEnabled
           showsPointsOfInterest={false}
-          showsMyLocationButton={true}
+          showsMyLocationButton={false}
           customMapStyle={MapStyle}
           style={this.styles.map}
           provider={MapView.PROVIDER_GOOGLE}
-          // onUserLocationChange={this.changeLocation}
-          initialRegion={userLocation}>
+          onRegionChange={this.regionChanged}
+          onPanDrag={this.onDrag}
+          onUserLocationChange={event =>
+            this.state.followUserLocation
+              ? this.userLocationChanged(event)
+              : null
+          }
+          // initialRegion={userLocation}
+        >
           <MapViewDirections
             mode="WALKING"
             origin={this.state.coordinates[0]}
@@ -265,8 +322,8 @@ export class MapRouteScreen extends Component {
               this.state.coordinates[this.state.coordinates.length - 1]
             }
             apikey={googleAPI}
-            strokeWidth={3}
-            strokeColor="#FFA500"
+            strokeWidth={25}
+            strokeColor="#182ac1"
             optimizeWaypoints={true}
             onStart={params => {
               console.log(
