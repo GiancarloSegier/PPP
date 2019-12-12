@@ -261,20 +261,14 @@ export default StyleSheet.create({
     paddingHorizontal: 24,
     paddingVertical: 16,
   },
-  // carouselTitle: {
-  //   color: colors.navy,
-  //   fontSize: 18,
-  //   fontWeight: 'bold',
-  //   marginBottom: 8,
-  // },
 
   // Map
 
   map: {
-    flex: 2.75,
+    flex: 1,
   },
   placesBox: {
-    height: 150,
+    height: 140,
     backgroundColor: colors.blue,
   },
   noPlacesBox: {
@@ -291,6 +285,7 @@ export default StyleSheet.create({
   emptyPlacesTip: {
     color: colors.lightBlue,
     fontWeight: '600',
+    textAlign: 'center',
   },
   carouselContainer: {
     paddingVertical: 24,
@@ -340,8 +335,7 @@ export default StyleSheet.create({
   },
   calloutContainer: {
     backgroundColor: 'rgba(255,255,255,.95)',
-    minWidth: 100,
-    maxWidth: 200,
+    width: 150,
     paddingVertical: 8,
     paddingHorizontal: 16,
     borderRadius: 16,
@@ -351,6 +345,7 @@ export default StyleSheet.create({
   calloutText: {
     color: colors.navy,
     fontWeight: 'bold',
+    textAlign: 'center',
   },
   mapButton: {
     backgroundColor: colors.darkBlue,
