@@ -141,8 +141,11 @@ export class MapScreen extends Component {
   };
 
   renderCarouselItem = ({item}) => {
+    let placeImage;
     if (item.photos) {
-      this.placeImage = `https://maps.googleapis.com/maps/api/place/photo?maxwidth=200&photoreference=${item.photos[0].photo_reference}&key=${this.state.googleAPI}`;
+      placeImage = `https://maps.googleapis.com/maps/api/place/photo?maxwidth=200&photoreference=${item.photos[0].photo_reference}&key=${this.state.googleAPI}`;
+    } else {
+      placeImage;
     }
     return (
       <View
@@ -155,9 +158,9 @@ export class MapScreen extends Component {
             padding: 0,
           },
         ]}>
-        {this.placeImage ? (
+        {placeImage ? (
           <Image
-            source={{uri: this.placeImage}}
+            source={{uri: placeImage}}
             style={{height: '100%', width: '48%'}}
           />
         ) : null}
@@ -254,7 +257,7 @@ export class MapScreen extends Component {
         id={id}
         title="Test"
         coordinate={coordinate}>
-        <Image
+        {/* <Image
           source={require('../../../assets/googlepin.png')}
           style={{
             flex: 1,
@@ -262,7 +265,7 @@ export class MapScreen extends Component {
             width: 45,
             height: 45,
           }}
-        />
+        /> */}
         <MapboxGL.Callout
           title={this.state.places[counter].name}
           textStyle={this.styles.calloutText}
