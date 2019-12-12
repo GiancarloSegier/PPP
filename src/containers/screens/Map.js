@@ -6,22 +6,18 @@ import {
   ActivityIndicator,
   Image,
   Dimensions,
+  TouchableHighlight,
+  TouchableHighlightComponent,
 } from 'react-native';
 import {Button} from 'react-native-elements';
-
 import androidUI from '../../styles/ui.android.style.js';
 import iosUI from '../../styles/ui.ios.style.js';
-
 import MapStyle from '../../config/MapStyle';
-
 import Carousel from 'react-native-snap-carousel';
-
 import {inject, observer} from 'mobx-react';
 import Filter from '../../components/map/Filter.js';
 import Icon from 'react-native-vector-icons/FontAwesome';
-
 import MapView, {Marker, Callout} from 'react-native-maps';
-
 import GOOGLEPIN from '../../assets/googlepin.png';
 
 export class Map extends Component {
@@ -121,10 +117,9 @@ export class Map extends Component {
     };
     this.setRegion(regionLocation);
     await this.getPlaces(this.state.placeType, this.state.radius);
-    if (this.state.places > 0) {
-      this.onCarouselItemChange(0);
-      await this.carousel.snapToItem(0);
-    }
+
+    this.onCarouselItemChange(0);
+    await this.carousel.snapToItem(0);
   };
 
   onChangeRegion = region => {
@@ -191,19 +186,20 @@ export class Map extends Component {
       latitudeDelta: 0.015,
       longitudeDelta: 0.015,
     };
-    this._map.animateToRegion({
-      latitude: this.currentLocation.latitude,
-      longitude: this.currentLocation.longitude,
-      latitudeDelta: 0.015,
-      longitudeDelta: 0.015,
-    });
+    this._map.animateToRegion(newLocation);
 
     this.setState({regionLocation: newLocation});
     this.getPlaces(this.state.placeType, this.state.radius);
-    if (this.state.places > 0) {
-      this.onCarouselItemChange(0);
-      await this.carousel.snapToItem(0);
-    }
+
+    this.onCarouselItemChange(0);
+    await this.carousel.snapToItem(0);
+  };
+
+  onPressPlace = place => {
+    this.props.navigation.navigate('InfoScreen', {
+      place: place,
+      placeName: place.name,
+    });
   };
 
   renderCarouselItem = ({item}) => {
@@ -215,36 +211,43 @@ export class Map extends Component {
     }
 
     return (
-      <View style={this.styles.carouselCard}>
-        {placeImage ? (
-          <Image source={{uri: placeImage}} style={this.styles.mapPlaceImage} />
-        ) : null}
-        <View style={this.styles.mapPlaceInfo}>
-          <Text style={this.styles.carouselTitle}>
-            {item.name.split('').length > 20 ? (
-              <Text>{item.name.slice(0, 20)}...</Text>
-            ) : (
-              <Text>{item.name}</Text>
-            )}
-          </Text>
-          <View>
-            {item.types.map((type, index) => {
-              const correctType = type.replace(/_/g, ' ');
-              if (
-                correctType !== 'point of interest' &&
-                correctType !== 'establishment' &&
-                index < 1
-              ) {
-                return (
-                  <Text key={index} style={[this.styles.placeType]}>
-                    {correctType}
-                  </Text>
-                );
-              }
-            })}
+      <TouchableHighlight
+        style={this.styles.carouselCardTouchableHighlight}
+        onPress={() => this.onPressPlace(item)}>
+        <View style={this.styles.carouselCard}>
+          {placeImage ? (
+            <Image
+              source={{uri: placeImage}}
+              style={this.styles.mapPlaceImage}
+            />
+          ) : null}
+          <View style={this.styles.mapPlaceInfo}>
+            <Text style={this.styles.carouselTitle}>
+              {item.name.split('').length > 20 ? (
+                <Text>{item.name.slice(0, 20)}...</Text>
+              ) : (
+                <Text>{item.name}</Text>
+              )}
+            </Text>
+            <View>
+              {item.types.map((type, index) => {
+                const correctType = type.replace(/_/g, ' ');
+                if (
+                  correctType !== 'point of interest' &&
+                  correctType !== 'establishment' &&
+                  index < 1
+                ) {
+                  return (
+                    <Text key={index} style={[this.styles.placeType]}>
+                      {correctType}
+                    </Text>
+                  );
+                }
+              })}
+            </View>
           </View>
         </View>
-      </View>
+      </TouchableHighlight>
     );
   };
 
@@ -343,7 +346,7 @@ export class Map extends Component {
                 }}
                 data={this.state.places}
                 renderItem={this.renderCarouselItem}
-                sliderWidth={Dimensions.get('window').width + 40}
+                sliderWidth={Dimensions.get('window').width + 32}
                 itemWidth={Dimensions.get('window').width * 0.8}
                 onSnapToItem={index => this.onCarouselItemChange(index)}
               />

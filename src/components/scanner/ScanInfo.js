@@ -10,16 +10,15 @@ import {
   Linking,
 } from 'react-native';
 import {Button} from 'react-native-elements';
+import {inject, observer} from 'mobx-react';
 
 class ScanInfo extends Component {
-  paragraphs = [];
   constructor(props) {
     super(props);
 
     this.state = {
       title: this.props.googleVisionDetection.webDetection.webEntities[0]
         .description,
-      searchContent: {},
       loadingInfo: true,
       landmarks: this.props.googleVisionDetection.webDetection.webEntities,
     };
@@ -27,49 +26,18 @@ class ScanInfo extends Component {
   componentDidMount() {
     this.collectInfo(this.state.title);
   }
+
   collectInfo = async searchTerm => {
     this.setState({loadingInfo: true});
-    const r = await fetch(
-      `https://en.wikipedia.org//w/api.php?action=query&format=json&prop=extracts&description&titles=${searchTerm}&exchars=1200&explaintext=1`,
-    );
-
-    const text = await r.json();
-    const pageObject = text.query.pages;
-    const pageInformation = pageObject[Object.keys(pageObject)[0]];
-
-    // // const imageUrl = `${pageInformation.fullurl}/${pageInformation.images[0].title}`;
-    // const imageName = pageInformation.images[0].title;
-    // const fullUrl = pageInformation.fullurl;
-    // const correctImageUrl = imageName.replace(/\s+/g, '_');
-
-    // NEEDS ANOTHER FETCH TO GET IMAGE!!!! OVERKILL!!
-
-    // const imageUrl = `${fullUrl}#/media/${correctImageUrl}`;
-    // console.log(imageUrl);
-
-    const paragraph = {};
-    this.paragraphs = [];
-    if (pageInformation.extract) {
-      const plainText = pageInformation.extract.split('==');
-      const infoArray = plainText[0].split('\n');
-
-      for (let i = 0; i < infoArray.length; i++) {
-        paragraph[i] = {id: i, text: infoArray[i]};
-        if (paragraph[i].text !== '') {
-          this.paragraphs.push(paragraph[i]);
-        }
-      }
-    }
+    await this.props.wikiStore.collectInfo(searchTerm);
+    const searchInfo = await this.props.wikiStore.wikiInfo;
 
     this.setState({
-      searchContent: pageObject,
-      title: searchTerm,
+      title: searchInfo.title,
       loadingInfo: false,
-      wikiURL: `https://en.wikipedia.org/wiki/${searchTerm}`,
-
-      // imageUrl: imageUrl,
+      wikiURL: searchInfo.wikiURL,
+      placeInfo: searchInfo.placeInfo,
     });
-    console.log(text.query);
   };
 
   handleClickUrl = () => {
@@ -134,15 +102,13 @@ class ScanInfo extends Component {
               this.state.title === ' ' ||
               this.state.title === 'undefined' ? null : (
                 <>
-                  {this.paragraphs.map(info => {
-                    return (
-                      <Text key={info.id} style={styles.body}>
-                        {info.text}
-                      </Text>
-                    );
-                  })}
                   <View>
-                    {!this.paragraphs[0] && (
+                    {this.state.placeInfo &&
+                    this.state.placeInfo.text !== '' ? (
+                      <Text style={styles.body}>
+                        {this.state.placeInfo.text}
+                      </Text>
+                    ) : (
                       <Text style={styles.body}>
                         No information was found. Turist is reading every book
                         at the moment...
@@ -153,7 +119,7 @@ class ScanInfo extends Component {
                     buttonStyle={styles.secondaryFormButton}
                     titleStyle={styles.secondaryFormButtonTitle}
                     title={
-                      this.paragraphs.length > 0
+                      this.state.placeInfo.text !== ''
                         ? 'Go to full information'
                         : 'Go to wikipediapage'
                     }
@@ -182,4 +148,4 @@ class ScanInfo extends Component {
   }
 }
 
-export default ScanInfo;
+export default inject('wikiStore')(observer(ScanInfo));

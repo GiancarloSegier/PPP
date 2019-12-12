@@ -7,6 +7,7 @@ import {
   Image,
   ActivityIndicator,
   RefreshControl,
+  TouchableHighlight,
 } from 'react-native';
 
 import androidUI from '../../styles/ui.android.style.js';
@@ -160,42 +161,6 @@ export class Home extends Component {
       .catch(error => console.warn(error));
   };
 
-  renderCarouselPlace = ({item}) => {
-    if (item.photos[0].photo_reference) {
-      const maxWidth = 500;
-      this.placeImage = `https://maps.googleapis.com/maps/api/place/photo?maxwidth=${maxWidth}&photoreference=${item.photos[0].photo_reference}&key=${this.state.googleAPI}`;
-    }
-    return (
-      <View style={this.styles.carouselPlaceCard}>
-        {this.placeImage ? (
-          <Image
-            source={{uri: this.placeImage}}
-            style={this.styles.placeImage}
-          />
-        ) : null}
-        <View style={this.styles.carouselPlaceContainer}>
-          <Text style={this.styles.carouselTitle}>{item.name}</Text>
-          <View style={{flexDirection: 'row', flexWrap: 'wrap'}}>
-            {item.types.map((type, index) => {
-              const correctType = type.replace(/_/g, ' ');
-              if (
-                correctType !== 'point of interest' &&
-                correctType !== 'establishment' &&
-                index < 2
-              ) {
-                return (
-                  <Text key={index} style={[this.styles.placeType]}>
-                    {correctType}
-                  </Text>
-                );
-              }
-            })}
-          </View>
-        </View>
-      </View>
-    );
-  };
-
   getCurrentCityImage = async () => {
     const url = await this.props.mapStore.getUrlWithParameters(
       this.props.mapStore.userLocation.latitude,
@@ -216,7 +181,9 @@ export class Home extends Component {
         ) {
           const cityImageReference =
             respons.results[0].photos[0].photo_reference;
-          const cityImageUrl = `https://maps.googleapis.com/maps/api/place/photo?maxwidth=${maxWidth}&photoreference=${cityImageReference}&key=${this.state.googleAPI}`;
+          const cityImageUrl = `https://maps.googleapis.com/maps/api/place/photo?maxwidth=${maxWidth}&photoreference=${cityImageReference}&key=${
+            this.state.googleAPI
+          }`;
 
           this.setState({
             cityImage: cityImageUrl,
@@ -227,11 +194,65 @@ export class Home extends Component {
 
   onRefreshHandler = () => {
     //reset pageNo to 1
-    this.setState({refreshing: true, pageNo: 1, data: [], dataReceived: false});
+    this.setState({
+      refreshing: true,
+      pageNo: 1,
+      data: [],
+      dataReceived: false,
+    });
     //timeout to simulate loading
     setTimeout(() => {
       this.fetchData();
     }, 1500);
+  };
+
+  onPressPlace = place => {
+    this.props.navigation.navigate('InfoScreen', {
+      place: place,
+      placeName: place.name,
+    });
+  };
+
+  renderCarouselPlace = ({item}) => {
+    if (item.photos[0].photo_reference) {
+      const maxWidth = 500;
+      this.placeImage = `https://maps.googleapis.com/maps/api/place/photo?maxwidth=${maxWidth}&photoreference=${
+        item.photos[0].photo_reference
+      }&key=${this.state.googleAPI}`;
+    }
+    return (
+      <TouchableHighlight
+        style={this.styles.carouselCardTouchableHighlight}
+        onPress={() => this.onPressPlace(item)}>
+        <View style={this.styles.carouselPlaceCard}>
+          {this.placeImage ? (
+            <Image
+              source={{uri: this.placeImage}}
+              style={this.styles.placeImage}
+            />
+          ) : null}
+          <View style={this.styles.carouselPlaceContainer}>
+            <Text style={this.styles.carouselTitle}>{item.name}</Text>
+            <View style={{flexDirection: 'row', flexWrap: 'wrap'}}>
+              {item.types.map((type, index) => {
+                const correctType = type.replace(/_/g, ' ');
+                if (
+                  correctType !== 'point of interest' &&
+                  correctType !== 'establishment' &&
+                  index < 2
+                ) {
+                  return (
+                    <Text key={index} style={[this.styles.placeType]}>
+                      {correctType}
+                    </Text>
+                  );
+                }
+              })}
+            </View>
+          </View>
+        </View>
+      </TouchableHighlight>
+    );
   };
 
   render() {
