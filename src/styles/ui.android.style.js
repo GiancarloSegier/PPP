@@ -272,7 +272,6 @@ export default StyleSheet.create({
     backgroundColor: colors.blue,
   },
   noPlacesBox: {
-    flex: 0.4,
     backgroundColor: colors.blue,
     padding: 24,
   },
@@ -296,19 +295,22 @@ export default StyleSheet.create({
     elevation: 2,
     marginLeft: -32,
   },
-  carouselCard: {
-    backgroundColor: colors.white,
-    width: '100%',
-    padding: 16,
+  carouselCardTouchableHighlight: {
+    flex: 1,
     borderRadius: 16,
+  },
+  carouselCard: {
     flexDirection: 'row',
     flex: 1,
+    backgroundColor: colors.white,
+    padding: 16,
+    borderRadius: 16,
     justifyContent: 'space-between',
   },
   carouselTitle: {
     color: colors.navy,
     fontSize: 16,
-    fontWeight: 'bold',
+    fontWeight: '900',
     marginBottom: 6,
   },
   mapPlaceInfo: {

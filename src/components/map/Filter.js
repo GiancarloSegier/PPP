@@ -85,7 +85,7 @@ class Filter extends Component {
   };
 
   resetFilter = () => {
-    this.props.onSetFilter(1500, 'all', false);
+    this.props.onSetFilter(1500, 'tourist_attraction', false);
   };
 
   render() {

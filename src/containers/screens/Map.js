@@ -117,10 +117,8 @@ export class Map extends Component {
     };
     this.setRegion(regionLocation);
     await this.getPlaces(this.state.placeType, this.state.radius);
-    if (this.state.places.length > 0) {
-      this.onCarouselItemChange(0);
-      await this.carousel.snapToItem(0);
-    }
+
+    await this.carousel.snapToItem(0);
   };
 
   onChangeRegion = region => {
@@ -169,12 +167,10 @@ export class Map extends Component {
       filterOpen: false,
       checkOpen: checkOpen,
       regionLocation: this.state.regionLocation,
+      places: [],
     });
     await this.getPlaces(type, radius);
-    if (this.state.places.length > 0) {
-      this.onCarouselItemChange(0);
-      await this.carousel.snapToItem(0);
-    }
+    await this.carousel.snapToItem(0);
   };
 
   onPressFollowUser = async () => {
@@ -189,13 +185,8 @@ export class Map extends Component {
     };
     this._map.animateToRegion(newLocation);
 
-    this.setState({regionLocation: newLocation});
+    this.setState({regionLocation: newLocation, places: []});
     this.getPlaces(this.state.placeType, this.state.radius);
-
-    if (this.state.places.length > 0) {
-      this.onCarouselItemChange(0);
-      await this.carousel.snapToItem(0);
-    }
   };
 
   onPressPlace = place => {
@@ -208,9 +199,7 @@ export class Map extends Component {
   renderCarouselItem = ({item}) => {
     let placeImage;
     if (item.photos) {
-      placeImage = `https://maps.googleapis.com/maps/api/place/photo?maxwidth=200&photoreference=${
-        item.photos[0].photo_reference
-      }&key=${this.state.googleAPI}`;
+      placeImage = `https://maps.googleapis.com/maps/api/place/photo?maxwidth=200&photoreference=${item.photos[0].photo_reference}&key=${this.state.googleAPI}`;
     }
 
     return (

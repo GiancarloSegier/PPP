@@ -46,7 +46,9 @@ export class InfoScreen extends Component {
   getImage = item => {
     console.log(item.photos[0].photo_reference);
     if (item.photos) {
-      this.placeImage = `https://maps.googleapis.com/maps/api/place/photo?maxwidth=1000&photoreference=${item.photos[0].photo_reference}&key=${this.state.googleAPI}`;
+      this.placeImage = `https://maps.googleapis.com/maps/api/place/photo?maxwidth=1000&photoreference=${
+        item.photos[0].photo_reference
+      }&key=${this.state.googleAPI}`;
       this.setState({
         placeImage: this.placeImage,
       });
@@ -67,7 +69,9 @@ export class InfoScreen extends Component {
     const {placeName, placeInfo, wikiURL, placeImage} = this.state;
     return (
       <>
-        <Image source={{uri: placeImage}} style={this.styles.resultImage} />
+        {placeImage ? (
+          <Image source={{uri: placeImage}} style={this.styles.resultImage} />
+        ) : null}
         <ScrollView>
           <View style={this.styles.container}>
             <View style={this.styles.scanUpperContainer}>
