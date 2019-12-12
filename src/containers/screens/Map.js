@@ -117,9 +117,10 @@ export class Map extends Component {
     };
     this.setRegion(regionLocation);
     await this.getPlaces(this.state.placeType, this.state.radius);
-
-    this.onCarouselItemChange(0);
-    await this.carousel.snapToItem(0);
+    if (this.state.places.length > 0) {
+      this.onCarouselItemChange(0);
+      await this.carousel.snapToItem(0);
+    }
   };
 
   onChangeRegion = region => {
@@ -170,7 +171,7 @@ export class Map extends Component {
       regionLocation: this.state.regionLocation,
     });
     await this.getPlaces(type, radius);
-    if (this.state.places > 0) {
+    if (this.state.places.length > 0) {
       this.onCarouselItemChange(0);
       await this.carousel.snapToItem(0);
     }
@@ -191,8 +192,10 @@ export class Map extends Component {
     this.setState({regionLocation: newLocation});
     this.getPlaces(this.state.placeType, this.state.radius);
 
-    this.onCarouselItemChange(0);
-    await this.carousel.snapToItem(0);
+    if (this.state.places.length > 0) {
+      this.onCarouselItemChange(0);
+      await this.carousel.snapToItem(0);
+    }
   };
 
   onPressPlace = place => {

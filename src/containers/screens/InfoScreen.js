@@ -4,6 +4,7 @@ import androidUI from '../../styles/ui.android.style.js';
 import iosUI from '../../styles/ui.ios.style.js';
 import {Button} from 'react-native-elements';
 import {inject, observer} from 'mobx-react';
+import MapRoute from '../../components/map/MapRoute.js';
 
 export class InfoScreen extends Component {
   constructor(props) {
@@ -14,11 +15,16 @@ export class InfoScreen extends Component {
       this.styles = androidUI;
     }
     console.log(props);
+    const data = props.navigation.state.params;
 
     this.state = {
-      googleAPI: this.props.wikiStore.googleAPI,
-      place: props.navigation.state.params.place,
-      placeName: props.navigation.state.params.placeName,
+      googleAPI: this.props.mapStore.googleAPI,
+      place: data.place,
+      placeName: data.placeName,
+      location: {
+        latitude: data.place.geometry.location.lat,
+        longitude: data.place.geometry.location.lng,
+      },
     };
   }
   componentDidMount = async () => {
@@ -35,15 +41,12 @@ export class InfoScreen extends Component {
       wikiURL: searchInfo.wikiURL,
       placeInfo: searchInfo.placeInfo.text,
     });
-    console.log(this.state.placeInfo);
   };
 
   getImage = item => {
     console.log(item.photos[0].photo_reference);
     if (item.photos) {
-      this.placeImage = `https://maps.googleapis.com/maps/api/place/photo?maxwidth=1000&photoreference=${
-        item.photos[0].photo_reference
-      }&key=${this.state.googleAPI}`;
+      this.placeImage = `https://maps.googleapis.com/maps/api/place/photo?maxwidth=1000&photoreference=${item.photos[0].photo_reference}&key=${this.state.googleAPI}`;
       this.setState({
         placeImage: this.placeImage,
       });
@@ -93,18 +96,22 @@ export class InfoScreen extends Component {
                     </Text>
                   )}
                 </View>
-                <Button
-                  buttonStyle={this.styles.secondaryFormButton}
-                  titleStyle={this.styles.secondaryFormButtonplaceName}
-                  title={
-                    placeInfo !== ''
-                      ? 'Go to full information'
-                      : 'Go to wikipediapage'
-                  }
-                  onPress={this.handleClickWikiUrl}
-                />
+                {placeInfo ? (
+                  <Button
+                    buttonStyle={this.styles.secondaryFormButton}
+                    titleStyle={this.styles.secondaryFormButtonplaceName}
+                    title={'Go to full information'}
+                    onPress={this.handleClickWikiUrl}
+                  />
+                ) : null}
               </>
             )}
+          </View>
+          <View>
+            <MapRoute
+              destinationLocation={this.state.location}
+              placeName={placeName}
+            />
           </View>
         </ScrollView>
       </>
@@ -114,4 +121,4 @@ export class InfoScreen extends Component {
 
 // export default InfoScreen;
 
-export default inject('wikiStore')(observer(InfoScreen));
+export default inject('wikiStore', 'mapStore')(observer(InfoScreen));

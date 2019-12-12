@@ -1,7 +1,6 @@
 import {action, observable, decorate, configure} from 'mobx';
 class WikiStore {
   wikiInfo = {};
-  googleAPI = 'AIzaSyBLSLqH_qXkSrU5qK1M71zmWU3gpjs8C4g';
   constructor(rootStore) {
     this.rootStore = rootStore;
   }
