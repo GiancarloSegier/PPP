@@ -180,7 +180,6 @@ android {
 }
 
 dependencies {
-    implementation project(':@react-native-mapbox-gl_maps')
     implementation project(':react-native-linear-gradient')
     implementation project(':react-native-maps')
     implementation project(':react-native-fbsdk')
@@ -188,7 +187,6 @@ dependencies {
     implementation 'com.facebook.android:facebook-android-sdk:[5,6)'
 
     implementation project(':react-native-firebase')
-    implementation project(':@react-native-mapbox-gl_maps')
 
 
     // Firebase dependencies

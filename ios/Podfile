@@ -56,8 +56,6 @@ pod 'react-native-geolocation', path: '../node_modules/@react-native-community/g
 
   pod 'BVLinearGradient', :path => '../node_modules/react-native-linear-gradient'
 
-  pod 'react-native-mapbox-gl', :path => '../node_modules/@react-native-mapbox-gl/maps'
-
   target 'TuristTests' do
     inherit! :search_paths
     # Pods for testing
