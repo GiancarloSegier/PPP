@@ -92,7 +92,9 @@ class Filter extends Component {
     return (
       <View style={this.styles.filterContainer}>
         <Button
-          onPress={() => this.props.onSetFilter(1500, 'all', false)}
+          onPress={() =>
+            this.props.onSetFilter(1500, 'tourist_attraction', false)
+          }
           buttonStyle={this.styles.resetFilter}
           titleStyle={{color: '#7F7F7E'}}
           title={'Clear all filters'}
