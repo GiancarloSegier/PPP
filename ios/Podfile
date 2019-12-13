@@ -37,12 +37,9 @@ target 'Turist' do
   pod 'FBSDKCoreKit'
   pod 'FBSDKLoginKit'
   pod 'FBSDKShareKit'
-  pod 'Firebase/Core', '~> 6.3.0'
-  pod 'Firebase/Auth'
-  pod 'Firebase/Firestore'
 
+ 
 
-pod 'RNFirebase', :path => '../node_modules/react-native-firebase/ios'
   pod 'react-native-fbsdk', :path => '../node_modules/react-native-fbsdk'
 
   pod 'react-native-maps', :path => '../node_modules/react-native-maps'

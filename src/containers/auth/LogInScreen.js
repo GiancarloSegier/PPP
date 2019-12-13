@@ -2,7 +2,8 @@ import React, {Component} from 'react';
 import AuthForm from '../../components/auth/AuthForm';
 import {login, signup, subscribeToAuthChanges} from '../../api/RootApi';
 import {AccessToken, LoginManager} from 'react-native-fbsdk';
-import firebase from 'react-native-firebase';
+import auth from '@react-native-firebase/auth';
+import firebase from '@react-native-firebase/app';
 
 class LoginScreen extends Component {
   state = {
@@ -40,7 +41,7 @@ class LoginScreen extends Component {
         const credential = firebase.auth.FacebookAuthProvider.credential(
           data.accessToken,
         );
-        return firebase.auth().signInWithCredential(credential);
+        return auth().signInWithCredential(credential);
       })
       .then(currentUser => {
         console.log(

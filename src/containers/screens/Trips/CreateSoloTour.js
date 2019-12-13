@@ -4,7 +4,8 @@ import {Button} from 'react-native-elements';
 
 import androidUI from '../../../styles/ui.android.style.js';
 import iosUI from '../../../styles/ui.ios.style.js';
-import firebase from 'react-native-firebase';
+import auth from '@react-native-firebase/auth';
+import firestore from '@react-native-firebase/firestore';
 
 export class CreateSoloTour extends Component {
   constructor(props) {
@@ -24,11 +25,11 @@ export class CreateSoloTour extends Component {
       trips: [],
       newTripTitle: '',
       currentDate: `${day}/${month}/${year}`,
-      userId: firebase.auth().currentUser.uid,
+      userId: auth().currentUser.uid,
       isDatePickerVisible: false,
     };
 
-    this.ref = firebase.firestore().collection('trips');
+    this.ref = firestore().collection('trips');
   }
   onPressAdd = () => {
     if (this.state.newTripTitle.trim() === '') {

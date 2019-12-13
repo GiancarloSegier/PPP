@@ -4,7 +4,8 @@ import {Button, Overlay, ButtonGroup} from 'react-native-elements';
 
 import androidUI from '../../../styles/ui.android.style.js';
 import iosUI from '../../../styles/ui.ios.style.js';
-import firebase from 'react-native-firebase';
+import auth from '@react-native-firebase/auth';
+import firestore from '@react-native-firebase/firestore';
 
 import CreateSoloTour from './CreateSoloTour.js';
 import CreatePartyTour from './CreatePartyTour.js';
@@ -31,12 +32,12 @@ export class CreateTripScreen extends Component {
       currentDateString: `${day}/${month}/${year}`,
       pickedhour: null,
       pickedDateString: null,
-      userId: firebase.auth().currentUser.uid,
+      userId: auth().currentUser.uid,
       isDatePickerVisible: false,
     };
     console.log(this.state.date.getTime());
 
-    this.ref = firebase.firestore().collection('trips');
+    this.ref = firestore().collection('trips');
   }
 
   updateIndex = selectedIndex => {

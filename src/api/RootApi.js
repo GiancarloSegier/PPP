@@ -1,15 +1,13 @@
-import firebase from 'react-native-firebase';
+import auth from '@react-native-firebase/auth';
 
 export function login({email, password}) {
-  firebase
-    .auth()
+  auth()
     .signInWithEmailAndPassword(email, password)
     .then(value => console.log(value));
 }
 
 export function signup({email, password, name}) {
-  firebase
-    .auth()
+  auth()
     .createUserWithEmailAndPassword(email, password)
     .then(userInfo => {
       // console.log(userInfo);
@@ -18,8 +16,7 @@ export function signup({email, password, name}) {
 }
 
 export function signout(onSignedOut) {
-  firebase
-    .auth()
+  auth()
     .signOut()
     .then(() => {
       console.log('signed out');
@@ -28,7 +25,7 @@ export function signout(onSignedOut) {
 }
 
 export function subscribeToAuthChanges(authStateChanged) {
-  firebase.auth().onAuthStateChanged(user => {
+  auth().onAuthStateChanged(user => {
     // console.log(user);
     authStateChanged(user);
   });

@@ -15,7 +15,8 @@ import Carousel from 'react-native-snap-carousel';
 
 import androidUI from '../../styles/ui.android.style.js';
 import iosUI from '../../styles/ui.ios.style.js';
-import firebase from 'react-native-firebase';
+import auth from '@react-native-firebase/auth';
+import firestore from '@react-native-firebase/firestore';
 
 export class MyTrips extends Component {
   constructor(props) {
@@ -28,9 +29,9 @@ export class MyTrips extends Component {
 
     this.state = {
       allTrips: [],
-      userId: firebase.auth().currentUser.uid,
+      userId: auth().currentUser.uid,
     };
-    this.ref = firebase.firestore().collection('trips');
+    this.ref = firestore().collection('trips');
   }
 
   componentDidMount() {
