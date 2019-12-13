@@ -65,7 +65,7 @@ export default StyleSheet.create({
 
   loginScreen: {
     backgroundColor: colors.blue,
-    height: '100%',
+    flex: 1,
     alignItems: 'center',
     justifyContent: 'center',
   },
@@ -161,7 +161,7 @@ export default StyleSheet.create({
 
   resultImage: {
     width: deviceWidth,
-    height: 200,
+    height: Dimensions.get('screen').height * 0.2,
   },
   cameraScreen: {
     alignItems: 'center',
@@ -408,5 +408,38 @@ export default StyleSheet.create({
     alignSelf: 'flex-end',
     padding: 0,
     marginBottom: 16,
+  },
+  //Trips
+
+  overlayContainer: {
+    padding: 0,
+    width: Dimensions.get('screen').width * 0.85,
+    height: Dimensions.get('screen').height * 0.8,
+    paddingTop: 8,
+    borderRadius: 24,
+    overflow: 'hidden',
+  },
+  overlayButtonsTop: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+  },
+  closeButton: {
+    width: 40,
+    height: 40,
+    backgroundColor: 'transparent',
+    margin: 0,
+  },
+  selectionCounter: {
+    backgroundColor: colors.blue,
+    borderRadius: 100,
+    padding: 2,
+    position: 'absolute',
+    top: 6,
+    right: 6,
+    minWidth: 18,
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
   },
 });

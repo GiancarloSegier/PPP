@@ -58,26 +58,29 @@ class SelectionOverlay extends Component {
         animated
         animationType="fade"
         overlayStyle={this.styles.overlayContainer}>
-        <View style={this.styles.overlayButtonsTop}>
-          <TouchableHighlight
-            onPress={() =>
-              this.props.onSetFilter(1500, 'tourist_attraction', false)
-            }>
-            <View style={{flexDirection: 'row', opacity: 0.4}}>
-              <Icon name="times" size={16} color="#020029" />
-              <Text style={{color: '#020029'}}> Clear all landmarks</Text>
+        <>
+          <View style={[this.styles.container, {paddingVertical: 0}]}>
+            <View style={this.styles.overlayButtonsTop}>
+              <TouchableHighlight
+                onPress={() =>
+                  this.props.onSetFilter(1500, 'tourist_attraction', false)
+                }>
+                <View style={{flexDirection: 'row', opacity: 0.6}}>
+                  <Icon name="times" size={16} color="#020029" />
+                  <Text style={{color: '#020029'}}> Clear all landmarks</Text>
+                </View>
+              </TouchableHighlight>
+              <Button
+                onPress={() => this.props.onHideSelection()}
+                buttonStyle={this.styles.closeButton}
+                icon={<Icon name="times" size={24} color="#110b84" />}
+              />
             </View>
-          </TouchableHighlight>
-          <Button
-            onPress={() => this.props.onHideSelection()}
-            buttonStyle={this.styles.closeButton}
-            icon={<Icon name="times" size={24} color="#110b84" />}
-          />
-        </View>
 
-        <View style={[this.styles.container]}>
-          <Text style={this.styles.heading2}>My landmarks</Text>
-          <ScrollView>
+            <Text style={this.styles.heading2}>My landmarks</Text>
+            <Text>{this.state.landmarkSelection.length}</Text>
+          </View>
+          <ScrollView style={this.styles.container}>
             {this.state.landmarkSelection.map(landmark => {
               return (
                 <View>
@@ -90,23 +93,23 @@ class SelectionOverlay extends Component {
               );
             })}
           </ScrollView>
-        </View>
 
-        <View style={{position: 'absolute', bottom: 0, width: '100%'}}>
-          {this.state.loading ? null : (
-            <MapRoute
-              waypoints={true}
-              landmarkSelection={this.state.landmarkSelection}
-              destinationLocation={this.state.destinationLocation}
+          <View style={{position: 'absolute', bottom: 0, width: '100%'}}>
+            {this.state.loading ? null : (
+              <MapRoute
+                waypoints={true}
+                landmarkSelection={this.state.landmarkSelection}
+                destinationLocation={this.state.destinationLocation}
+              />
+            )}
+            <Button
+              title="Create my trip"
+              onPress={this.moveRegion}
+              buttonStyle={this.styles.mapButton}
+              titleStyle={this.styles.primaryFormButtonTitle}
             />
-          )}
-          <Button
-            title="Create my trip"
-            onPress={this.moveRegion}
-            buttonStyle={this.styles.mapButton}
-            titleStyle={this.styles.primaryFormButtonTitle}
-          />
-        </View>
+          </View>
+        </>
       </Overlay>
     );
   }

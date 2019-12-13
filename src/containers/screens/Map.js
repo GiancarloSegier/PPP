@@ -346,20 +346,7 @@ export class Map extends Component {
                       flex: 1,
                     }}>
                     <Icon name="map-marker" size={24} color="#110b84" />
-                    <View
-                      style={{
-                        backgroundColor: 'blue',
-                        borderRadius: 100,
-                        padding: 2,
-                        position: 'absolute',
-                        top: 6,
-                        right: 6,
-                        minWidth: 18,
-                        flex: 1,
-                        justifyContent: 'center',
-                        alignItems: 'center',
-                        opacity: 0.7,
-                      }}>
+                    <View style={this.styles.selectionCounter}>
                       <Text
                         style={{
                           color: 'white',
