@@ -49,6 +49,7 @@ export class Map extends Component {
       radius: 1500,
       checkOpen: false,
       filterOpen: false,
+      landmarkSelection: props.tripStore.landmarkSelection,
     };
   }
 
@@ -189,10 +190,15 @@ export class Map extends Component {
     this.getPlaces(this.state.placeType, this.state.radius);
   };
 
+  loadNewSelection = landmarkSelection => {
+    console.log(landmarkSelection);
+  };
+
   onPressPlace = place => {
     this.props.navigation.navigate('InfoScreen', {
       place: place,
       placeName: place.name,
+      loadNewSelection: this.loadNewSelection,
     });
   };
 
@@ -322,6 +328,46 @@ export class Map extends Component {
                   icon={<Icon name="street-view" size={24} color="#110b84" />}
                 />
               ) : null}
+              {!this.state.filterOpen &&
+              this.state.landmarkSelection.length > 0 ? (
+                <TouchableHighlight
+                  onPress={this.onPressShowSelection}
+                  style={this.styles.filterButton}>
+                  <View
+                    style={{
+                      justifyContent: 'center',
+                      alignItems: 'center',
+
+                      flex: 1,
+                    }}>
+                    <Icon name="map-marker" size={24} color="#110b84" />
+                    <View
+                      style={{
+                        backgroundColor: 'blue',
+                        borderRadius: 100,
+                        width: 20,
+                        height: 20,
+                        position: 'absolute',
+                        top: 5,
+                        right: 5,
+                        flex: 1,
+                        justifyContent: 'center',
+                        alignItems: 'center',
+                        opacity: 0.7,
+                      }}>
+                      <Text
+                        style={{
+                          color: 'white',
+
+                          fontSize: 14,
+                          fontWeight: 'bold',
+                        }}>
+                        {this.state.landmarkSelection.length}
+                      </Text>
+                    </View>
+                  </View>
+                </TouchableHighlight>
+              ) : null}
             </View>
           </View>
           <View
@@ -372,4 +418,4 @@ export class Map extends Component {
   }
 }
 
-export default inject('mapStore')(observer(Map));
+export default inject('mapStore', 'tripStore')(observer(Map));

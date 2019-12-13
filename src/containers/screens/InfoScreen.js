@@ -14,7 +14,7 @@ export class InfoScreen extends Component {
     } else {
       this.styles = androidUI;
     }
-    console.log(props);
+
     const data = props.navigation.state.params;
 
     this.state = {
@@ -25,10 +25,23 @@ export class InfoScreen extends Component {
         latitude: data.place.geometry.location.lat,
         longitude: data.place.geometry.location.lng,
       },
+      landmarkSelection: this.props.tripStore.landmarkSelection,
+      landmarkInCollection: null,
     };
   }
   componentDidMount = async () => {
+    const landmark = {
+      placeId: this.state.place.place_id,
+      placeName: this.state.placeName,
+      location: this.state.location,
+    };
+    this.checkLandmarkInCollection(landmark);
     await this.collectInfo(this.state.placeName);
+  };
+
+  checkLandmarkInCollection = landmark => {
+    const landmarkInCollection = this.props.tripStore.checkLandmark(landmark);
+    this.setState({landmarkInCollection: landmarkInCollection});
   };
 
   collectInfo = async searchTerm => {
@@ -44,7 +57,6 @@ export class InfoScreen extends Component {
   };
 
   getImage = item => {
-    console.log(item.photos[0].photo_reference);
     if (item.photos) {
       this.placeImage = `https://maps.googleapis.com/maps/api/place/photo?maxwidth=1000&photoreference=${
         item.photos[0].photo_reference
@@ -65,6 +77,25 @@ export class InfoScreen extends Component {
     });
   };
 
+  addToLandmarkSelection = async () => {
+    const landmark = {
+      placeId: this.state.place.place_id,
+      placeName: this.state.placeName,
+      coords: this.state.location,
+    };
+    await this.props.tripStore.addToSelection(landmark);
+    this.checkLandmarkInCollection(landmark);
+  };
+  removeFromCollection = async () => {
+    const landmark = {
+      placeId: this.state.place.place_id,
+      placeName: this.state.placeName,
+      coords: this.state.location,
+    };
+    await this.props.tripStore.removeFromSelection(landmark);
+    this.checkLandmarkInCollection(landmark);
+  };
+
   render() {
     const {placeName, placeInfo, wikiURL, placeImage} = this.state;
     return (
@@ -72,6 +103,18 @@ export class InfoScreen extends Component {
         {placeImage ? (
           <Image source={{uri: placeImage}} style={this.styles.resultImage} />
         ) : null}
+        <Button
+          title={
+            this.state.landmarkInCollection
+              ? 'remove from selection'
+              : 'add to selection'
+          }
+          onPress={
+            this.state.landmarkInCollection
+              ? this.removeFromCollection
+              : this.addToLandmarkSelection
+          }
+        />
         <ScrollView>
           <View style={this.styles.container}>
             <View style={this.styles.scanUpperContainer}>
@@ -125,4 +168,6 @@ export class InfoScreen extends Component {
 
 // export default InfoScreen;
 
-export default inject('wikiStore', 'mapStore')(observer(InfoScreen));
+export default inject('wikiStore', 'mapStore', 'tripStore')(
+  observer(InfoScreen),
+);
