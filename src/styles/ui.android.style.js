@@ -354,6 +354,9 @@ export default StyleSheet.create({
     paddingVertical: 16,
     borderRadius: 0,
   },
+  remove: {
+    backgroundColor: '#ff0062',
+  },
   filterButton: {
     marginLeft: 16,
     marginVertical: 8,

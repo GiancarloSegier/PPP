@@ -354,6 +354,9 @@ export default StyleSheet.create({
     paddingVertical: 16,
     borderRadius: 0,
   },
+  remove: {
+    backgroundColor: '#ff0062',
+  },
   filterButton: {
     marginLeft: 16,
     marginVertical: 8,
@@ -405,5 +408,28 @@ export default StyleSheet.create({
     alignSelf: 'flex-end',
     padding: 0,
     marginBottom: 16,
+  },
+
+  //Trips
+
+  overlayLandmarks: {
+    padding: 0,
+    marginHorizontal: 24,
+    width: '90%',
+    paddingTop: 8,
+    borderRadius: 24,
+    overflow: 'hidden',
+  },
+  overlayButtonsTop: {
+    paddingHorizontal: 24,
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+  },
+  closeButton: {
+    width: 40,
+    height: 40,
+    backgroundColor: 'transparent',
+    margin: 0,
   },
 });

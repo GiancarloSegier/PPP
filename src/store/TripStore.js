@@ -1,4 +1,4 @@
-import {action, observable, decorate, configure} from 'mobx';
+import {action, observable, decorate} from 'mobx';
 class TripStore {
   landmarkSelection = [];
   constructor(rootStore) {

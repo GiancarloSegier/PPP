@@ -19,6 +19,7 @@ import Filter from '../../components/map/Filter.js';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import MapView, {Marker, Callout} from 'react-native-maps';
 import GOOGLEPIN from '../../assets/googlepin.png';
+import SelectionOverlay from '../../components/map/SelectionOverlay.js';
 
 export class Map extends Component {
   constructor(props) {
@@ -50,6 +51,7 @@ export class Map extends Component {
       checkOpen: false,
       filterOpen: false,
       landmarkSelection: props.tripStore.landmarkSelection,
+      selectionVisible: false,
     };
   }
 
@@ -202,6 +204,13 @@ export class Map extends Component {
     });
   };
 
+  onPressShowSelection = () => {
+    this.setState({selectionVisible: true});
+  };
+  onHideSelection = () => {
+    this.setState({selectionVisible: false});
+  };
+
   renderCarouselItem = ({item}) => {
     let placeImage;
     if (item.photos) {
@@ -312,7 +321,11 @@ export class Map extends Component {
             <View style={{flexDirection: 'row'}}>
               <Button
                 onPress={this.onPressFilter}
-                buttonStyle={this.styles.filterButton}
+                buttonStyle={
+                  this.state.filterOpen
+                    ? this.styles.closeButton
+                    : this.styles.filterButton
+                }
                 icon={
                   this.state.filterOpen ? (
                     <Icon name="times" size={24} color="#110b84" />
@@ -345,11 +358,11 @@ export class Map extends Component {
                       style={{
                         backgroundColor: 'blue',
                         borderRadius: 100,
-                        width: 20,
-                        height: 20,
+                        padding: 2,
                         position: 'absolute',
-                        top: 5,
-                        right: 5,
+                        top: 6,
+                        right: 6,
+                        minWidth: 18,
                         flex: 1,
                         justifyContent: 'center',
                         alignItems: 'center',
@@ -359,7 +372,7 @@ export class Map extends Component {
                         style={{
                           color: 'white',
 
-                          fontSize: 14,
+                          fontSize: 12,
                           fontWeight: 'bold',
                         }}>
                         {this.state.landmarkSelection.length}
@@ -405,6 +418,9 @@ export class Map extends Component {
             buttonStyle={this.styles.mapButton}
             titleStyle={this.styles.primaryFormButtonTitle}
           />
+          {this.state.selectionVisible ? (
+            <SelectionOverlay onHideSelection={this.onHideSelection} />
+          ) : null}
         </>
       );
     } else {

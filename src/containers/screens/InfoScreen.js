@@ -5,6 +5,7 @@ import iosUI from '../../styles/ui.ios.style.js';
 import {Button} from 'react-native-elements';
 import {inject, observer} from 'mobx-react';
 import MapRoute from '../../components/map/MapRoute.js';
+import Icon from 'react-native-vector-icons/FontAwesome';
 
 export class InfoScreen extends Component {
   constructor(props) {
@@ -58,9 +59,7 @@ export class InfoScreen extends Component {
 
   getImage = item => {
     if (item.photos) {
-      this.placeImage = `https://maps.googleapis.com/maps/api/place/photo?maxwidth=1000&photoreference=${
-        item.photos[0].photo_reference
-      }&key=${this.state.googleAPI}`;
+      this.placeImage = `https://maps.googleapis.com/maps/api/place/photo?maxwidth=1000&photoreference=${item.photos[0].photo_reference}&key=${this.state.googleAPI}`;
       this.setState({
         placeImage: this.placeImage,
       });
@@ -103,11 +102,25 @@ export class InfoScreen extends Component {
         {placeImage ? (
           <Image source={{uri: placeImage}} style={this.styles.resultImage} />
         ) : null}
+
         <Button
+          buttonStyle={
+            this.state.landmarkInCollection
+              ? [this.styles.mapButton, this.styles.remove]
+              : [this.styles.mapButton]
+          }
+          titleStyle={this.styles.primaryFormButtonTitle}
           title={
             this.state.landmarkInCollection
-              ? 'remove from selection'
-              : 'add to selection'
+              ? ' remove from my tour'
+              : ' add to my tour'
+          }
+          icon={
+            this.state.landmarkInCollection ? (
+              <Icon name="trash" size={24} color="white" />
+            ) : (
+              <Icon name="map-marker" size={24} color="white" />
+            )
           }
           onPress={
             this.state.landmarkInCollection
@@ -156,6 +169,7 @@ export class InfoScreen extends Component {
           </View>
           <View>
             <MapRoute
+              waypoints={false}
               destinationLocation={this.state.location}
               placeName={placeName}
             />
@@ -166,8 +180,8 @@ export class InfoScreen extends Component {
   }
 }
 
-// export default InfoScreen;
-
-export default inject('wikiStore', 'mapStore', 'tripStore')(
-  observer(InfoScreen),
-);
+export default inject(
+  'wikiStore',
+  'mapStore',
+  'tripStore',
+)(observer(InfoScreen));

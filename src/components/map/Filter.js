@@ -91,15 +91,16 @@ class Filter extends Component {
   render() {
     return (
       <View style={this.styles.filterContainer}>
-        <Button
+        <TouchableHighlight
           onPress={() =>
             this.props.onSetFilter(1500, 'tourist_attraction', false)
-          }
-          buttonStyle={this.styles.resetFilter}
-          titleStyle={{color: '#7F7F7E'}}
-          title={'Clear all filters'}
-          icon={<Icon name="times" size={16} color="#7F7F7E" />}
-        />
+          }>
+          <View
+            style={{flexDirection: 'row', opacity: 0.4, alignSelf: 'flex-end'}}>
+            <Icon name="times" size={16} color="#020029" />
+            <Text style={{color: '#020029'}}> Clear all landmarks</Text>
+          </View>
+        </TouchableHighlight>
 
         <View style={{marginBottom: 16}}>
           <View style={{flexDirection: 'row', alignItems: 'baseline'}}>
