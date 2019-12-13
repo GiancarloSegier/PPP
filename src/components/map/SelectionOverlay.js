@@ -44,8 +44,10 @@ class SelectionOverlay extends Component {
     ) {
       await this.props.tripStore.removeFromSelection(removeLandmark);
       this.props.onHideSelection();
+      this.setState({loading: false});
     } else {
       await this.props.tripStore.removeFromSelection(removeLandmark);
+      this.setState({loading: false});
     }
   };
 
@@ -55,7 +57,7 @@ class SelectionOverlay extends Component {
         isVisible
         animated
         animationType="fade"
-        overlayStyle={this.styles.overlayLandmarks}>
+        overlayStyle={this.styles.overlayContainer}>
         <View style={this.styles.overlayButtonsTop}>
           <TouchableHighlight
             onPress={() =>

@@ -15,7 +15,7 @@ import iosUI from '../../styles/ui.ios.style.js';
 import MapStyle from '../../config/MapStyle';
 import Carousel from 'react-native-snap-carousel';
 import {inject, observer} from 'mobx-react';
-import Filter from '../../components/map/Filter.js';
+import FilterOverlay from '../../components/map/FilterOverlay.js';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import MapView, {Marker, Callout} from 'react-native-maps';
 import GOOGLEPIN from '../../assets/googlepin.png';
@@ -214,7 +214,9 @@ export class Map extends Component {
   renderCarouselItem = ({item}) => {
     let placeImage;
     if (item.photos) {
-      placeImage = `https://maps.googleapis.com/maps/api/place/photo?maxwidth=200&photoreference=${item.photos[0].photo_reference}&key=${this.state.googleAPI}`;
+      placeImage = `https://maps.googleapis.com/maps/api/place/photo?maxwidth=200&photoreference=${
+        item.photos[0].photo_reference
+      }&key=${this.state.googleAPI}`;
     }
 
     return (
@@ -264,12 +266,13 @@ export class Map extends Component {
       return (
         <>
           {this.state.filterOpen ? (
-            <Filter
+            <FilterOverlay
               placeType={this.state.placeType}
               radius={this.state.radius}
               checkOpen={this.state.checkOpen}
               onSelectItem={this.onSelectItem}
               onSetFilter={this.onSetFilter}
+              onPressFilter={this.onPressFilter}
             />
           ) : null}
           <MapView
@@ -321,28 +324,17 @@ export class Map extends Component {
             <View style={{flexDirection: 'row'}}>
               <Button
                 onPress={this.onPressFilter}
-                buttonStyle={
-                  this.state.filterOpen
-                    ? this.styles.closeButton
-                    : this.styles.filterButton
-                }
-                icon={
-                  this.state.filterOpen ? (
-                    <Icon name="times" size={24} color="#110b84" />
-                  ) : (
-                    <Icon name="filter" size={24} color="#110b84" />
-                  )
-                }
+                buttonStyle={this.styles.filterButton}
+                icon={<Icon name="filter" size={24} color="#110b84" />}
               />
-              {!this.state.filterOpen ? (
-                <Button
-                  onPress={this.onPressFollowUser}
-                  buttonStyle={this.styles.filterButton}
-                  icon={<Icon name="street-view" size={24} color="#110b84" />}
-                />
-              ) : null}
-              {!this.state.filterOpen &&
-              this.state.landmarkSelection.length > 0 ? (
+
+              <Button
+                onPress={this.onPressFollowUser}
+                buttonStyle={this.styles.filterButton}
+                icon={<Icon name="street-view" size={24} color="#110b84" />}
+              />
+
+              {this.state.landmarkSelection.length > 0 ? (
                 <TouchableHighlight
                   onPress={this.onPressShowSelection}
                   style={this.styles.filterButton}>

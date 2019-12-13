@@ -114,7 +114,7 @@ class MapRoute extends Component {
           showsMyLocationButton={false}
           customMapStyle={MapStyle}
           style={{
-            height: Dimensions.get('screen').height * 0.25,
+            height: Dimensions.get('screen').height * 0.2,
             width: '100%',
           }}
           onLayout={this.fitMap}

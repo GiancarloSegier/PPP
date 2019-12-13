@@ -412,10 +412,11 @@ export default StyleSheet.create({
 
   //Trips
 
-  overlayLandmarks: {
+  overlayContainer: {
     padding: 0,
-    marginHorizontal: 24,
-    width: '90%',
+
+    width: '80%',
+    height: '75%',
     paddingTop: 8,
     borderRadius: 24,
     overflow: 'hidden',
