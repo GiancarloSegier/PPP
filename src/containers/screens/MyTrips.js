@@ -50,6 +50,8 @@ export class MyTrips extends Component {
           tripTitle: doc.data().tripTitle,
           dateAdded: doc.data().dateAdded,
           landmarks: doc.data().landmarks,
+          distance: doc.data().distance,
+          duration: doc.data().duration,
         });
       });
       this.setState({
@@ -64,6 +66,8 @@ export class MyTrips extends Component {
           tripTitle: doc.data().tripTitle,
           dateAdded: doc.data().dateAdded,
           landmarks: doc.data().landmarks,
+          distance: doc.data().distance,
+          duration: doc.data().duration,
         });
       });
       this.setState({
@@ -73,6 +77,9 @@ export class MyTrips extends Component {
   }
 
   renderCarouselTrip = ({item}) => {
+    let hours = Math.floor(item.duration / 60);
+    let minutes = Math.floor(item.duration % 60);
+
     return (
       <TouchableHighlight
         style={this.styles.carouselCardTouchableHighlight}
@@ -86,6 +93,14 @@ export class MyTrips extends Component {
                 <Text>{item.tripTitle}</Text>
               )}
             </Text>
+            <View>
+              <Text style={[this.styles.placeType]}>
+                {item.distance < 1
+                  ? String(item.distance).replace('0.', '') + ' m'
+                  : item.distance + ' km'}{' '}
+                - approx. {hours > 0 ? hours + 'u' + minutes : minutes + ' min'}
+              </Text>
+            </View>
           </View>
         </View>
       </TouchableHighlight>

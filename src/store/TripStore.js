@@ -1,6 +1,8 @@
 import {action, observable, decorate} from 'mobx';
 class TripStore {
   landmarkSelection = [];
+  tourDistance;
+  tourDuration;
   constructor(rootStore) {
     this.rootStore = rootStore;
   }
@@ -54,6 +56,8 @@ decorate(TripStore, {
   resetLandmarks: action,
   setTourDistance: action,
   setTourDuration: action,
+  tourDuration: observable,
+  tourDistance: observable,
 });
 
 export default TripStore;

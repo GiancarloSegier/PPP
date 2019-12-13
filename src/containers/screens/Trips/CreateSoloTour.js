@@ -29,15 +29,12 @@ export class CreateSoloTour extends Component {
       userId: auth().currentUser.uid,
       isDatePickerVisible: false,
       landmarkSelection: this.props.tripStore.landmarkSelection,
+      tourDuration: this.props.tripStore.tourDuration,
+      tourDistance: this.props.tripStore.tourDistance,
     };
 
     this.firestoreCollection = firestore().collection('trips');
   }
-
-  componentDidMount = async () => {
-    await this.props.mapStore.getCurrentCity();
-    console.log(await this.props.mapStore.currentCity);
-  };
 
   onPressAdd = () => {
     console.log(this.state.landmarkSelection[0].coords.latitude);
@@ -66,8 +63,8 @@ export class CreateSoloTour extends Component {
         tripTitle: this.state.newTripTitle,
         dateAdded: this.state.currentDate,
         currentCity: this.props.mapStore.currentCity,
-        distance: this.props.tripStore.distance,
-        duration: this.props.tripStore.duration,
+        distance: this.state.tourDistance,
+        duration: this.state.tourDuration,
         landmarks: newLandmarks,
       })
       .then(data => {
