@@ -221,9 +221,7 @@ export class Map extends Component {
   renderCarouselItem = ({item}) => {
     let placeImage;
     if (item.photos) {
-      placeImage = `https://maps.googleapis.com/maps/api/place/photo?maxwidth=200&photoreference=${
-        item.photos[0].photo_reference
-      }&key=${this.state.googleAPI}`;
+      placeImage = `https://maps.googleapis.com/maps/api/place/photo?maxwidth=200&photoreference=${item.photos[0].photo_reference}&key=${this.state.googleAPI}`;
     }
 
     return (
@@ -405,7 +403,10 @@ export class Map extends Component {
             titleStyle={this.styles.primaryFormButtonTitle}
           />
           {this.state.selectionVisible ? (
-            <SelectionOverlay onHideSelection={this.onHideSelection} />
+            <SelectionOverlay
+              onHideSelection={this.onHideSelection}
+              navigation={this.props.navigation}
+            />
           ) : null}
         </>
       );

@@ -8,12 +8,16 @@ class MapStore {
   latitude;
   longitude;
   userLocation = {};
-  currentCity = '';
+  currentCity = null;
   googleAPI = 'AIzaSyBLSLqH_qXkSrU5qK1M71zmWU3gpjs8C4g';
   constructor(rootStore) {
     this.rootStore = rootStore;
     Geocoder.init(this.googleAPI), {language: 'en'};
     this.getCurrentLocation();
+  }
+
+  setCurrentCity(city) {
+    this.currentCity = city;
   }
 
   getCurrentCity() {
@@ -24,7 +28,7 @@ class MapStore {
         )[0].long_name;
 
         if (city !== undefined) {
-          this.currentCity = city;
+          this.setCurrentCity(city);
         } else {
           this.currentCity = '';
         }
@@ -69,6 +73,7 @@ decorate(MapStore, {
   getCurrentCity: action,
   currentCity: observable,
   getUrlWithParameters: action,
+  setCurrentCity: action,
 });
 
 export default MapStore;

@@ -35,6 +35,15 @@ class TripStore {
     console.log(this.landmarkSelection);
     this.landmarkSelection = [];
   };
+
+  setTourDistance = distance => {
+    this.tourDistance = distance;
+    console.log(this.tourDistance);
+  };
+  setTourDuration = duration => {
+    this.tourDuration = duration;
+    console.log(this.tourDuration);
+  };
 }
 
 decorate(TripStore, {
@@ -43,6 +52,8 @@ decorate(TripStore, {
   landmarkSelection: observable,
   checkLandmark: action,
   resetLandmarks: action,
+  setTourDistance: action,
+  setTourDuration: action,
 });
 
 export default TripStore;

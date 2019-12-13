@@ -51,7 +51,6 @@ export class Home extends Component {
   }
 
   fetchData = async () => {
-    console.log('fetch data');
     await this.props.mapStore.getCurrentLocation();
     this.setLocation(this.props.mapStore.userLocation);
     await this.getPlaces();
@@ -65,7 +64,7 @@ export class Home extends Component {
       pageNo: 1,
       dataReceived: false,
     });
-    console.log(this.state.currentCity);
+    this.props.mapStore.setCurrentCity(this.state.currentCity);
   };
 
   checkLoading = () => {

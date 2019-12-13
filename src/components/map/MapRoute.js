@@ -16,6 +16,7 @@ const googlepinStart = require('../../assets/googlepinStart.png');
 const googlePinFinish = require('../../assets/googlepinFinish.png');
 
 class MapRoute extends Component {
+  distance = null;
   constructor(props) {
     super(props);
     if (Platform.OS === 'ios') {
@@ -33,15 +34,14 @@ class MapRoute extends Component {
       placeName: props.placeName,
       destinationLocation: props.destinationLocation,
       landmarkSelection: props.landmarkSelection,
-      distance: null,
     };
   }
 
-  componentDidMount() {
+  componentDidMount = async () => {
     if (this.props.waypoints) {
       this.getWayPoints(this.props.landmarkSelection);
     }
-  }
+  };
 
   getWayPoints = landmarkSelection => {
     const newWaypoints = [];
@@ -95,9 +95,9 @@ class MapRoute extends Component {
         <View style={[this.styles.container, {backgroundColor: 'white'}]}>
           <Text>
             Distance:{' '}
-            {this.state.distance < 1
-              ? String(this.state.distance).replace('0.', '') + ' m'
-              : this.state.distance + ' km'}
+            {this.distance < 1
+              ? String(this.distance).replace('0.', '') + ' m'
+              : this.distance + ' km'}
           </Text>
           <Text>
             Walkingtime:{' '}
@@ -132,12 +132,21 @@ class MapRoute extends Component {
             onReady={result => {
               if (result.distance > 1) {
                 this.distance = parseFloat(result.distance).toFixed(1);
+                if (this.props.createTour) {
+                  this.props.tripStore.setTourDistance(this.distance);
+                }
               } else {
                 this.distance = parseFloat(result.distance);
+                if (this.props.createTour) {
+                  this.props.tripStore.setTourDistance(this.distance);
+                }
+              }
+              if (this.props.createTour) {
+                this.props.tripStore.setTourDuration(result.duration);
               }
               this.fitMap(result.coordinates);
+
               this.setState({
-                distance: this.distance,
                 hours: Math.floor(result.duration / 60),
                 minutes: Math.floor(result.duration % 60),
               });
@@ -214,4 +223,4 @@ class MapRoute extends Component {
   }
 }
 
-export default inject('mapStore')(observer(MapRoute));
+export default inject('mapStore', 'tripStore')(observer(MapRoute));

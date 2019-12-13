@@ -159,7 +159,10 @@ class SelectionOverlay extends Component {
               )}
               <Button
                 title="Create my trip"
-                onPress={this.moveRegion}
+                onPress={() => {
+                  this.props.onHideSelection(this.removeAll);
+                  this.props.navigation.navigate('CreateRouteScreen');
+                }}
                 containerStyle={{flex: 1}}
                 style={{flex: 1}}
                 buttonStyle={this.styles.mapButton}

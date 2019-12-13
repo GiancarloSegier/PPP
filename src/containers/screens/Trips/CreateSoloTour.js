@@ -6,6 +6,8 @@ import androidUI from '../../../styles/ui.android.style.js';
 import iosUI from '../../../styles/ui.ios.style.js';
 import auth from '@react-native-firebase/auth';
 import firestore from '@react-native-firebase/firestore';
+import {inject, observer} from 'mobx-react';
+import MapRoute from '../../../components/map/MapRoute.js';
 
 export class CreateSoloTour extends Component {
   constructor(props) {
@@ -15,9 +17,8 @@ export class CreateSoloTour extends Component {
     } else {
       this.styles = androidUI;
     }
-    console.log(props);
 
-    let day = new Date().getDay();
+    let day = new Date().getDate();
     let month = new Date().getMonth() + 1;
     let year = new Date().getFullYear();
 
@@ -27,30 +28,53 @@ export class CreateSoloTour extends Component {
       currentDate: `${day}/${month}/${year}`,
       userId: auth().currentUser.uid,
       isDatePickerVisible: false,
+      landmarkSelection: this.props.tripStore.landmarkSelection,
     };
 
-    this.ref = firestore().collection('trips');
+    this.firestoreCollection = firestore().collection('trips');
   }
+
+  componentDidMount = async () => {
+    await this.props.mapStore.getCurrentCity();
+    console.log(await this.props.mapStore.currentCity);
+  };
+
   onPressAdd = () => {
+    console.log(this.state.landmarkSelection[0].coords.latitude);
+    const newLandmarks = [];
+    this.state.landmarkSelection.map(landmark => {
+      const newLandmark = {
+        latitude: landmark.coords.latitude,
+        longitude: landmark.coords.longitude,
+        placeName: landmark.placeName,
+      };
+
+      newLandmarks.push(newLandmark);
+    });
+
+    console.log(newLandmarks);
+
     if (this.state.newTripTitle.trim() === '') {
-      Alert.alert('task name is blank');
+      Alert.alert('Enter a tourname please');
       return;
     }
     console.log(this.state.currentDate);
-    this.ref
+    this.firestoreCollection
       .add({
         userId: this.state.userId,
         type: 'solo',
         tripTitle: this.state.newTripTitle,
-        dateAdded: new Date(this.state.currentDate),
-        coords: [
-          {latitude: 42.5, longitude: 2.0},
-          {latitude: 42.54, longitude: 2.1},
-        ],
+        dateAdded: this.state.currentDate,
+        currentCity: this.props.mapStore.currentCity,
+        distance: this.props.tripStore.distance,
+        duration: this.props.tripStore.duration,
+        landmarks: newLandmarks,
       })
       .then(data => {
+        console.log('data: ' + data);
         this.setState({newTripTitle: ''});
-        this.props.navigation.goBack(null);
+        // this.props.navigation.goBack(null);
+        this.showSucces();
       })
       .catch(error => {
         console.log(`error loading: ${error}`);
@@ -58,8 +82,27 @@ export class CreateSoloTour extends Component {
       });
   };
 
+  showSucces = () => {
+    Alert.alert(
+      'Congratulations!',
+      "You're trip has been created and saved!",
+      [
+        {
+          text: 'Do it now',
+          onPress: () => console.log('Do it now'),
+        },
+        {
+          text: 'Do it later',
+          onPress: () => {
+            console.log('Do it later');
+          },
+        },
+      ],
+      {cancelable: false},
+    );
+  };
+
   render() {
-    console.log(this.props);
     return (
       <View style={this.styles.container}>
         <Text style={this.styles.heading2}>Create your tour</Text>
@@ -76,6 +119,19 @@ export class CreateSoloTour extends Component {
           title={'add more landmarks'}
           onPress={() => this.props.navigation.navigate('Map')}
         />
+        <MapRoute
+          createTour={true}
+          waypoints={true}
+          landmarkSelection={this.state.landmarkSelection}
+          destinationLocation={{
+            latitude: this.state.landmarkSelection[
+              this.state.landmarkSelection.length - 1
+            ].coords.latitude,
+            longitude: this.state.landmarkSelection[
+              this.state.landmarkSelection.length - 1
+            ].coords.longitude,
+          }}
+        />
         <Button
           buttonStyle={this.styles.primaryFormButton}
           titleStyle={this.styles.primaryFormButtonTitle}
@@ -87,4 +143,4 @@ export class CreateSoloTour extends Component {
   }
 }
 
-export default CreateSoloTour;
+export default inject('tripStore', 'mapStore')(observer(CreateSoloTour));

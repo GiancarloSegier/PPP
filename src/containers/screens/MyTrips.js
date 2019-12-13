@@ -46,14 +46,10 @@ export class MyTrips extends Component {
       const allTrips = [];
 
       querySnapshots.forEach(doc => {
-        let day = new Date(doc.data().dateAdded).getDay();
-        let month = new Date(doc.data().dateAdded).getMonth() + 1;
-        let year = new Date(doc.data().dateAdded).getFullYear();
         allTrips.push({
           tripTitle: doc.data().tripTitle,
           dateAdded: doc.data().dateAdded,
-          dateAddedString: `${day}/${month}/${year}`,
-          coords: doc.data().coords,
+          landmarks: doc.data().landmarks,
         });
       });
       this.setState({
@@ -64,15 +60,10 @@ export class MyTrips extends Component {
     this.unsubscribeSoloTrips = userSoloTrips.onSnapshot(querySnapshots => {
       const soloTrips = [];
       querySnapshots.forEach(doc => {
-        let day = new Date(doc.data().dateAdded).getDay();
-        let month = new Date(doc.data().dateAdded).getMonth() + 1;
-        let year = new Date(doc.data().dateAdded).getFullYear();
-
         soloTrips.push({
           tripTitle: doc.data().tripTitle,
           dateAdded: doc.data().dateAdded,
-          dateAddedString: `${day}/${month}/${year}`,
-          coords: doc.data().coords,
+          landmarks: doc.data().landmarks,
         });
       });
       this.setState({
@@ -81,24 +72,23 @@ export class MyTrips extends Component {
     });
   }
 
-  renderItem = ({item, index}) => {
-    console.log(item.dateAdded);
+  renderCarouselTrip = ({item}) => {
     return (
-      <View style={this.styles.carouselCard}>
-        <View>
-          <Text style={this.styles.carouselTitle}>{item.tripTitle}</Text>
-          {/* <Text>{item.dateAdded}</Text> */}
-          <View>
-            {item.coords.map((coord, index) => {
-              return (
-                <Text key={index} style={[this.styles.placeType]}>
-                  {coord.latitude}
-                </Text>
-              );
-            })}
+      <TouchableHighlight
+        style={this.styles.carouselCardTouchableHighlight}
+        onPress={() => this.onPressPlace(item)}>
+        <View style={this.styles.carouselCard}>
+          <View style={this.styles.mapPlaceInfo}>
+            <Text style={this.styles.carouselTitle}>
+              {item.tripTitle.split('').length > 20 ? (
+                <Text>{item.tripTitle.slice(0, 20)}...</Text>
+              ) : (
+                <Text>{item.tripTitle}</Text>
+              )}
+            </Text>
           </View>
         </View>
-      </View>
+      </TouchableHighlight>
     );
   };
 
@@ -106,36 +96,24 @@ export class MyTrips extends Component {
     if (this.state.allTrips.length > 0) {
       return (
         <View style={[this.styles.background, {flex: 1}]}>
-          <View style={this.styles.container}>
-            <Text style={this.styles.heading2}>My trips</Text>
-            <Carousel
-              contentContainerCustomStyle={{
-                alignItems: 'center',
-              }}
-              ref={c => {
-                this._carousel = c;
-              }}
-              data={this.state.soloTrips}
-              renderItem={this.renderItem}
-              sliderWidth={Dimensions.get('screen').width}
-              itemWidth={Dimensions.get('screen').width * 0.8}
-              onSnapToItem={index => this.setState({activeSlide: index})}
-            />
-            <Text style={this.styles.heading2}>My Parties</Text>
-            <Carousel
-              contentContainerCustomStyle={{
-                alignItems: 'center',
-              }}
-              ref={c => {
-                this._carousel = c;
-              }}
-              data={this.state.soloTrips}
-              renderItem={this.renderItem}
-              sliderWidth={Dimensions.get('screen').width}
-              itemWidth={Dimensions.get('screen').width * 0.8}
-              onSnapToItem={index => this.setState({activeSlide: index})}
-            />
-          </View>
+          <>
+            <View style={this.styles.container}>
+              <Text style={this.styles.heading2}>Trips</Text>
+            </View>
+            <View style={{height: 140}}>
+              <Carousel
+                containerCustomStyle={this.styles.carouselContainer}
+                ref={c => {
+                  this._carousel = c;
+                }}
+                data={this.state.allTrips}
+                renderItem={this.renderCarouselTrip}
+                sliderWidth={Dimensions.get('window').width + 32}
+                itemWidth={Dimensions.get('window').width * 0.8}
+              />
+            </View>
+          </>
+
           <Button
             onPress={() => this.props.navigation.navigate('CreateRouteScreen')}
             title={'Create my trip'}
