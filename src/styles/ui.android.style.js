@@ -266,6 +266,7 @@ export default StyleSheet.create({
 
   map: {
     flex: 1,
+    marginBottom: -50,
   },
   placesBox: {
     height: 140,
@@ -355,7 +356,7 @@ export default StyleSheet.create({
     borderRadius: 0,
   },
   remove: {
-    backgroundColor: '#ff0062',
+    backgroundColor: colors.red,
   },
   filterButton: {
     marginLeft: 16,
@@ -404,31 +405,32 @@ export default StyleSheet.create({
     padding: 0,
   },
   resetFilter: {
-    backgroundColor: 'transparent',
-    alignSelf: 'flex-end',
-    padding: 0,
+    backgroundColor: 'rgba(255,0,98,0.1)',
     marginBottom: 16,
+    padding: 8,
+  },
+  resetTitle: {
+    fontSize: 14,
+    color: colors.white,
   },
   //Trips
 
   overlayContainer: {
     padding: 0,
     width: Dimensions.get('screen').width * 0.85,
-    height: Dimensions.get('screen').height * 0.8,
-    paddingTop: 8,
+    height: Dimensions.get('screen').height * 0.85,
     borderRadius: 24,
     overflow: 'hidden',
   },
   overlayButtonsTop: {
     flexDirection: 'row',
     justifyContent: 'space-between',
-    alignItems: 'center',
   },
   closeButton: {
-    width: 40,
-    height: 40,
-    backgroundColor: 'transparent',
-    margin: 0,
+    padding: 8,
+    paddingVertical: 6,
+    borderRadius: 50,
+    backgroundColor: colors.darkWhite,
   },
   selectionCounter: {
     backgroundColor: colors.blue,
@@ -441,5 +443,21 @@ export default StyleSheet.create({
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
+  },
+  landmarksAmount: {
+    fontSize: 18,
+    fontWeight: 'bold',
+    color: colors.blue,
+    lineHeight: 32,
+  },
+  landmarkListItem: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    padding: 4,
+    paddingRight: 0,
+    borderBottomColor: colors.darkWhite,
+    borderBottomWidth: 2,
+    marginBottom: 8,
   },
 });

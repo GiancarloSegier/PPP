@@ -1,5 +1,5 @@
 import React, {Component} from 'react';
-import {View, Text, Platform, Image, ScrollView} from 'react-native';
+import {View, Text, Platform, Image, ScrollView, Alert} from 'react-native';
 
 import androidUI from '../../styles/ui.android.style.js';
 import iosUI from '../../styles/ui.ios.style.js';
@@ -51,6 +51,47 @@ class SelectionOverlay extends Component {
     }
   };
 
+  onRemoveLandmark = landmark => {
+    Alert.alert(
+      'Remove landmark',
+      `Are you sure you want to remove ${landmark.placeName} out of your selection?`,
+      [
+        {
+          text: 'Cancel',
+          onPress: () => console.log('Cancel Pressed'),
+          style: 'cancel',
+        },
+        {text: 'Remove', onPress: () => this.removeFromCollection(landmark)},
+      ],
+      {cancelable: false},
+    );
+  };
+
+  onPressRemoveAll() {
+    Alert.alert(
+      'Remove all landmarks',
+      `Are you sure you want to remove ${this.state.landmarkSelection.length} landmarks out of your selection?`,
+      [
+        {
+          text: 'Cancel',
+          onPress: () => console.log('Cancel Pressed'),
+          style: 'cancel',
+        },
+        {
+          text: 'Remove all',
+          onPress: () => {
+            this.removeAll = true;
+            this.props.onHideSelection(this.removeAll);
+            this.setState({
+              loading: false,
+            });
+          },
+        },
+      ],
+      {cancelable: false},
+    );
+  }
+
   render() {
     return (
       <Overlay
@@ -59,55 +100,72 @@ class SelectionOverlay extends Component {
         animationType="fade"
         overlayStyle={this.styles.overlayContainer}>
         <>
-          <View style={[this.styles.container, {paddingVertical: 0}]}>
-            <View style={this.styles.overlayButtonsTop}>
-              <TouchableHighlight
-                onPress={() =>
-                  this.props.onSetFilter(1500, 'tourist_attraction', false)
-                }>
-                <View style={{flexDirection: 'row', opacity: 0.6}}>
-                  <Icon name="times" size={16} color="#020029" />
-                  <Text style={{color: '#020029'}}> Clear all landmarks</Text>
-                </View>
-              </TouchableHighlight>
-              <Button
-                onPress={() => this.props.onHideSelection()}
-                buttonStyle={this.styles.closeButton}
-                icon={<Icon name="times" size={24} color="#110b84" />}
-              />
+          <View style={{height: 140}}>
+            <View style={[this.styles.container]}>
+              <View style={this.styles.overlayButtonsTop}>
+                <Button
+                  onPress={() => this.onPressRemoveAll()}
+                  buttonStyle={this.styles.resetFilter}
+                  titleStyle={this.styles.resetTitle}
+                  title=" Clear all landmarks"
+                  icon={<Icon name="times" size={14} color="#fff" />}
+                />
+                <Button
+                  onPress={() => this.props.onHideSelection()}
+                  buttonStyle={this.styles.closeButton}
+                  icon={<Icon name="times" size={24} color="#110b84" />}
+                />
+              </View>
+              <View
+                style={{
+                  flexDirection: 'row',
+                  alignItems: 'baseline',
+                  justifyContent: 'space-between',
+                }}>
+                <Text style={this.styles.heading2}>My landmarks:</Text>
+                <Text style={this.styles.landmarksAmount}>
+                  {this.state.landmarkSelection.length}
+                </Text>
+              </View>
             </View>
-
-            <Text style={this.styles.heading2}>My landmarks</Text>
-            <Text>{this.state.landmarkSelection.length}</Text>
           </View>
-          <ScrollView style={this.styles.container}>
-            {this.state.landmarkSelection.map(landmark => {
+
+          <ScrollView style={{flex: 1, marginHorizontal: 24}}>
+            {this.state.landmarkSelection.map((landmark, index) => {
               return (
-                <View>
-                  <Text>{landmark.placeName}</Text>
+                <View key={index} style={this.styles.landmarkListItem}>
+                  <Text style={{maxWidth: '85%'}}>{landmark.placeName}</Text>
                   <Button
-                    title="remove place"
-                    onPress={() => this.removeFromCollection(landmark)}
+                    buttonStyle={{
+                      backgroundColor: 'transparent',
+                      opacity: 0.5,
+                    }}
+                    onPress={() => this.onRemoveLandmark(landmark)}
+                    icon={<Icon name="times" size={16} color="#020029" />}
                   />
                 </View>
               );
             })}
           </ScrollView>
-
-          <View style={{position: 'absolute', bottom: 0, width: '100%'}}>
-            {this.state.loading ? null : (
-              <MapRoute
-                waypoints={true}
-                landmarkSelection={this.state.landmarkSelection}
-                destinationLocation={this.state.destinationLocation}
+          <View style={{height: 290}}>
+            <View
+              style={{position: 'absolute', bottom: 0, width: '100%', flex: 1}}>
+              {this.state.loading ? null : (
+                <MapRoute
+                  waypoints={true}
+                  landmarkSelection={this.state.landmarkSelection}
+                  destinationLocation={this.state.destinationLocation}
+                />
+              )}
+              <Button
+                title="Create my trip"
+                onPress={this.moveRegion}
+                containerStyle={{flex: 1}}
+                style={{flex: 1}}
+                buttonStyle={this.styles.mapButton}
+                titleStyle={this.styles.primaryFormButtonTitle}
               />
-            )}
-            <Button
-              title="Create my trip"
-              onPress={this.moveRegion}
-              buttonStyle={this.styles.mapButton}
-              titleStyle={this.styles.primaryFormButtonTitle}
-            />
+            </View>
           </View>
         </>
       </Overlay>

@@ -30,6 +30,11 @@ class TripStore {
       }
     }
   };
+
+  resetLandmarks = () => {
+    console.log(this.landmarkSelection);
+    this.landmarkSelection = [];
+  };
 }
 
 decorate(TripStore, {
@@ -37,6 +42,7 @@ decorate(TripStore, {
   removeFromSelection: action,
   landmarkSelection: observable,
   checkLandmark: action,
+  resetLandmarks: action,
 });
 
 export default TripStore;

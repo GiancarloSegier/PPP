@@ -207,8 +207,15 @@ export class Map extends Component {
   onPressShowSelection = () => {
     this.setState({selectionVisible: true});
   };
-  onHideSelection = () => {
+  onHideSelection = (removeAll = false) => {
     this.setState({selectionVisible: false});
+    if (removeAll) {
+      this.props.tripStore.resetLandmarks();
+      this.setState({
+        landmarkSelection: this.props.tripStore.landmarkSelection,
+      });
+    }
+    console.log(this.state.landmarkSelection);
   };
 
   renderCarouselItem = ({item}) => {

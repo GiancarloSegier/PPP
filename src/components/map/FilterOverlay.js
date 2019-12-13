@@ -94,113 +94,107 @@ class FilterOverlay extends Component {
         isVisible
         animated
         animationType="fade"
-        overlayStyle={this.styles.overlayContainer}>
-        <View style={this.styles.overlayButtonsTop}>
-          <TouchableHighlight
-            onPress={() =>
-              this.props.onSetFilter(1500, 'tourist_attraction', false)
-            }>
-            <View
-              style={{
-                flexDirection: 'row',
-                opacity: 0.4,
-                alignSelf: 'flex-end',
-              }}>
-              <Icon name="times" size={16} color="#020029" />
-              <Text style={{color: '#020029'}}> Clear all filters</Text>
+        overlayStyle={[
+          this.styles.overlayContainer,
+          {height: 'auto', minHeight: '70%'},
+        ]}>
+        <>
+          <View style={[this.styles.container]}>
+            <View style={this.styles.overlayButtonsTop}>
+              <Button
+                onPress={() =>
+                  this.props.onSetFilter(1500, 'tourist_attraction', false)
+                }
+                buttonStyle={this.styles.resetFilter}
+                titleStyle={this.styles.resetTitle}
+                title=" Clear all filters"
+                icon={<Icon name="times" size={14} color="#fff" />}
+              />
+              <Button
+                onPress={() => this.props.onPressFilter()}
+                buttonStyle={this.styles.closeButton}
+                icon={<Icon name="times" size={24} color="#110b84" />}
+              />
             </View>
-          </TouchableHighlight>
-          <Button
-            onPress={() => this.props.onPressFilter()}
-            buttonStyle={this.styles.closeButton}
-            icon={<Icon name="times" size={24} color="#110b84" />}
-          />
-        </View>
-        <View
-          style={[
-            this.styles.container,
-            {
-              height: '80%',
-              justifyContent: 'space-around',
-            },
-          ]}>
-          <View style={{marginBottom: 16}}>
-            <View style={{flexDirection: 'row', alignItems: 'baseline'}}>
-              <Text style={[this.styles.heading2, {marginBottom: 8}]}>
-                Type of place:{' '}
-              </Text>
-              {/* <Text style={this.styles.radiusValue}>
+
+            <View style={{marginBottom: 16}}>
+              <View style={{flexDirection: 'row', alignItems: 'baseline'}}>
+                <Text style={[this.styles.heading2, {marginBottom: 8}]}>
+                  Type of place:{' '}
+                </Text>
+                {/* <Text style={this.styles.radiusValue}>
                 {this.state.selectedType.replace(/_/g, ' ')}
               </Text> */}
+              </View>
+              <Picker
+                selectedValue={this.state.selectedType}
+                onValueChange={newSelectedType =>
+                  this.setState({selectedType: newSelectedType})
+                }
+                lineColor={'red'}
+                itemStyle={this.styles.pickerItem}>
+                {this.types.map((type, index) => {
+                  return (
+                    <Picker.Item
+                      key={index}
+                      label={type.replace(/_/g, ' ')}
+                      value={type}
+                    />
+                  );
+                })}
+              </Picker>
             </View>
-            <Picker
-              selectedValue={this.state.selectedType}
-              onValueChange={newSelectedType =>
-                this.setState({selectedType: newSelectedType})
-              }
-              lineColor={'red'}
-              itemStyle={this.styles.pickerItem}>
-              {this.types.map((type, index) => {
-                return (
-                  <Picker.Item
-                    key={index}
-                    label={type.replace(/_/g, ' ')}
-                    value={type}
-                  />
-                );
-              })}
-            </Picker>
-          </View>
-          <View style={{marginBottom: 16}}>
-            <View style={{flexDirection: 'row', alignItems: 'baseline'}}>
-              <Text style={this.styles.heading2}>Radius: </Text>
-              <Text style={this.styles.radiusValue}>
-                {this.state.selectedRadius}m.
-              </Text>
+            <View style={{marginBottom: 16}}>
+              <View style={{flexDirection: 'row', alignItems: 'baseline'}}>
+                <Text style={this.styles.heading2}>Radius: </Text>
+                <Text style={this.styles.radiusValue}>
+                  {this.state.selectedRadius}m.
+                </Text>
+              </View>
+
+              <Slider
+                value={this.state.selectedRadius}
+                maximumValue={2000}
+                minimumValue={200}
+                step={100}
+                thumbTintColor={'#182ac1'}
+                minimumTrackTintColor={'#110b84'}
+                maximumTrackTintColor={'#e4e4e4'}
+                onValueChange={newRadius => {
+                  const chosenRadius = Math.floor(newRadius);
+
+                  this.setState({selectedRadius: chosenRadius});
+                }}
+              />
             </View>
-
-            <Slider
-              value={this.state.selectedRadius}
-              maximumValue={2000}
-              minimumValue={200}
-              step={100}
-              thumbTintColor={'#182ac1'}
-              minimumTrackTintColor={'#110b84'}
-              maximumTrackTintColor={'#e4e4e4'}
-              onValueChange={newRadius => {
-                const chosenRadius = Math.floor(newRadius);
-
-                this.setState({selectedRadius: chosenRadius});
-              }}
+            <CheckBox
+              center
+              title="Show only opened places?"
+              checkedIcon="check-square"
+              uncheckedIcon="check-square"
+              checkedColor="#182ac1"
+              uncheckedColor="#e4e4e4"
+              containerStyle={this.styles.checkBoxFilter}
+              textStyle={{color: '#020029'}}
+              onPress={this.onCheckedOpen}
+              checked={this.state.openChecked}
             />
           </View>
-          <CheckBox
-            center
-            title="Show only opened places?"
-            checkedIcon="check-square"
-            uncheckedIcon="check-square"
-            checkedColor="#182ac1"
-            uncheckedColor="#e4e4e4"
-            containerStyle={this.styles.checkBoxFilter}
-            textStyle={{color: '#020029'}}
-            onPress={this.onCheckedOpen}
-            checked={this.state.openChecked}
-          />
-        </View>
-        <View style={{position: 'absolute', bottom: 0, width: '100%'}}>
-          <Button
-            title="Set filter"
-            onPress={() =>
-              this.props.onSetFilter(
-                this.state.selectedRadius,
-                this.state.selectedType,
-                this.state.openChecked,
-              )
-            }
-            buttonStyle={this.styles.mapButton}
-            titleStyle={this.styles.primaryFormButtonTitle}
-          />
-        </View>
+          <View style={{position: 'absolute', bottom: 0, width: '100%'}}>
+            <Button
+              title="Set filter"
+              onPress={() =>
+                this.props.onSetFilter(
+                  this.state.selectedRadius,
+                  this.state.selectedType,
+                  this.state.openChecked,
+                )
+              }
+              buttonStyle={this.styles.mapButton}
+              titleStyle={this.styles.primaryFormButtonTitle}
+            />
+          </View>
+        </>
       </Overlay>
     );
   }
