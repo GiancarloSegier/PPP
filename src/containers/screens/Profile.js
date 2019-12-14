@@ -20,13 +20,12 @@ class Profile extends Component {
   }
 
   onSignedOut = () => {
-    console.log(this.props.navigation.navigate('Auth'));
     this.props.navigation.navigate('Auth');
   };
 
   render() {
     return (
-      <ScrollView style={this.styles.background}>
+      <ScrollView>
         <View style={this.styles.container}>
           <Text style={this.styles.title}>Welcome back</Text>
           <Text style={this.styles.subTitle}>

@@ -21,7 +21,6 @@ import Icon from 'react-native-vector-icons/FontAwesome';
 class FilterOverlay extends Component {
   constructor(props) {
     super(props);
-    console.log(props);
 
     if (Platform.OS === 'ios') {
       this.styles = iosUI;
@@ -81,7 +80,6 @@ class FilterOverlay extends Component {
 
   onCheckedOpen = () => {
     this.setState(prevState => ({openChecked: !prevState.openChecked}));
-    console.log(this.state.openChecked);
   };
 
   resetFilter = () => {

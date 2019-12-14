@@ -9,14 +9,17 @@ import {
   TouchableHighlight,
   Alert,
   Dimensions,
+  Image,
 } from 'react-native';
 import {Button} from 'react-native-elements';
 import Carousel from 'react-native-snap-carousel';
+import Icon from 'react-native-vector-icons/FontAwesome';
 
 import androidUI from '../../styles/ui.android.style.js';
 import iosUI from '../../styles/ui.ios.style.js';
 import auth from '@react-native-firebase/auth';
-import firestore from '@react-native-firebase/firestore';
+import {inject, observer} from 'mobx-react';
+import TripCard from '../../components/trips/TripCard.js';
 
 export class MyTrips extends Component {
   constructor(props) {
@@ -29,9 +32,10 @@ export class MyTrips extends Component {
 
     this.state = {
       allTrips: [],
+      userSoloTrips: props.tripStore.userSoloTrips,
+      userPartyTrips: props.tripStore.userPartyTrips,
       userId: auth().currentUser.uid,
     };
-    this.ref = firestore().collection('trips');
   }
 
   componentDidMount() {
@@ -39,118 +43,104 @@ export class MyTrips extends Component {
   }
 
   collectTrips() {
-    const userTrips = this.ref.where('userId', '==', this.state.userId);
-    const userSoloTrips = userTrips.where('type', '==', 'solo');
-
-    this.unsubscribeAllTrips = userTrips.onSnapshot(querySnapshots => {
-      const allTrips = [];
-
-      querySnapshots.forEach(doc => {
-        allTrips.push({
-          tripTitle: doc.data().tripTitle,
-          dateAdded: doc.data().dateAdded,
-          landmarks: doc.data().landmarks,
-          distance: doc.data().distance,
-          duration: doc.data().duration,
-        });
-      });
-      this.setState({
-        allTrips: allTrips,
-      });
-    });
-
-    this.unsubscribeSoloTrips = userSoloTrips.onSnapshot(querySnapshots => {
-      const soloTrips = [];
-      querySnapshots.forEach(doc => {
-        soloTrips.push({
-          tripTitle: doc.data().tripTitle,
-          dateAdded: doc.data().dateAdded,
-          landmarks: doc.data().landmarks,
-          distance: doc.data().distance,
-          duration: doc.data().duration,
-        });
-      });
-      this.setState({
-        soloTrips: soloTrips,
-      });
+    this.props.tripStore.getUserSoloTrips(this.state.userId);
+    this.props.tripStore.getUserPartyTrips(this.state.userId);
+    this.setState({
+      userSoloTrips: this.props.tripStore.userSoloTrips,
+      userPartyTrips: this.props.tripStore.userPartyTrips,
     });
   }
 
   renderCarouselTrip = ({item}) => {
-    let hours = Math.floor(item.duration / 60);
-    let minutes = Math.floor(item.duration % 60);
-
-    return (
-      <TouchableHighlight
-        style={this.styles.carouselCardTouchableHighlight}
-        onPress={() => this.onPressPlace(item)}>
-        <View style={this.styles.carouselCard}>
-          <View style={this.styles.mapPlaceInfo}>
-            <Text style={this.styles.carouselTitle}>
-              {item.tripTitle.split('').length > 20 ? (
-                <Text>{item.tripTitle.slice(0, 20)}...</Text>
-              ) : (
-                <Text>{item.tripTitle}</Text>
-              )}
-            </Text>
-            <View>
-              <Text style={[this.styles.placeType]}>
-                {item.distance < 1
-                  ? String(item.distance).replace('0.', '') + ' m'
-                  : item.distance + ' km'}{' '}
-                - approx. {hours > 0 ? hours + 'u' + minutes : minutes + ' min'}
-              </Text>
-            </View>
-          </View>
-        </View>
-      </TouchableHighlight>
-    );
+    return <TripCard item={item} />;
   };
 
   render() {
-    if (this.state.allTrips.length > 0) {
-      return (
-        <View style={[this.styles.background, {flex: 1}]}>
-          <>
-            <View style={this.styles.container}>
-              <Text style={this.styles.heading2}>Trips</Text>
-            </View>
-            <View style={{height: 140}}>
-              <Carousel
-                containerCustomStyle={this.styles.carouselContainer}
-                ref={c => {
-                  this._carousel = c;
-                }}
-                data={this.state.allTrips}
-                renderItem={this.renderCarouselTrip}
-                sliderWidth={Dimensions.get('window').width + 32}
-                itemWidth={Dimensions.get('window').width * 0.8}
-              />
-            </View>
-          </>
+    return (
+      <>
+        {this.state.userSoloTrips.length > 0 ||
+        this.state.userPartyTrips.length > 0 ? (
+          <ScrollView>
+            <>
+              <View style={this.styles.container}>
+                <Text style={this.styles.heading2}>My solo trips</Text>
+              </View>
+              {this.state.userSoloTrips.length > 0 ? (
+                <Carousel
+                  containerCustomStyle={this.styles.carouselContainer}
+                  ref={c => {
+                    this._carousel = c;
+                  }}
+                  data={this.state.userSoloTrips}
+                  renderItem={this.renderCarouselTrip}
+                  sliderWidth={
+                    Dimensions.get('screen').width +
+                    Dimensions.get('screen').width * 0.02
+                  }
+                  itemWidth={Dimensions.get('window').width * 0.8}
+                />
+              ) : (
+                <Text>You haven't made any solo trips yet!</Text>
+              )}
+              <View style={this.styles.container}>
+                <Text style={this.styles.heading2}>Parties</Text>
+              </View>
+              {this.state.userPartyTrips.length > 0 ? (
+                <View style={{height: 140}}>
+                  <Carousel
+                    containerCustomStyle={this.styles.carouselContainer}
+                    ref={c => {
+                      this._carousel = c;
+                    }}
+                    data={this.state.userPartyTrips}
+                    renderItem={this.renderCarouselTrip}
+                    sliderWidth={
+                      Dimensions.get('screen').width +
+                      Dimensions.get('screen').width * 0.02
+                    }
+                    itemWidth={Dimensions.get('window').width * 0.8}
+                    onSnapToItem={index => this.setState({activeSlide: index})}
+                  />
+                </View>
+              ) : (
+                <Text>You haven't made any party trips yet!</Text>
+              )}
+            </>
+          </ScrollView>
+        ) : (
+          <View style={[this.styles.container, {flex: 1}]}>
+            <Text style={[this.styles.title, this.styles.marginBottom]}>
+              No trips?
+            </Text>
+            <Text style={this.styles.body}>
+              Go to the map and add landmarks to your selection. Then you can
+              make your own trip!
+            </Text>
+            <Text style={this.styles.body}>
+              Or click the button below to go to the tour generator
+            </Text>
 
-          <Button
-            onPress={() => this.props.navigation.navigate('CreateRouteScreen')}
-            title={'Create my trip'}
-            buttonStyle={this.styles.mapButton}
-            titleStyle={this.styles.primaryFormButtonTitle}
-          />
-        </View>
-      );
-    } else {
-      return (
-        <View style={this.styles.container}>
-          <Text>Create a trip!</Text>
-          <Button
-            onPress={() => this.props.navigation.navigate('CreateRouteScreen')}
-            title={'Create my trip'}
-            buttonStyle={this.styles.mapButton}
-            titleStyle={this.styles.primaryFormButtonTitle}
-          />
-        </View>
-      );
-    }
+            <Image
+              source={require('../../assets/compass.png')}
+              style={{
+                height: '85%',
+                width: '75%',
+                resizeMode: 'contain',
+                opacity: 0.25,
+                alignSelf: 'center',
+              }}
+            />
+          </View>
+        )}
+        <Button
+          onPress={() => this.props.navigation.navigate('CreateRouteScreen')}
+          title={'Create my trip'}
+          buttonStyle={this.styles.mapButton}
+          titleStyle={this.styles.primaryFormButtonTitle}
+        />
+      </>
+    );
   }
 }
 
-export default MyTrips;
+export default inject('tripStore')(observer(MyTrips));

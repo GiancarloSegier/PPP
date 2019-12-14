@@ -31,47 +31,74 @@ export class CreateSoloTour extends Component {
       landmarkSelection: this.props.tripStore.landmarkSelection,
       tourDuration: this.props.tripStore.tourDuration,
       tourDistance: this.props.tripStore.tourDistance,
+      originLocation: {
+        latitude: this.props.tripStore.landmarkSelection[0].coords.latitude,
+        longitude: this.props.tripStore.landmarkSelection[0].coords.longitude,
+      },
+      tourCity: null,
     };
 
     this.firestoreCollection = firestore().collection('trips');
   }
 
+  componentDidMount() {
+    this.getTourCity();
+  }
+
+  getTourCity = async () => {
+    await this.props.tripStore.getTourCity(this.state.originLocation);
+    this.setState({tourCity: this.props.tripStore.tourCity});
+  };
+
   onPressAdd = () => {
-    console.log(this.state.landmarkSelection[0].coords.latitude);
     const newLandmarks = [];
-    this.state.landmarkSelection.map(landmark => {
-      const newLandmark = {
-        latitude: landmark.coords.latitude,
-        longitude: landmark.coords.longitude,
-        placeName: landmark.placeName,
-      };
-
-      newLandmarks.push(newLandmark);
-    });
-
-    console.log(newLandmarks);
-
-    if (this.state.newTripTitle.trim() === '') {
+    if (
+      this.state.newTripTitle.trim() === '' &&
+      this.state.landmarkSelection.length < 1
+    ) {
+      Alert.alert(
+        'You really have to fill in a tourname and select at least 1 landmark',
+      );
+      return;
+    } else if (this.state.newTripTitle.trim() === '') {
       Alert.alert('Enter a tourname please');
       return;
     }
-    console.log(this.state.currentDate);
+    if (
+      this.state.landmarkSelection &&
+      this.state.landmarkSelection.length < 1
+    ) {
+      Alert.alert('You have to select at least 1 landmark');
+      return;
+    } else {
+      this.state.landmarkSelection.map(landmark => {
+        const newLandmark = {
+          latitude: landmark.coords.latitude,
+          longitude: landmark.coords.longitude,
+          placeName: landmark.placeName,
+        };
+
+        newLandmarks.push(newLandmark);
+      });
+    }
     this.firestoreCollection
       .add({
         userId: this.state.userId,
         type: 'solo',
         tripTitle: this.state.newTripTitle,
         dateAdded: this.state.currentDate,
-        currentCity: this.props.mapStore.currentCity,
-        distance: this.state.tourDistance,
-        duration: this.state.tourDuration,
+        tourCity: this.props.tripStore.tourCity,
+        distance: this.props.tripStore.tourDistance,
+        duration: this.props.tripStore.tourDuration,
         landmarks: newLandmarks,
       })
       .then(data => {
-        console.log('data: ' + data);
         this.setState({newTripTitle: ''});
         // this.props.navigation.goBack(null);
         this.showSucces();
+        this.props.tripStore.resetLandmarks();
+        this.props.tripStore.getUserSoloTrips(this.state.userId);
+        this.props.tripStore.getUserPartyTrips(this.state.userId);
       })
       .catch(error => {
         console.log(`error loading: ${error}`);
@@ -110,25 +137,39 @@ export class CreateSoloTour extends Component {
           value={this.state.newTripTitle === '' ? '' : this.state.newTripTitle}
           onChangeText={text => this.setState({newTripTitle: text})}
         />
-        <Button
-          buttonStyle={this.styles.primaryFormButton}
-          titleStyle={this.styles.primaryFormButtonTitle}
-          title={'add more landmarks'}
-          onPress={() => this.props.navigation.navigate('Map')}
-        />
-        <MapRoute
-          createTour={true}
-          waypoints={true}
-          landmarkSelection={this.state.landmarkSelection}
-          destinationLocation={{
-            latitude: this.state.landmarkSelection[
-              this.state.landmarkSelection.length - 1
-            ].coords.latitude,
-            longitude: this.state.landmarkSelection[
-              this.state.landmarkSelection.length - 1
-            ].coords.longitude,
-          }}
-        />
+        {this.state.landmarkSelection &&
+        this.state.landmarkSelection.length > 0 ? (
+          <Button
+            buttonStyle={this.styles.primaryFormButton}
+            titleStyle={this.styles.primaryFormButtonTitle}
+            title={'add more landmarks'}
+            onPress={() => this.props.navigation.navigate('Map')}
+          />
+        ) : null}
+        {this.state.landmarkSelection &&
+        this.state.landmarkSelection.length > 0 ? (
+          <MapRoute
+            createTour={true}
+            waypoints={true}
+            origin={this.state.originLocation}
+            landmarkSelection={this.state.landmarkSelection}
+            destinationLocation={{
+              latitude: this.state.landmarkSelection[
+                this.state.landmarkSelection.length - 1
+              ].coords.latitude,
+              longitude: this.state.landmarkSelection[
+                this.state.landmarkSelection.length - 1
+              ].coords.longitude,
+            }}
+          />
+        ) : (
+          <Button
+            buttonStyle={this.styles.primaryFormButton}
+            titleStyle={this.styles.primaryFormButtonTitle}
+            title={'add landmarks'}
+            onPress={() => this.props.navigation.navigate('Map')}
+          />
+        )}
         <Button
           buttonStyle={this.styles.primaryFormButton}
           titleStyle={this.styles.primaryFormButtonTitle}

@@ -35,7 +35,6 @@ export class CreateTripScreen extends Component {
       userId: auth().currentUser.uid,
       isDatePickerVisible: false,
     };
-    console.log(this.state.date.getTime());
 
     this.ref = firestore().collection('trips');
   }

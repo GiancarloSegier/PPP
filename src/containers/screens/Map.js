@@ -192,15 +192,10 @@ export class Map extends Component {
     this.getPlaces(this.state.placeType, this.state.radius);
   };
 
-  loadNewSelection = landmarkSelection => {
-    console.log(landmarkSelection);
-  };
-
   onPressPlace = place => {
     this.props.navigation.navigate('InfoScreen', {
       place: place,
       placeName: place.name,
-      loadNewSelection: this.loadNewSelection,
     });
   };
 
@@ -211,17 +206,15 @@ export class Map extends Component {
     this.setState({selectionVisible: false});
     if (removeAll) {
       this.props.tripStore.resetLandmarks();
-      this.setState({
-        landmarkSelection: this.props.tripStore.landmarkSelection,
-      });
     }
-    console.log(this.state.landmarkSelection);
   };
 
   renderCarouselItem = ({item}) => {
     let placeImage;
     if (item.photos) {
-      placeImage = `https://maps.googleapis.com/maps/api/place/photo?maxwidth=200&photoreference=${item.photos[0].photo_reference}&key=${this.state.googleAPI}`;
+      placeImage = `https://maps.googleapis.com/maps/api/place/photo?maxwidth=200&photoreference=${
+        item.photos[0].photo_reference
+      }&key=${this.state.googleAPI}`;
     }
 
     return (
@@ -339,7 +332,7 @@ export class Map extends Component {
                 icon={<Icon name="street-view" size={24} color="#110b84" />}
               />
 
-              {this.state.landmarkSelection.length > 0 ? (
+              {this.props.tripStore.landmarkSelection.length > 0 ? (
                 <TouchableHighlight
                   onPress={this.onPressShowSelection}
                   style={this.styles.filterButton}>
@@ -381,7 +374,10 @@ export class Map extends Component {
                 }}
                 data={this.state.places}
                 renderItem={this.renderCarouselItem}
-                sliderWidth={Dimensions.get('window').width + 32}
+                sliderWidth={
+                  Dimensions.get('screen').width +
+                  Dimensions.get('screen').width * 0.02
+                }
                 itemWidth={Dimensions.get('window').width * 0.8}
                 onSnapToItem={index => this.onCarouselItemChange(index)}
               />

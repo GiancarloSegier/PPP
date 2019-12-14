@@ -16,7 +16,7 @@ const googlepinStart = require('../../assets/googlepinStart.png');
 const googlePinFinish = require('../../assets/googlepinFinish.png');
 
 class MapRoute extends Component {
-  distance = null;
+  distance = 'calculating ';
   constructor(props) {
     super(props);
     if (Platform.OS === 'ios') {
@@ -34,12 +34,23 @@ class MapRoute extends Component {
       placeName: props.placeName,
       destinationLocation: props.destinationLocation,
       landmarkSelection: props.landmarkSelection,
+      origin: props.origin,
     };
   }
 
   componentDidMount = async () => {
     if (this.props.waypoints) {
       this.getWayPoints(this.props.landmarkSelection);
+    }
+    this.checkOrigin();
+  };
+
+  checkOrigin = () => {
+    console.log(this.props.origin);
+    if (this.props.origin) {
+      this.setState({origin: this.props.origin});
+    } else {
+      this.setState({origin: this.state.userLocation});
     }
   };
 
@@ -58,12 +69,12 @@ class MapRoute extends Component {
 
   fitMap = (
     coordinates = [
-      this.state.userLocation,
+      this.state.origin,
       this.state.waypoints,
       this.state.destinationLocation,
     ],
   ) => {
-    if (this.state.waypoints && this.state.waypoints > 1) {
+    if (this.props.waypoints && this.state.waypoints > 1) {
       this._map.fitToCoordinates(coordinates, {
         edgePadding: {
           top: Dimensions.get('screen').height / 15,
@@ -75,7 +86,7 @@ class MapRoute extends Component {
       });
     } else {
       this._map.fitToCoordinates(
-        [this.state.userLocation, this.state.destinationLocation],
+        [this.state.origin, this.state.destinationLocation],
         {
           edgePadding: {
             top: Dimensions.get('screen').height / 15,
@@ -101,9 +112,16 @@ class MapRoute extends Component {
           </Text>
           <Text>
             Walkingtime:{' '}
-            {this.state.hours > 0
-              ? this.state.hours + 'u' + this.state.minutes
-              : this.state.minutes + ' min'}
+            {this.state.hours === undefined ? (
+              'calculating'
+            ) : (
+              <>
+                {' '}
+                {this.state.hours > 0
+                  ? this.state.hours + 'u' + this.state.minutes
+                  : this.state.minutes + ' min'}
+              </>
+            )}
           </Text>
         </View>
         <MapView
@@ -121,7 +139,7 @@ class MapRoute extends Component {
           provider={MapView.PROVIDER_GOOGLE}>
           <MapViewDirections
             mode="WALKING"
-            origin={this.state.userLocation}
+            origin={this.state.origin}
             waypoints={this.state.waypoints ? this.state.waypoints : null}
             destination={this.state.destinationLocation}
             apikey={this.state.googleAPI}
@@ -132,18 +150,12 @@ class MapRoute extends Component {
             onReady={result => {
               if (result.distance > 1) {
                 this.distance = parseFloat(result.distance).toFixed(1);
-                if (this.props.createTour) {
-                  this.props.tripStore.setTourDistance(this.distance);
-                }
               } else {
                 this.distance = parseFloat(result.distance);
-                if (this.props.createTour) {
-                  this.props.tripStore.setTourDistance(this.distance);
-                }
               }
-              if (this.props.createTour) {
-                this.props.tripStore.setTourDuration(result.duration);
-              }
+              this.props.tripStore.setTourDistance(this.distance);
+              this.props.tripStore.setTourDuration(result.duration);
+
               this.fitMap(result.coordinates);
 
               this.setState({
@@ -156,10 +168,7 @@ class MapRoute extends Component {
           <Marker
             icon={this.state.waypoints ? googlepinStart : googlepin}
             key={'start'}
-            coordinate={{
-              latitude: this.state.userLocation.latitude,
-              longitude: this.state.userLocation.longitude,
-            }}>
+            coordinate={this.state.origin}>
             <Callout tooltip style={this.styles.calloutContainer}>
               <View>
                 <Text style={this.styles.calloutText}>Your location</Text>

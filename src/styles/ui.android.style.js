@@ -6,10 +6,19 @@ const deviceHeight = Dimensions.get('screen').height;
 
 export default StyleSheet.create({
   background: {
-    backgroundColor: colors.darkWhite,
+    backgroundColor: '#ffffee',
   },
   container: {
     padding: 24,
+  },
+  marginTop: {
+    marginTop: 32,
+  },
+  marginBottom: {
+    marginBottom: 32,
+  },
+  margin: {
+    marginVertical: 32,
   },
   blueBox: {
     backgroundColor: colors.blue,
@@ -290,11 +299,11 @@ export default StyleSheet.create({
   carouselContainer: {
     paddingVertical: 24,
     shadowColor: colors.navy,
-    shadowOffset: {width: 0, height: 2},
-    shadowOpacity: 0.5,
-    shadowRadius: 10,
+    shadowOffset: {width: 0, height: 1},
+    shadowOpacity: 0.15,
+    shadowRadius: 6,
     elevation: 2,
-    marginLeft: -32,
+    marginLeft: -Dimensions.get('screen').width * 0.02,
   },
   carouselCardTouchableHighlight: {
     flex: 1,
@@ -320,6 +329,7 @@ export default StyleSheet.create({
   },
   mapPlaceImage: {
     height: '100%',
+
     width: '30%',
     borderRadius: 8,
     marginRight: 16,
@@ -413,6 +423,7 @@ export default StyleSheet.create({
     fontSize: 14,
     color: colors.white,
   },
+
   //Trips
 
   overlayContainer: {
@@ -458,6 +469,63 @@ export default StyleSheet.create({
     paddingRight: 0,
     borderBottomColor: colors.darkWhite,
     borderBottomWidth: 2,
+  },
+  carouselTripCard: {
+    backgroundColor: colors.white,
+    overflow: 'hidden',
+    borderRadius: 16,
+  },
+  tripCardHeading: {
+    padding: 16,
+    backgroundColor: colors.darkBlue,
+
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'baseline',
+  },
+  tripCardContent: {
+    padding: 16,
+  },
+  tripCity: {
+    color: colors.white,
+    fontSize: 18,
+    fontWeight: 'bold',
+  },
+  tripDateAdded: {
+    color: colors.white,
+    fontSize: 14,
+    fontWeight: '600',
+  },
+  tripCardTitle: {
+    fontSize: 24,
+    color: colors.navy,
+    fontWeight: 'bold',
     marginBottom: 8,
+  },
+  tripInfo: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    borderTopWidth: 2,
+    borderColor: colors.darkWhite,
+  },
+  tripInfoBlock: {
+    marginTop: 16,
+    padding: 8,
+    borderRightColor: colors.darkWhite,
+    borderRightWidth: 2,
+    alignItems: 'center',
+    width: '33%',
+  },
+  lastInfoBlock: {
+    borderRightWidth: 0,
+  },
+
+  tripInfoTitle: {
+    fontWeight: 'bold',
+    color: colors.blue,
+    fontSize: 28,
+  },
+  infoParam: {
+    fontSize: 10,
   },
 });

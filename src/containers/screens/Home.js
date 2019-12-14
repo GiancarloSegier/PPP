@@ -22,6 +22,7 @@ import Icon from 'react-native-vector-icons/FontAwesome';
 
 import MapView, {Marker} from 'react-native-maps';
 import MapStyle from '../../config/MapStyle';
+import TripCard from '../../components/trips/TripCard.js';
 const googlepin = require('../../assets/googlepin.png');
 
 export class Home extends Component {
@@ -41,6 +42,7 @@ export class Home extends Component {
       googleAPI: props.mapStore.googleAPI,
       activeDotIndex: 0,
       loading: true,
+      citySoloTrips: props.tripStore.citySoloTrips,
     };
 
     Geocoder.init(props.mapStore.googleAPI), {language: 'en'};
@@ -48,7 +50,12 @@ export class Home extends Component {
 
   async componentDidMount() {
     await this.fetchData();
+    this.collectTrips(this.state.currentCity);
   }
+  collectTrips = city => {
+    this.props.tripStore.getCitySoloTrips(city);
+    this.setState({citySoloTrips: this.props.tripStore.citySoloTrips});
+  };
 
   fetchData = async () => {
     await this.props.mapStore.getCurrentLocation();
@@ -180,9 +187,7 @@ export class Home extends Component {
         ) {
           const cityImageReference =
             respons.results[0].photos[0].photo_reference;
-          const cityImageUrl = `https://maps.googleapis.com/maps/api/place/photo?maxwidth=${maxWidth}&photoreference=${cityImageReference}&key=${
-            this.state.googleAPI
-          }`;
+          const cityImageUrl = `https://maps.googleapis.com/maps/api/place/photo?maxwidth=${maxWidth}&photoreference=${cityImageReference}&key=${this.state.googleAPI}`;
 
           this.setState({
             cityImage: cityImageUrl,
@@ -200,8 +205,9 @@ export class Home extends Component {
       dataReceived: false,
     });
     //timeout to simulate loading
-    setTimeout(() => {
-      this.fetchData();
+    setTimeout(async () => {
+      await this.fetchData();
+      this.collectTrips(this.state.currentCity);
     }, 1500);
   };
 
@@ -215,9 +221,7 @@ export class Home extends Component {
   renderCarouselPlace = ({item}) => {
     if (item.photos[0].photo_reference) {
       const maxWidth = 500;
-      this.placeImage = `https://maps.googleapis.com/maps/api/place/photo?maxwidth=${maxWidth}&photoreference=${
-        item.photos[0].photo_reference
-      }&key=${this.state.googleAPI}`;
+      this.placeImage = `https://maps.googleapis.com/maps/api/place/photo?maxwidth=${maxWidth}&photoreference=${item.photos[0].photo_reference}&key=${this.state.googleAPI}`;
     }
     return (
       <TouchableHighlight
@@ -254,6 +258,10 @@ export class Home extends Component {
     );
   };
 
+  renderCarouselTrip = ({item}) => {
+    return <TripCard item={item} />;
+  };
+
   render() {
     if (this.state.loading) {
       return (
@@ -265,7 +273,6 @@ export class Home extends Component {
     } else {
       return (
         <ScrollView
-          style={this.styles.background}
           refreshControl={
             <RefreshControl
               tintColor="#182ac1"
@@ -300,112 +307,96 @@ export class Home extends Component {
               </Text>
             </View>
           )}
-
-          {this.state.nearbyPlaces.length > 0 ? (
-            <>
+          <View style={this.styles.marginBottom}>
+            {this.state.nearbyPlaces.length > 0 ? (
+              <>
+                <View style={this.styles.container}>
+                  <Text style={this.styles.heading2}>Nearby places:</Text>
+                </View>
+                <Carousel
+                  ref={c => {
+                    this._carousel = c;
+                  }}
+                  containerCustomStyle={this.styles.carouselContainer}
+                  data={this.state.nearbyPlaces}
+                  renderItem={this.renderCarouselPlace}
+                  sliderWidth={
+                    Dimensions.get('screen').width +
+                    Dimensions.get('screen').width * 0.02
+                  }
+                  itemWidth={Dimensions.get('screen').width * 0.8}
+                  onSnapToItem={index => this.setState({activeSlide: index})}
+                />
+              </>
+            ) : (
               <View style={this.styles.container}>
-                <Text style={this.styles.heading2}>Nearby places</Text>
+                <Text style={this.styles.heading2}>
+                  Not so much to do here...
+                </Text>
+              </View>
+            )}
+            <View style={this.styles.container}>
+              <Button
+                buttonStyle={this.styles.primaryFormButton}
+                titleStyle={this.styles.primaryFormButtonTitle}
+                onPress={() => this.props.navigation.navigate('Map')}
+                title={
+                  this.state.nearbyPlaces > 0
+                    ? 'See all nearby places'
+                    : 'Look for nearby places'
+                }
+              />
+            </View>
+          </View>
+          <View style={this.styles.marginBottom}>
+            <View style={[this.styles.container, this.styles.blueBox]}>
+              <Text
+                style={[
+                  this.styles.heading2,
+                  this.styles.white,
+                  this.styles.center,
+                ]}>
+                Plan your tour?
+              </Text>
+              <View style={this.styles.divider} />
+              <Text style={[this.styles.body, this.styles.lightBlue]}>
+                Use our tourgenerator to create your own tours. To use right
+                away or to plan it for your next citytrip.{' '}
+              </Text>
+              <Button
+                buttonStyle={this.styles.socialFormButton}
+                titleStyle={this.styles.socialFormButtonTitle}
+                onPress={() =>
+                  this.props.navigation.navigate('CreateRouteScreen')
+                }
+                title={'go to generator'}
+              />
+            </View>
+          </View>
+          {this.state.citySoloTrips.length > 0 ? (
+            <View style={this.styles.marginBottom}>
+              <View style={this.styles.container}>
+                <Text style={this.styles.heading2}>Featured trips:</Text>
               </View>
               <Carousel
-                contentContainerCustomStyle={{
-                  alignItems: 'center',
-                }}
+                containerCustomStyle={this.styles.carouselContainer}
                 ref={c => {
                   this._carousel = c;
                 }}
-                data={this.state.nearbyPlaces}
-                renderItem={this.renderCarouselPlace}
-                sliderWidth={Dimensions.get('screen').width}
-                itemWidth={Dimensions.get('screen').width * 0.8}
-                onSnapToItem={index => this.setState({activeSlide: index})}
+                data={this.state.citySoloTrips}
+                renderItem={this.renderCarouselTrip}
+                sliderWidth={
+                  Dimensions.get('screen').width +
+                  Dimensions.get('screen').width * 0.02
+                }
+                itemWidth={Dimensions.get('window').width * 0.8}
               />
-            </>
-          ) : (
-            <View style={this.styles.container}>
-              <Text style={this.styles.heading2}>
-                Not so much to do here...
-              </Text>
             </View>
-          )}
-          <View style={this.styles.container}>
-            <Button
-              buttonStyle={this.styles.primaryFormButton}
-              titleStyle={this.styles.primaryFormButtonTitle}
-              onPress={() => this.props.navigation.navigate('Map')}
-              title={
-                this.state.nearbyPlaces > 0
-                  ? 'See all nearby places'
-                  : 'Look for nearby places'
-              }
-            />
-          </View>
-          {/* <View>
-            <MapView
-              ref={map => (this._map = map)}
-              toolbarEnabled={false}
-              showsUserLocation={true}
-              followsUserLocation={true}
-              loadingEnabled
-              scrollEnabled={false}
-              pitchEnabled={false}
-              rotateEnabled={false}
-              showsPointsOfInterest={false}
-              showsMyLocationButton={false}
-              customMapStyle={MapStyle}
-              onPress={() => this.props.navigation.navigate('Map')}
-              style={{height: 150, width: Dimensions.get('screen').width}}
-              provider={MapView.PROVIDER_GOOGLE}
-              region={{
-                latitude: this.props.mapStore.userLocation.latitude,
-                longitude: this.props.mapStore.userLocation.longitude,
-                latitudeDelta: 0.015,
-                longitudeDelta: 0.015,
-              }}>
-              {this.state.nearbyPlaces ? (
-                <>
-                  {this.state.nearbyPlaces.map((place, index) => {
-                    return (
-                      <Marker
-                        icon={googlepin}
-                        key={index}
-                        coordinate={{
-                          latitude: place.geometry.location.lat,
-                          longitude: place.geometry.location.lng,
-                        }}
-                      />
-                    );
-                  })}
-                </>
-              ) : null}
-            </MapView>
-          </View> */}
-          <View style={[this.styles.container, this.styles.blueBox]}>
-            <Text
-              style={[
-                this.styles.heading2,
-                this.styles.white,
-                this.styles.center,
-              ]}>
-              Plan your tour?
-            </Text>
-            <View style={this.styles.divider} />
-            <Text style={[this.styles.body, this.styles.lightBlue]}>
-              Use our tourgenerator to create your own tours. To use right away
-              or to plan it for your next citytrip.{' '}
-            </Text>
-            <Button
-              buttonStyle={this.styles.socialFormButton}
-              titleStyle={this.styles.socialFormButtonTitle}
-              onPress={() =>
-                this.props.navigation.navigate('CreateRouteScreen')
-              }
-              title={'go to generator'}
-            />
-          </View>
+          ) : null}
         </ScrollView>
       );
     }
   }
 }
 
-export default inject('mapStore')(observer(Home));
+export default inject('mapStore', 'tripStore')(observer(Home));

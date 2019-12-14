@@ -22,6 +22,11 @@ class SelectionOverlay extends Component {
 
     this.state = {
       landmarkSelection: landmarkSelection,
+      originLocation: {
+        latitude: landmarkSelection[0].coords.latitude,
+        longitude: landmarkSelection[0].coords.longitude,
+      },
+
       destinationLocation: {
         latitude:
           landmarkSelection[landmarkSelection.length - 1].coords.latitude,
@@ -54,7 +59,9 @@ class SelectionOverlay extends Component {
   onRemoveLandmark = landmark => {
     Alert.alert(
       'Remove landmark',
-      `Are you sure you want to remove ${landmark.placeName} out of your selection?`,
+      `Are you sure you want to remove ${
+        landmark.placeName
+      } out of your selection?`,
       [
         {
           text: 'Cancel',
@@ -70,7 +77,9 @@ class SelectionOverlay extends Component {
   onPressRemoveAll() {
     Alert.alert(
       'Remove all landmarks',
-      `Are you sure you want to remove ${this.state.landmarkSelection.length} landmarks out of your selection?`,
+      `Are you sure you want to remove ${
+        this.state.landmarkSelection.length
+      } landmarks out of your selection?`,
       [
         {
           text: 'Cancel',
@@ -154,6 +163,7 @@ class SelectionOverlay extends Component {
                 <MapRoute
                   waypoints={true}
                   landmarkSelection={this.state.landmarkSelection}
+                  origin={this.state.originLocation}
                   destinationLocation={this.state.destinationLocation}
                 />
               )}

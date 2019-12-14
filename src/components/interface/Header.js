@@ -15,11 +15,6 @@ export default class Header extends Component {
     }
   }
 
-  onPressAvatar() {
-    // this.props.navigation.navigate('Profile');
-    console.log('klik');
-  }
-
   render() {
     return (
       <>

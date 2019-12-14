@@ -195,8 +195,6 @@ export class MapRouteScreen extends Component {
     this.setState({
       followUserLocation: false,
     });
-
-    console.log(this.state.followUserLocation);
   };
 
   render() {
