@@ -510,7 +510,7 @@ export default StyleSheet.create({
   },
   tripInfoBlock: {
     marginTop: 16,
-    padding: 16,
+    padding: 8,
     borderRightColor: colors.darkWhite,
     borderRightWidth: 2,
     alignItems: 'center',
@@ -526,6 +526,6 @@ export default StyleSheet.create({
     fontSize: 28,
   },
   infoParam: {
-    fontSize: 12,
+    fontSize: 10,
   },
 });

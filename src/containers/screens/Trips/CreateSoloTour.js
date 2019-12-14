@@ -97,8 +97,8 @@ export class CreateSoloTour extends Component {
         // this.props.navigation.goBack(null);
         this.showSucces();
         this.props.tripStore.resetLandmarks();
-        this.props.tripStore.getUserSoloTrips(this.state.userId);
-        this.props.tripStore.getUserPartyTrips(this.state.userId);
+        // this.props.tripStore.getUserSoloTrips(this.state.userId);
+        // this.props.tripStore.getUserPartyTrips(this.state.userId);
       })
       .catch(error => {
         console.log(`error loading: ${error}`);

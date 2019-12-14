@@ -136,22 +136,28 @@ export class Map extends Component {
 
   onCarouselItemChange = index => {
     let place = this.state.places[index];
-    this._map.animateToRegion({
-      latitude: place.geometry.location.lat,
-      longitude: place.geometry.location.lng,
-      latitudeDelta: 0.015,
-      longitudeDelta: 0.015,
-    });
+    this._map.animateToRegion(
+      {
+        latitude: place.geometry.location.lat,
+        longitude: place.geometry.location.lng,
+        latitudeDelta: 0.015,
+        longitudeDelta: 0.015,
+      },
+      500,
+    );
     this.state.markers[index].showCallout();
   };
 
   onMarkerPressed = (place, index) => {
-    this._map.animateToRegion({
-      latitude: place.geometry.location.lat,
-      longitude: place.geometry.location.lng,
-      latitudeDelta: 0.015,
-      longitudeDelta: 0.015,
-    });
+    this._map.animateToRegion(
+      {
+        latitude: place.geometry.location.lat,
+        longitude: place.geometry.location.lng,
+        latitudeDelta: 0.015,
+        longitudeDelta: 0.015,
+      },
+      500,
+    );
     this.carousel.snapToItem(index);
   };
 
@@ -186,7 +192,7 @@ export class Map extends Component {
       latitudeDelta: 0.015,
       longitudeDelta: 0.015,
     };
-    this._map.animateToRegion(newLocation);
+    this._map.animateToRegion(newLocation, 500);
 
     this.setState({regionLocation: newLocation, places: []});
     this.getPlaces(this.state.placeType, this.state.radius);

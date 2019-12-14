@@ -31,9 +31,9 @@ class TripStore {
       .catch(error => console.warn(error));
   }
 
-  getCitySoloTrips = city => {
+  getCitySoloTrips = async city => {
     this.citySoloTrips = [];
-    const getCitySoloTrips = this.database.where('tourCity', '==', city);
+    const getCitySoloTrips = await this.database.where('tourCity', '==', city);
 
     this.unsubscribeAllTrips = getCitySoloTrips.onSnapshot(querySnapshots => {
       querySnapshots.forEach(doc => {
@@ -49,11 +49,11 @@ class TripStore {
     });
   };
   getCityPartyTrips = () => {};
-  getUserSoloTrips = userId => {
+  getUserSoloTrips = async userId => {
     this.userSoloTrips = [];
-    const allUserTrips = this.database.where('userId', '==', userId);
+    const allUserTrips = await this.database.where('userId', '==', userId);
 
-    const getSoloTrips = allUserTrips.where('type', '==', 'solo');
+    const getSoloTrips = await allUserTrips.where('type', '==', 'solo');
 
     this.unsubscribeAllTrips = getSoloTrips.onSnapshot(querySnapshots => {
       querySnapshots.forEach(doc => {
@@ -68,10 +68,11 @@ class TripStore {
       });
     });
   };
-  getUserPartyTrips = userId => {
-    const allUserTrips = this.database.where('userId', '==', userId);
+  getUserPartyTrips = async userId => {
+    this.userPartyTrips = [];
+    const allUserTrips = await this.database.where('userId', '==', userId);
 
-    const getPartyTrips = allUserTrips.where('type', '==', 'party');
+    const getPartyTrips = await allUserTrips.where('type', '==', 'party');
 
     this.unsubscribeAllTrips = getPartyTrips.onSnapshot(querySnapshots => {
       querySnapshots.forEach(doc => {
