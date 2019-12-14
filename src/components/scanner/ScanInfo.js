@@ -11,6 +11,7 @@ import {
 } from 'react-native';
 import {Button} from 'react-native-elements';
 import {inject, observer} from 'mobx-react';
+const placeHolder = require('../../assets/placeholderImage.gif');
 
 class ScanInfo extends Component {
   constructor(props) {
@@ -56,7 +57,10 @@ class ScanInfo extends Component {
     if (!this.state.loadingInfo) {
       return (
         <>
-          <Image source={{uri: image}} style={styles.resultImage} />
+          <Image
+            source={image ? {uri: image} : placeholder}
+            style={styles.resultImage}
+          />
           <ScrollView>
             <View style={styles.container}>
               <View style={styles.scanUpperContainer}>

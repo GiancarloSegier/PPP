@@ -1,5 +1,6 @@
 import {action, observable, decorate} from 'mobx';
 import firestore from '@react-native-firebase/firestore';
+import auth from '@react-native-firebase/auth';
 import Geocoder from 'react-native-geocoding';
 class TripStore {
   landmarkSelection = [];
@@ -10,10 +11,20 @@ class TripStore {
   tourDuration;
   googleAPI = 'AIzaSyBLSLqH_qXkSrU5qK1M71zmWU3gpjs8C4g';
   tourCity = '';
+  userId = auth().currentUser.uid;
   constructor(rootStore) {
     this.rootStore = rootStore;
     this.database = firestore().collection('trips');
   }
+
+  componentDidMount() {
+    this.getAllUserTrips();
+  }
+
+  getAllUserTrips = () => {
+    this.getUserSoloTrips(this.userId);
+    this.getUserPartyTrips(this.userId);
+  };
 
   async getTourCity(coords) {
     await Geocoder.from(coords.latitude, coords.longitude)
@@ -38,12 +49,14 @@ class TripStore {
     this.unsubscribeAllTrips = getCitySoloTrips.onSnapshot(querySnapshots => {
       querySnapshots.forEach(doc => {
         this.citySoloTrips.push({
+          tourId: doc.id,
           tripTitle: doc.data().tripTitle,
           dateAdded: doc.data().dateAdded,
           landmarks: doc.data().landmarks,
           distance: doc.data().distance,
           duration: doc.data().duration,
           tourCity: doc.data().tourCity,
+          userId: doc.data().userId,
         });
       });
     });
@@ -58,12 +71,14 @@ class TripStore {
     this.unsubscribeAllTrips = getSoloTrips.onSnapshot(querySnapshots => {
       querySnapshots.forEach(doc => {
         this.userSoloTrips.push({
+          tourId: doc.id,
           tripTitle: doc.data().tripTitle,
           dateAdded: doc.data().dateAdded,
           landmarks: doc.data().landmarks,
           distance: doc.data().distance,
           duration: doc.data().duration,
           tourCity: doc.data().tourCity,
+          userId: doc.data().userId,
         });
       });
     });
@@ -77,12 +92,14 @@ class TripStore {
     this.unsubscribeAllTrips = getPartyTrips.onSnapshot(querySnapshots => {
       querySnapshots.forEach(doc => {
         this.userPartyTrips.push({
+          tourId: doc.id,
           tripTitle: doc.data().tripTitle,
           dateAdded: doc.data().dateAdded,
           landmarks: doc.data().landmarks,
           distance: doc.data().distance,
           duration: doc.data().duration,
           tourCity: doc.data().tourCity,
+          userId: doc.data().userId,
         });
       });
     });
@@ -124,6 +141,17 @@ class TripStore {
   setTourDuration = duration => {
     this.tourDuration = duration;
   };
+  deleteTour = tour => {
+    console.log(tour);
+    this.database.doc(tour.tourId).delete();
+    this.getAllUserTrips();
+  };
+
+  addSoloTour = async tour => {
+    await this.database.add(tour);
+    await this.resetLandmarks();
+    this.getAllUserTrips();
+  };
 }
 
 decorate(TripStore, {
@@ -144,6 +172,8 @@ decorate(TripStore, {
   userPartyTrips: observable,
   getTourCity: action,
   tourCity: observable,
+  deleteTour: action,
+  addSoloTour: action,
 });
 
 export default TripStore;

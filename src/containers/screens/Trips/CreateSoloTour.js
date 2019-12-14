@@ -50,7 +50,7 @@ export class CreateSoloTour extends Component {
     this.setState({tourCity: this.props.tripStore.tourCity});
   };
 
-  onPressAdd = () => {
+  onPressAdd = async () => {
     const newLandmarks = [];
     if (
       this.state.newTripTitle.trim() === '' &&
@@ -77,33 +77,26 @@ export class CreateSoloTour extends Component {
           longitude: landmark.coords.longitude,
           placeName: landmark.placeName,
         };
-
         newLandmarks.push(newLandmark);
       });
     }
-    this.firestoreCollection
-      .add({
-        userId: this.state.userId,
-        type: 'solo',
-        tripTitle: this.state.newTripTitle,
-        dateAdded: this.state.currentDate,
-        tourCity: this.props.tripStore.tourCity,
-        distance: this.props.tripStore.tourDistance,
-        duration: this.props.tripStore.tourDuration,
-        landmarks: newLandmarks,
-      })
-      .then(data => {
-        this.setState({newTripTitle: ''});
-        // this.props.navigation.goBack(null);
-        this.showSucces();
-        this.props.tripStore.resetLandmarks();
-        // this.props.tripStore.getUserSoloTrips(this.state.userId);
-        // this.props.tripStore.getUserPartyTrips(this.state.userId);
-      })
-      .catch(error => {
-        console.log(`error loading: ${error}`);
-        this.setState({newTripTitle: ''});
-      });
+
+    const newTour = {
+      userId: this.state.userId,
+      type: 'solo',
+      tripTitle: this.state.newTripTitle,
+      dateAdded: this.state.currentDate,
+      tourCity: this.props.tripStore.tourCity,
+      distance: this.props.tripStore.tourDistance,
+      duration: this.props.tripStore.tourDuration,
+      landmarks: newLandmarks,
+    };
+    await this.props.tripStore.addSoloTour(newTour);
+    await this.props.tripStore.resetLandmarks();
+    this.setState({
+      newTripTitle: '',
+    });
+    this.showSucces();
   };
 
   showSucces = () => {

@@ -29,49 +29,50 @@ export class MyTrips extends Component {
     } else {
       this.styles = androidUI;
     }
-
-    this.state = {
-      allTrips: [],
-      userSoloTrips: props.tripStore.userSoloTrips,
-      userPartyTrips: props.tripStore.userPartyTrips,
-      userId: auth().currentUser.uid,
-    };
   }
 
-  componentDidMount() {
-    this.collectTrips();
-  }
-
-  collectTrips() {
-    this.props.tripStore.getUserSoloTrips(this.state.userId);
-    this.props.tripStore.getUserPartyTrips(this.state.userId);
-    this.setState({
-      userSoloTrips: this.props.tripStore.userSoloTrips,
-      userPartyTrips: this.props.tripStore.userPartyTrips,
-    });
-  }
+  onDeleteTour = tour => {
+    Alert.alert(
+      'Remove trip',
+      'Are you sure you want to delete this trip?',
+      [
+        {
+          text: 'Cancel',
+          onPress: () => console.log('Cancel Pressed'),
+          style: 'cancel',
+        },
+        {
+          text: 'Delete trip',
+          onPress: () => {
+            this.props.tripStore.deleteTour(tour);
+          },
+        },
+      ],
+      {cancelable: false},
+    );
+  };
 
   renderCarouselTrip = ({item}) => {
-    return <TripCard item={item} />;
+    return <TripCard item={item} onDeleteTour={this.onDeleteTour} />;
   };
 
   render() {
     return (
       <>
-        {this.state.userSoloTrips.length > 0 ||
-        this.state.userPartyTrips.length > 0 ? (
+        {this.props.tripStore.userSoloTrips.length > 0 ||
+        this.props.tripStore.userPartyTrips.length > 0 ? (
           <ScrollView>
             <>
               <View style={this.styles.container}>
                 <Text style={this.styles.heading2}>My solo trips</Text>
               </View>
-              {this.state.userSoloTrips.length > 0 ? (
+              {this.props.tripStore.userSoloTrips.length > 0 ? (
                 <Carousel
                   containerCustomStyle={this.styles.carouselContainer}
                   ref={c => {
                     this._carousel = c;
                   }}
-                  data={this.state.userSoloTrips}
+                  data={this.props.tripStore.userSoloTrips}
                   renderItem={this.renderCarouselTrip}
                   sliderWidth={
                     Dimensions.get('screen').width +
@@ -85,14 +86,14 @@ export class MyTrips extends Component {
               <View style={this.styles.container}>
                 <Text style={this.styles.heading2}>Parties</Text>
               </View>
-              {this.state.userPartyTrips.length > 0 ? (
+              {this.props.tripStore.userPartyTrips.length > 0 ? (
                 <View style={{height: 140}}>
                   <Carousel
                     containerCustomStyle={this.styles.carouselContainer}
                     ref={c => {
                       this._carousel = c;
                     }}
-                    data={this.state.userPartyTrips}
+                    data={this.props.tripStore.userPartyTrips}
                     renderItem={this.renderCarouselTrip}
                     sliderWidth={
                       Dimensions.get('screen').width +

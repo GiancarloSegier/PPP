@@ -5,16 +5,21 @@ import Icon from 'react-native-vector-icons/FontAwesome';
 
 import androidUI from '../../styles/ui.android.style.js';
 import iosUI from '../../styles/ui.ios.style.js';
+import {Button} from 'react-native-elements';
 
-const TripCard = ({item}) => {
+const TripCard = ({item, onDeleteTour}) => {
   if (Platform.OS === 'ios') {
     this.styles = iosUI;
   } else {
     this.styles = androidUI;
   }
-
+  console.log(item);
   this.hours = Math.floor(item.duration / 60);
   this.minutes = Math.floor(item.duration % 60);
+
+  const onDelete = () => {
+    onDeleteTour(item);
+  };
 
   return (
     <TouchableHighlight
@@ -26,11 +31,12 @@ const TripCard = ({item}) => {
             <Icon name="map-marker" size={18} color="#fff" /> {item.tourCity}
           </Text>
           <Text style={this.styles.tripDateAdded}>{item.dateAdded}</Text>
+          {onDeleteTour ? <Button title="delete" onPress={onDelete} /> : null}
         </View>
         <View style={this.styles.tripCardContent}>
           <Text style={this.styles.tripCardTitle}>
-            {item.tripTitle.split('').length > 20 ? (
-              <Text>{item.tripTitle.slice(0, 20)}...</Text>
+            {item.tripTitle.split('').length > 30 ? (
+              <Text>{item.tripTitle.slice(0, 30)}...</Text>
             ) : (
               <Text>{item.tripTitle}</Text>
             )}
@@ -43,7 +49,7 @@ const TripCard = ({item}) => {
                   : item.distance}
               </Text>
               <Text style={this.styles.infoParam}>
-                {item.distance < 1 ? 'metres' : 'kilometres'}
+                {item.distance < 1 ? 'meters' : 'kilometers'}
               </Text>
             </View>
             <View style={this.styles.tripInfoBlock}>

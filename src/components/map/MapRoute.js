@@ -67,15 +67,20 @@ class MapRoute extends Component {
     }
   };
 
-  fitMap = (
-    coordinates = [
-      this.state.origin,
-      this.state.waypoints,
-      this.state.destinationLocation,
-    ],
-  ) => {
-    if (this.props.waypoints && this.state.waypoints > 1) {
-      this._map.fitToCoordinates(coordinates, {
+  fitMap = async () => {
+    if (this.props.waypoints === true) {
+      const coordinates = [];
+
+      coordinates.push(this.state.origin, this.state.destinationLocation);
+      for (let i = 0; i < this.state.waypoints.length; i++) {
+        const waypoint = this.state.waypoints[i];
+        coordinates.push({
+          latitude: waypoint.latitude,
+          longitude: waypoint.longitude,
+        });
+      }
+
+      await this._map.fitToCoordinates(coordinates, {
         edgePadding: {
           top: Dimensions.get('screen').height / 15,
           right: Dimensions.get('screen').width / 15,
@@ -85,7 +90,7 @@ class MapRoute extends Component {
         animated: false,
       });
     } else {
-      this._map.fitToCoordinates(
+      await this._map.fitToCoordinates(
         [this.state.origin, this.state.destinationLocation],
         {
           edgePadding: {
@@ -156,8 +161,6 @@ class MapRoute extends Component {
               this.props.tripStore.setTourDistance(this.distance);
               this.props.tripStore.setTourDuration(result.duration);
 
-              this.fitMap(result.coordinates);
-
               this.setState({
                 hours: Math.floor(result.duration / 60),
                 minutes: Math.floor(result.duration % 60),
@@ -165,23 +168,15 @@ class MapRoute extends Component {
             }}
           />
 
-          <Marker
-            icon={this.state.waypoints ? googlepinStart : googlepin}
-            key={'start'}
-            coordinate={this.state.origin}>
-            <Callout tooltip style={this.styles.calloutContainer}>
-              <View>
-                <Text style={this.styles.calloutText}>Your location</Text>
-              </View>
-            </Callout>
-          </Marker>
           {this.state.waypoints ? (
             <>
               {this.state.waypoints.map((landmark, index) => {
                 return (
                   <Marker
                     icon={
-                      index === this.state.waypoints.length - 1
+                      index === 0
+                        ? googlepinStart
+                        : index === this.state.waypoints.length - 1
                         ? googlePinFinish
                         : googlepin
                     }
@@ -210,21 +205,33 @@ class MapRoute extends Component {
             </>
           ) : null}
           {!this.props.waypoints ? (
-            <Marker
-              icon={googlePinFinish}
-              key={'finish'}
-              coordinate={{
-                latitude: this.state.destinationLocation.latitude,
-                longitude: this.state.destinationLocation.longitude,
-              }}>
-              <Callout tooltip style={this.styles.calloutContainer}>
-                <View>
-                  <Text style={this.styles.calloutText}>
-                    {this.state.placeName}
-                  </Text>
-                </View>
-              </Callout>
-            </Marker>
+            <>
+              <Marker
+                icon={googlepin}
+                key={'start'}
+                coordinate={this.state.origin}>
+                <Callout tooltip style={this.styles.calloutContainer}>
+                  <View>
+                    <Text style={this.styles.calloutText}>Your location</Text>
+                  </View>
+                </Callout>
+              </Marker>
+              <Marker
+                icon={googlePinFinish}
+                key={'finish'}
+                coordinate={{
+                  latitude: this.state.destinationLocation.latitude,
+                  longitude: this.state.destinationLocation.longitude,
+                }}>
+                <Callout tooltip style={this.styles.calloutContainer}>
+                  <View>
+                    <Text style={this.styles.calloutText}>
+                      {this.state.placeName}
+                    </Text>
+                  </View>
+                </Callout>
+              </Marker>
+            </>
           ) : null}
         </MapView>
       </>

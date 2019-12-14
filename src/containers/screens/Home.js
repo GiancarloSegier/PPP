@@ -24,6 +24,7 @@ import MapView, {Marker} from 'react-native-maps';
 import MapStyle from '../../config/MapStyle';
 import TripCard from '../../components/trips/TripCard.js';
 const googlepin = require('../../assets/googlepin.png');
+const placeHolder = require('../../assets/placeholderImage.gif');
 
 export class Home extends Component {
   constructor(props) {
@@ -230,7 +231,7 @@ export class Home extends Component {
         <View style={this.styles.carouselPlaceCard}>
           {this.placeImage ? (
             <Image
-              source={{uri: this.placeImage}}
+              source={this.placeImage ? {uri: this.placeImage} : placeHolder}
               style={this.styles.placeImage}
             />
           ) : null}
@@ -286,7 +287,11 @@ export class Home extends Component {
           {this.state.currentCity ? (
             <View style={this.styles.homeHeader}>
               <Image
-                source={{uri: this.state.cityImage}}
+                source={
+                  this.state.cityImage
+                    ? {uri: this.state.cityImage}
+                    : placeHolder
+                }
                 style={{
                   width: '100%',
                   height: 300,

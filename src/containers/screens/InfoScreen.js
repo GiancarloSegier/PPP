@@ -1,11 +1,21 @@
 import React, {Component} from 'react';
-import {Text, Image, Platform, View, ScrollView, Linking} from 'react-native';
+import {
+  Text,
+  Image,
+  Platform,
+  View,
+  ScrollView,
+  Linking,
+  Dimensions,
+} from 'react-native';
 import androidUI from '../../styles/ui.android.style.js';
 import iosUI from '../../styles/ui.ios.style.js';
 import {Button} from 'react-native-elements';
 import {inject, observer} from 'mobx-react';
 import MapRoute from '../../components/map/MapRoute.js';
 import Icon from 'react-native-vector-icons/FontAwesome';
+
+const placeHolder = require('../../assets/placeholderImage.gif');
 
 export class InfoScreen extends Component {
   constructor(props) {
@@ -59,7 +69,9 @@ export class InfoScreen extends Component {
 
   getImage = item => {
     if (item.photos) {
-      this.placeImage = `https://maps.googleapis.com/maps/api/place/photo?maxwidth=1000&photoreference=${item.photos[0].photo_reference}&key=${this.state.googleAPI}`;
+      this.placeImage = `https://maps.googleapis.com/maps/api/place/photo?maxwidth=1000&photoreference=${
+        item.photos[0].photo_reference
+      }&key=${this.state.googleAPI}`;
       this.setState({
         placeImage: this.placeImage,
       });
@@ -99,9 +111,14 @@ export class InfoScreen extends Component {
     const {placeName, placeInfo, wikiURL, placeImage} = this.state;
     return (
       <>
-        {placeImage ? (
-          <Image source={{uri: placeImage}} style={this.styles.resultImage} />
-        ) : null}
+        <View style={{MaxHeight: Dimensions.get('screen').height * 0.2}}>
+          {placeImage ? (
+            <Image
+              source={placeImage ? {uri: placeImage} : placeHolder}
+              style={this.styles.resultImage}
+            />
+          ) : null}
+        </View>
 
         <Button
           buttonStyle={
@@ -180,8 +197,6 @@ export class InfoScreen extends Component {
   }
 }
 
-export default inject(
-  'wikiStore',
-  'mapStore',
-  'tripStore',
-)(observer(InfoScreen));
+export default inject('wikiStore', 'mapStore', 'tripStore')(
+  observer(InfoScreen),
+);

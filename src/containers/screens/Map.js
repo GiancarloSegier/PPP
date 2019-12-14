@@ -20,6 +20,7 @@ import Icon from 'react-native-vector-icons/FontAwesome';
 import MapView, {Marker, Callout} from 'react-native-maps';
 import GOOGLEPIN from '../../assets/googlepin.png';
 import SelectionOverlay from '../../components/map/SelectionOverlay.js';
+const placeHolder = require('../../assets/placeholderImage.gif');
 
 export class Map extends Component {
   constructor(props) {
@@ -29,6 +30,7 @@ export class Map extends Component {
     } else {
       this.styles = androidUI;
     }
+    const landmarkSelection = this.props.tripStore.landmarkSelection;
 
     this.state = {
       googleAPI: props.mapStore.googleAPI,
@@ -50,7 +52,7 @@ export class Map extends Component {
       radius: 1500,
       checkOpen: false,
       filterOpen: false,
-      landmarkSelection: props.tripStore.landmarkSelection,
+      landmarkSelection: landmarkSelection,
       selectionVisible: false,
     };
   }
@@ -120,8 +122,10 @@ export class Map extends Component {
     };
     this.setRegion(regionLocation);
     await this.getPlaces(this.state.placeType, this.state.radius);
-
-    await this.carousel.snapToItem(0);
+    console.log(this.places);
+    if (this.places) {
+      await this.carousel.snapToItem(0);
+    }
   };
 
   onChangeRegion = region => {
@@ -179,7 +183,9 @@ export class Map extends Component {
       places: [],
     });
     await this.getPlaces(type, radius);
-    await this.carousel.snapToItem(0);
+    if (this.places) {
+      await this.carousel.snapToItem(0);
+    }
   };
 
   onPressFollowUser = async () => {
@@ -218,9 +224,7 @@ export class Map extends Component {
   renderCarouselItem = ({item}) => {
     let placeImage;
     if (item.photos) {
-      placeImage = `https://maps.googleapis.com/maps/api/place/photo?maxwidth=200&photoreference=${
-        item.photos[0].photo_reference
-      }&key=${this.state.googleAPI}`;
+      placeImage = `https://maps.googleapis.com/maps/api/place/photo?maxwidth=200&photoreference=${item.photos[0].photo_reference}&key=${this.state.googleAPI}`;
     }
 
     return (
@@ -230,7 +234,7 @@ export class Map extends Component {
         <View style={this.styles.carouselCard}>
           {placeImage ? (
             <Image
-              source={{uri: placeImage}}
+              source={placeImage ? {uri: placeImage} : placeHolder}
               style={this.styles.mapPlaceImage}
             />
           ) : null}
@@ -265,6 +269,7 @@ export class Map extends Component {
   };
 
   render() {
+    console.log(this.props.tripStore.landmarkSelection);
     const {userLocation, regionLocation} = this.state;
     if (userLocation.latitude && userLocation.latitude !== 0) {
       return (
@@ -358,7 +363,7 @@ export class Map extends Component {
                           fontSize: 12,
                           fontWeight: 'bold',
                         }}>
-                        {this.state.landmarkSelection.length}
+                        {this.props.tripStore.landmarkSelection.length}
                       </Text>
                     </View>
                   </View>
@@ -385,7 +390,11 @@ export class Map extends Component {
                   Dimensions.get('screen').width * 0.02
                 }
                 itemWidth={Dimensions.get('window').width * 0.8}
-                onSnapToItem={index => this.onCarouselItemChange(index)}
+                onSnapToItem={index =>
+                  this.state.places.length > 0
+                    ? this.onCarouselItemChange(index)
+                    : null
+                }
               />
             ) : (
               <>
