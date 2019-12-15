@@ -31,33 +31,21 @@ export class CreateSoloTour extends Component {
       landmarkSelection: this.props.tripStore.landmarkSelection,
       tourDuration: this.props.tripStore.tourDuration,
       tourDistance: this.props.tripStore.tourDistance,
-      originLocation: {
-        latitude: this.props.tripStore.landmarkSelection[0].coords.latitude,
-        longitude: this.props.tripStore.landmarkSelection[0].coords.longitude,
-      },
+      originLocation: {},
       tourCity: null,
     };
 
     this.firestoreCollection = firestore().collection('trips');
   }
 
-  componentDidMount() {
-    this.getTourCity();
-  }
-
-  getTourCity = async () => {
-    await this.props.tripStore.getTourCity(this.state.originLocation);
-    this.setState({tourCity: this.props.tripStore.tourCity});
-  };
-
   onPressAdd = async () => {
     const newLandmarks = [];
     if (
       this.state.newTripTitle.trim() === '' &&
-      this.state.landmarkSelection.length < 1
+      this.state.landmarkSelection.length < 2
     ) {
       Alert.alert(
-        'You really have to fill in a tourname and select at least 1 landmark',
+        'You really have to fill in a tourname and select at least 2 landmarks',
       );
       return;
     } else if (this.state.newTripTitle.trim() === '') {
@@ -66,9 +54,9 @@ export class CreateSoloTour extends Component {
     }
     if (
       this.state.landmarkSelection &&
-      this.state.landmarkSelection.length < 1
+      this.state.landmarkSelection.length < 2
     ) {
-      Alert.alert('You have to select at least 1 landmark');
+      Alert.alert('You have to select at least 2 landmarks');
       return;
     } else {
       this.state.landmarkSelection.map(landmark => {
@@ -91,8 +79,9 @@ export class CreateSoloTour extends Component {
       duration: this.props.tripStore.tourDuration,
       landmarks: newLandmarks,
     };
+    this.setState({landmarkSelection: []});
     await this.props.tripStore.addSoloTour(newTour);
-    await this.props.tripStore.resetLandmarks();
+
     this.setState({
       newTripTitle: '',
     });
@@ -106,12 +95,16 @@ export class CreateSoloTour extends Component {
       [
         {
           text: 'Do it now',
-          onPress: () => console.log('Do it now'),
+          onPress: () => {
+            console.log('Do it now');
+            this.props.navigation.goBack();
+          },
         },
         {
           text: 'Do it later',
           onPress: () => {
             console.log('Do it later');
+            this.props.navigation.goBack();
           },
         },
       ],
@@ -131,7 +124,7 @@ export class CreateSoloTour extends Component {
           onChangeText={text => this.setState({newTripTitle: text})}
         />
         {this.state.landmarkSelection &&
-        this.state.landmarkSelection.length > 0 ? (
+        this.state.landmarkSelection.length > 1 ? (
           <Button
             buttonStyle={this.styles.primaryFormButton}
             titleStyle={this.styles.primaryFormButtonTitle}
@@ -140,11 +133,17 @@ export class CreateSoloTour extends Component {
           />
         ) : null}
         {this.state.landmarkSelection &&
-        this.state.landmarkSelection.length > 0 ? (
+        this.state.landmarkSelection.length > 1 ? (
           <MapRoute
             createTour={true}
             waypoints={true}
-            origin={this.state.originLocation}
+            mapSize={'big'}
+            origin={{
+              latitude: this.props.tripStore.landmarkSelection[0].coords
+                .latitude,
+              longitude: this.props.tripStore.landmarkSelection[0].coords
+                .longitude,
+            }}
             landmarkSelection={this.state.landmarkSelection}
             destinationLocation={{
               latitude: this.state.landmarkSelection[
@@ -164,9 +163,10 @@ export class CreateSoloTour extends Component {
           />
         )}
         <Button
-          buttonStyle={this.styles.primaryFormButton}
+          buttonStyle={this.styles.bigButton}
           titleStyle={this.styles.primaryFormButtonTitle}
           title={'Create tour'}
+          disabled={this.state.landmarkSelection.length < 2 ? true : false}
           onPress={this.onPressAdd}
         />
       </View>

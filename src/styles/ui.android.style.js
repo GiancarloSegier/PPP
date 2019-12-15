@@ -360,7 +360,7 @@ export default StyleSheet.create({
     fontWeight: 'bold',
     textAlign: 'center',
   },
-  mapButton: {
+  bigButton: {
     backgroundColor: colors.darkBlue,
     paddingVertical: 16,
     borderRadius: 0,

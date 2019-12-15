@@ -122,7 +122,6 @@ export class Map extends Component {
     };
     this.setRegion(regionLocation);
     await this.getPlaces(this.state.placeType, this.state.radius);
-    console.log(this.places);
     if (this.places) {
       await this.carousel.snapToItem(0);
     }
@@ -224,7 +223,9 @@ export class Map extends Component {
   renderCarouselItem = ({item}) => {
     let placeImage;
     if (item.photos) {
-      placeImage = `https://maps.googleapis.com/maps/api/place/photo?maxwidth=200&photoreference=${item.photos[0].photo_reference}&key=${this.state.googleAPI}`;
+      placeImage = `https://maps.googleapis.com/maps/api/place/photo?maxwidth=200&photoreference=${
+        item.photos[0].photo_reference
+      }&key=${this.state.googleAPI}`;
     }
 
     return (
@@ -269,7 +270,6 @@ export class Map extends Component {
   };
 
   render() {
-    console.log(this.props.tripStore.landmarkSelection);
     const {userLocation, regionLocation} = this.state;
     if (userLocation.latitude && userLocation.latitude !== 0) {
       return (
@@ -410,7 +410,7 @@ export class Map extends Component {
           <Button
             title="search this region"
             onPress={this.moveRegion}
-            buttonStyle={this.styles.mapButton}
+            buttonStyle={this.styles.bigButton}
             titleStyle={this.styles.primaryFormButtonTitle}
           />
           {this.state.selectionVisible ? (

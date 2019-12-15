@@ -69,9 +69,7 @@ export class InfoScreen extends Component {
 
   getImage = item => {
     if (item.photos) {
-      this.placeImage = `https://maps.googleapis.com/maps/api/place/photo?maxwidth=1000&photoreference=${
-        item.photos[0].photo_reference
-      }&key=${this.state.googleAPI}`;
+      this.placeImage = `https://maps.googleapis.com/maps/api/place/photo?maxwidth=1000&photoreference=${item.photos[0].photo_reference}&key=${this.state.googleAPI}`;
       this.setState({
         placeImage: this.placeImage,
       });
@@ -123,8 +121,8 @@ export class InfoScreen extends Component {
         <Button
           buttonStyle={
             this.state.landmarkInCollection
-              ? [this.styles.mapButton, this.styles.remove]
-              : [this.styles.mapButton]
+              ? [this.styles.bigButton, this.styles.remove]
+              : [this.styles.bigButton]
           }
           titleStyle={this.styles.primaryFormButtonTitle}
           title={
@@ -189,6 +187,7 @@ export class InfoScreen extends Component {
               waypoints={false}
               destinationLocation={this.state.location}
               placeName={placeName}
+              mapSize={'big'}
             />
           </View>
         </ScrollView>
@@ -197,6 +196,8 @@ export class InfoScreen extends Component {
   }
 }
 
-export default inject('wikiStore', 'mapStore', 'tripStore')(
-  observer(InfoScreen),
-);
+export default inject(
+  'wikiStore',
+  'mapStore',
+  'tripStore',
+)(observer(InfoScreen));

@@ -18,7 +18,7 @@ class TripStore {
   }
 
   componentDidMount() {
-    this.getAllUserTrips();
+    // this.getAllUserTrips();
   }
 
   getAllUserTrips = () => {
@@ -27,11 +27,14 @@ class TripStore {
   };
 
   async getTourCity(coords) {
+    console.log(coords);
     await Geocoder.from(coords.latitude, coords.longitude)
       .then(json => {
         const city = json.results[0].address_components.filter(address =>
           address.types.includes('locality'),
         )[0].long_name;
+
+        console.log('citystore: ' + city);
 
         if (city !== undefined) {
           this.tourCity = city;
@@ -141,9 +144,9 @@ class TripStore {
   setTourDuration = duration => {
     this.tourDuration = duration;
   };
-  deleteTour = tour => {
+  deleteTour = async tour => {
     console.log(tour);
-    this.database.doc(tour.tourId).delete();
+    await this.database.doc(tour.tourId).delete();
     this.getAllUserTrips();
   };
 

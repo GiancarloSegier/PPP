@@ -188,7 +188,7 @@ class FilterOverlay extends Component {
                   this.state.openChecked,
                 )
               }
-              buttonStyle={this.styles.mapButton}
+              buttonStyle={this.styles.bigButton}
               titleStyle={this.styles.primaryFormButtonTitle}
             />
           </View>

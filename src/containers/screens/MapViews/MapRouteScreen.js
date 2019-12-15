@@ -323,13 +323,6 @@ export class MapRouteScreen extends Component {
             strokeWidth={25}
             strokeColor="#182ac1"
             optimizeWaypoints={true}
-            onStart={params => {
-              console.log(
-                `Started routing between "${params.origin}" and "${
-                  params.destination
-                }"`,
-              );
-            }}
             onReady={result => {
               if (result.distance > 1) {
                 this.distance = parseFloat(result.distance).toFixed(1);

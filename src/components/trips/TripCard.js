@@ -7,18 +7,17 @@ import androidUI from '../../styles/ui.android.style.js';
 import iosUI from '../../styles/ui.ios.style.js';
 import {Button} from 'react-native-elements';
 
-const TripCard = ({item, onDeleteTour}) => {
+const TripCard = ({item, onDeleteTour, type}) => {
   if (Platform.OS === 'ios') {
     this.styles = iosUI;
   } else {
     this.styles = androidUI;
   }
-  console.log(item);
   this.hours = Math.floor(item.duration / 60);
   this.minutes = Math.floor(item.duration % 60);
 
   const onDelete = () => {
-    onDeleteTour(item);
+    onDeleteTour(item, type);
   };
 
   return (

@@ -39,14 +39,18 @@ class MapRoute extends Component {
   }
 
   componentDidMount = async () => {
+    this.checkOrigin();
     if (this.props.waypoints) {
       this.getWayPoints(this.props.landmarkSelection);
+      await this.getTourCity();
     }
-    this.checkOrigin();
+  };
+  getTourCity = async () => {
+    await this.props.tripStore.getTourCity(this.state.origin);
+    this.setState({tourCity: this.props.tripStore.tourCity});
   };
 
   checkOrigin = () => {
-    console.log(this.props.origin);
     if (this.props.origin) {
       this.setState({origin: this.props.origin});
     } else {
@@ -136,10 +140,17 @@ class MapRoute extends Component {
           showsPointsOfInterest={false}
           showsMyLocationButton={false}
           customMapStyle={MapStyle}
-          style={{
-            height: Dimensions.get('screen').height * 0.2,
-            width: '100%',
-          }}
+          style={
+            this.props.mapSize === 'big'
+              ? {
+                  height: Dimensions.get('screen').height * 0.3,
+                  width: '100%',
+                }
+              : {
+                  height: Dimensions.get('screen').height * 0.2,
+                  width: '100%',
+                }
+          }
           onLayout={this.fitMap}
           provider={MapView.PROVIDER_GOOGLE}>
           <MapViewDirections
