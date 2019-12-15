@@ -124,24 +124,19 @@ export class MyTrips extends Component {
                   <Text style={this.styles.heading2}>Parties</Text>
                 </View>
                 {this.props.tripStore.userPartyTrips.length > 0 ? (
-                  <View style={{height: 140}}>
-                    <Carousel
-                      containerCustomStyle={this.styles.carouselContainer}
-                      ref={c => {
-                        this._carousel = c;
-                      }}
-                      data={this.props.tripStore.userPartyTrips}
-                      renderItem={this.renderCarouselTrip}
-                      sliderWidth={
-                        Dimensions.get('screen').width +
-                        Dimensions.get('screen').width * 0.02
-                      }
-                      itemWidth={Dimensions.get('window').width * 0.8}
-                      onSnapToItem={index =>
-                        this.setState({activeSlide: index})
-                      }
-                    />
-                  </View>
+                  <Carousel
+                    containerCustomStyle={this.styles.carouselContainer}
+                    ref={c => {
+                      this._carousel = c;
+                    }}
+                    data={this.props.tripStore.userPartyTrips}
+                    renderItem={this.renderCarouselTrip}
+                    sliderWidth={
+                      Dimensions.get('screen').width +
+                      Dimensions.get('screen').width * 0.02
+                    }
+                    itemWidth={Dimensions.get('window').width * 0.8}
+                  />
                 ) : (
                   <Text>You haven't made any party trips yet!</Text>
                 )}

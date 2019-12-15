@@ -71,7 +71,6 @@ export class CreateSoloTour extends Component {
 
     const newTour = {
       userId: this.state.userId,
-      type: 'solo',
       tripTitle: this.state.newTripTitle,
       dateAdded: this.state.currentDate,
       tourCity: this.props.tripStore.tourCity,

@@ -54,8 +54,10 @@ export class Home extends Component {
     this.collectTrips(this.state.currentCity);
   }
   collectTrips = city => {
-    this.props.tripStore.getCitySoloTrips(city);
-    this.setState({citySoloTrips: this.props.tripStore.citySoloTrips});
+    this.props.tripStore.getCitySoloTrips(this.state.currentCity);
+    this.setState({
+      citySoloTrips: this.props.tripStore.citySoloTrips,
+    });
   };
 
   fetchData = async () => {
@@ -188,9 +190,7 @@ export class Home extends Component {
         ) {
           const cityImageReference =
             respons.results[0].photos[0].photo_reference;
-          const cityImageUrl = `https://maps.googleapis.com/maps/api/place/photo?maxwidth=${maxWidth}&photoreference=${cityImageReference}&key=${
-            this.state.googleAPI
-          }`;
+          const cityImageUrl = `https://maps.googleapis.com/maps/api/place/photo?maxwidth=${maxWidth}&photoreference=${cityImageReference}&key=${this.state.googleAPI}`;
 
           this.setState({
             cityImage: cityImageUrl,
@@ -224,9 +224,7 @@ export class Home extends Component {
   renderCarouselPlace = ({item}) => {
     if (item.photos[0].photo_reference) {
       const maxWidth = 500;
-      this.placeImage = `https://maps.googleapis.com/maps/api/place/photo?maxwidth=${maxWidth}&photoreference=${
-        item.photos[0].photo_reference
-      }&key=${this.state.googleAPI}`;
+      this.placeImage = `https://maps.googleapis.com/maps/api/place/photo?maxwidth=${maxWidth}&photoreference=${item.photos[0].photo_reference}&key=${this.state.googleAPI}`;
     }
     return (
       <TouchableHighlight

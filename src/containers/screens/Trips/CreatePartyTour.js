@@ -1,25 +1,13 @@
 import React, {Component} from 'react';
-import {
-  View,
-  Text,
-  ScrollView,
-  Platform,
-  FlatList,
-  TextInput,
-  TouchableHighlight,
-  Alert,
-  Modal,
-  Dimensions,
-  TouchableOpacity,
-} from 'react-native';
-import {Button, Overlay, ButtonGroup} from 'react-native-elements';
+import {View, Text, Platform, TextInput, Alert} from 'react-native';
+import {Button} from 'react-native-elements';
 
 import androidUI from '../../../styles/ui.android.style.js';
 import iosUI from '../../../styles/ui.ios.style.js';
 import auth from '@react-native-firebase/auth';
 import firestore from '@react-native-firebase/firestore';
-
-import DatePicker from 'react-native-date-picker';
+import {inject, observer} from 'mobx-react';
+import MapRoute from '../../../components/map/MapRoute.js';
 
 export class CreatePartyTour extends Component {
   constructor(props) {
@@ -30,86 +18,154 @@ export class CreatePartyTour extends Component {
       this.styles = androidUI;
     }
 
-    const day = new Date().getDate();
-    const month = new Date().getMonth() + 1;
-    const year = new Date().getFullYear();
+    let day = new Date().getDate();
+    let month = new Date().getMonth() + 1;
+    let year = new Date().getFullYear();
 
     this.state = {
       trips: [],
       newTripTitle: '',
-      currentDate: new Date(),
-      currentDateString: `${day}/${month}/${year}`,
-      pickedhour: null,
-      pickedDateString: null,
+      currentDate: `${day}/${month}/${year}`,
       userId: auth().currentUser.uid,
       isDatePickerVisible: false,
+      landmarkSelection: this.props.tripStore.landmarkSelection,
+      tourDuration: this.props.tripStore.tourDuration,
+      tourDistance: this.props.tripStore.tourDistance,
+      originLocation: {},
+      tourCity: null,
     };
 
-    this.ref = firestore().collection('trips');
+    this.firestoreCollection = firestore().collection('trips');
   }
-  onPressAdd = () => {
-    if (this.state.newTripTitle.trim() === '') {
-      Alert.alert('task name is blank');
+
+  onPressAdd = async () => {
+    const newLandmarks = [];
+    if (
+      this.state.newTripTitle.trim() === '' &&
+      this.state.landmarkSelection.length < 2
+    ) {
+      Alert.alert(
+        'You really have to fill in a partyname and select at least 2 landmarks',
+      );
+      return;
+    } else if (this.state.newTripTitle.trim() === '') {
+      Alert.alert('Enter a name for your party please');
       return;
     }
-    this.ref
-      .add({
-        userId: this.state.userId,
-        type: 'party',
-        tripTitle: this.state.newTripTitle,
-        dateAdded: this.state.currentDate,
-      })
-      .then(data => {
-        this.setState({newTripTitle: ''});
-      })
-      .catch(error => {
-        console.log(`error loading: ${error}`);
-        this.setState({newTripTitle: ''});
-      })
-      .then(() => {
-        this.props.navigation.goBack(null);
+    if (
+      this.state.landmarkSelection &&
+      this.state.landmarkSelection.length < 2
+    ) {
+      Alert.alert('You have to select at least 2 landmarks');
+      return;
+    } else {
+      this.state.landmarkSelection.map(landmark => {
+        const newLandmark = {
+          latitude: landmark.coords.latitude,
+          longitude: landmark.coords.longitude,
+          placeName: landmark.placeName,
+        };
+        newLandmarks.push(newLandmark);
       });
-  };
+    }
 
-  handleDatePicked = date => {
-    const day = new Date(date).getDate();
-    const month = new Date(date).getMonth() + 1;
-    const year = new Date(date).getFullYear();
+    const newTour = {
+      userId: this.state.userId,
+      tripTitle: this.state.newTripTitle,
+      dateAdded: this.state.currentDate,
+      tourCity: this.props.tripStore.tourCity,
+      distance: this.props.tripStore.tourDistance,
+      duration: this.props.tripStore.tourDuration,
+      landmarks: newLandmarks,
+    };
+    this.setState({landmarkSelection: []});
+    await this.props.tripStore.addPartyTour(newTour);
 
     this.setState({
-      pickedDate: date,
-      pickedDateString: `${day}/${month < 10 ? month : `0${month}`}/${year}`,
+      newTripTitle: '',
     });
-    this.hidePicker();
+    this.showSucces();
   };
 
-  handleTimePicked = date => {
-    this.setState({
-      pickedhour: date,
-    });
+  showSucces = () => {
+    Alert.alert(
+      'Congratulations!',
+      "You're party has been created and saved!",
+      [
+        {
+          text: 'Do it now',
+          onPress: () => {
+            console.log('Do it now');
+            this.props.navigation.goBack();
+          },
+        },
+        {
+          text: 'Do it later',
+          onPress: () => {
+            console.log('Do it later');
+            this.props.navigation.goBack();
+          },
+        },
+      ],
+      {cancelable: false},
+    );
   };
 
   render() {
     return (
       <View style={this.styles.container}>
-        <Text style={this.styles.heading2}>Create your party tour</Text>
+        <Text style={this.styles.heading2}>Create your party</Text>
         <TextInput
-          style={{backgroundColor: 'white', padding: 24}}
+          style={this.styles.formField}
           keyboardType="default"
-          placeholder="Enter name for your party"
+          placeholder="Enter a tourname"
           value={this.state.newTripTitle === '' ? '' : this.state.newTripTitle}
           onChangeText={text => this.setState({newTripTitle: text})}
         />
+        {this.state.landmarkSelection &&
+        this.state.landmarkSelection.length > 1 ? (
+          <Button
+            buttonStyle={this.styles.primaryFormButton}
+            titleStyle={this.styles.primaryFormButtonTitle}
+            title={'add more landmarks'}
+            onPress={() => this.props.navigation.navigate('Map')}
+          />
+        ) : null}
+        {this.state.landmarkSelection &&
+        this.state.landmarkSelection.length > 1 ? (
+          <MapRoute
+            createTour={true}
+            waypoints={true}
+            mapSize={'big'}
+            origin={{
+              latitude: this.props.tripStore.landmarkSelection[0].coords
+                .latitude,
+              longitude: this.props.tripStore.landmarkSelection[0].coords
+                .longitude,
+            }}
+            landmarkSelection={this.state.landmarkSelection}
+            destinationLocation={{
+              latitude: this.state.landmarkSelection[
+                this.state.landmarkSelection.length - 1
+              ].coords.latitude,
+              longitude: this.state.landmarkSelection[
+                this.state.landmarkSelection.length - 1
+              ].coords.longitude,
+            }}
+          />
+        ) : (
+          <Button
+            buttonStyle={this.styles.primaryFormButton}
+            titleStyle={this.styles.primaryFormButtonTitle}
+            title={'add landmarks'}
+            onPress={() => this.props.navigation.navigate('Map')}
+          />
+        )}
         <Button
-          buttonStyle={this.styles.primaryFormButton}
+          buttonStyle={this.styles.bigButton}
           titleStyle={this.styles.primaryFormButtonTitle}
-          title={'add more landmarks'}
-          onPress={() => this.props.navigation.navigate('Map')}
-        />
-        <Button
-          buttonStyle={this.styles.primaryFormButton}
-          titleStyle={this.styles.primaryFormButtonTitle}
-          title={'Create tour'}
+          title={'Create party'}
+          disabled={this.state.landmarkSelection.length < 2 ? true : false}
           onPress={this.onPressAdd}
         />
       </View>
@@ -117,4 +173,4 @@ export class CreatePartyTour extends Component {
   }
 }
 
-export default CreatePartyTour;
+export default inject('tripStore', 'mapStore')(observer(CreatePartyTour));

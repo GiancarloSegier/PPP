@@ -14,7 +14,8 @@ class TripStore {
   userId = auth().currentUser.uid;
   constructor(rootStore) {
     this.rootStore = rootStore;
-    this.database = firestore().collection('trips');
+    this.soloTripsDatabase = firestore().collection('soloTrips');
+    this.partyTripsDatabase = firestore().collection('partyTrips');
   }
 
   componentDidMount() {
@@ -45,9 +46,27 @@ class TripStore {
       .catch(error => console.warn(error));
   }
 
+  compare(a, b) {
+    const bandA = a.dateAdded;
+    const bandB = b.dateAdded;
+
+    let comparison = 0;
+    if (bandA > bandB) {
+      comparison = 1;
+    } else if (bandA < bandB) {
+      comparison = -1;
+    }
+    return comparison;
+  }
+
   getCitySoloTrips = async city => {
+    console.log(city);
     this.citySoloTrips = [];
-    const getCitySoloTrips = await this.database.where('tourCity', '==', city);
+    const getCitySoloTrips = await this.soloTripsDatabase.where(
+      'tourCity',
+      '==',
+      city,
+    );
 
     this.unsubscribeAllTrips = getCitySoloTrips.onSnapshot(querySnapshots => {
       querySnapshots.forEach(doc => {
@@ -67,45 +86,53 @@ class TripStore {
   getCityPartyTrips = () => {};
   getUserSoloTrips = async userId => {
     this.userSoloTrips = [];
-    const allUserTrips = await this.database.where('userId', '==', userId);
+    const fetchedUserSoloTrips = await this.soloTripsDatabase.where(
+      'userId',
+      '==',
+      userId,
+    );
 
-    const getSoloTrips = await allUserTrips.where('type', '==', 'solo');
-
-    this.unsubscribeAllTrips = getSoloTrips.onSnapshot(querySnapshots => {
-      querySnapshots.forEach(doc => {
-        this.userSoloTrips.push({
-          tourId: doc.id,
-          tripTitle: doc.data().tripTitle,
-          dateAdded: doc.data().dateAdded,
-          landmarks: doc.data().landmarks,
-          distance: doc.data().distance,
-          duration: doc.data().duration,
-          tourCity: doc.data().tourCity,
-          userId: doc.data().userId,
+    this.unsubscribeAllTrips = fetchedUserSoloTrips.onSnapshot(
+      querySnapshots => {
+        querySnapshots.forEach(doc => {
+          this.userSoloTrips.push({
+            tourId: doc.id,
+            tripTitle: doc.data().tripTitle,
+            dateAdded: doc.data().dateAdded,
+            landmarks: doc.data().landmarks,
+            distance: doc.data().distance,
+            duration: doc.data().duration,
+            tourCity: doc.data().tourCity,
+            userId: doc.data().userId,
+          });
         });
-      });
-    });
+      },
+    );
   };
   getUserPartyTrips = async userId => {
     this.userPartyTrips = [];
-    const allUserTrips = await this.database.where('userId', '==', userId);
+    const fetchedUserPartyTrips = await this.partyTripsDatabase.where(
+      'userId',
+      '==',
+      userId,
+    );
 
-    const getPartyTrips = await allUserTrips.where('type', '==', 'party');
-
-    this.unsubscribeAllTrips = getPartyTrips.onSnapshot(querySnapshots => {
-      querySnapshots.forEach(doc => {
-        this.userPartyTrips.push({
-          tourId: doc.id,
-          tripTitle: doc.data().tripTitle,
-          dateAdded: doc.data().dateAdded,
-          landmarks: doc.data().landmarks,
-          distance: doc.data().distance,
-          duration: doc.data().duration,
-          tourCity: doc.data().tourCity,
-          userId: doc.data().userId,
+    this.unsubscribeAllTrips = fetchedUserPartyTrips.onSnapshot(
+      querySnapshots => {
+        querySnapshots.forEach(doc => {
+          this.userPartyTrips.push({
+            tourId: doc.id,
+            tripTitle: doc.data().tripTitle,
+            dateAdded: doc.data().dateAdded,
+            landmarks: doc.data().landmarks,
+            distance: doc.data().distance,
+            duration: doc.data().duration,
+            tourCity: doc.data().tourCity,
+            userId: doc.data().userId,
+          });
         });
-      });
-    });
+      },
+    );
   };
 
   addToSelection = landmark => {
@@ -146,12 +173,17 @@ class TripStore {
   };
   deleteTour = async tour => {
     console.log(tour);
-    await this.database.doc(tour.tourId).delete();
+    await this.soloTripsDatabase.doc(tour.tourId).delete();
     this.getAllUserTrips();
   };
 
   addSoloTour = async tour => {
-    await this.database.add(tour);
+    await this.soloTripsDatabase.add(tour);
+    await this.resetLandmarks();
+    this.getAllUserTrips();
+  };
+  addPartyTour = async tour => {
+    await this.partyTripsDatabase.add(tour);
     await this.resetLandmarks();
     this.getAllUserTrips();
   };
