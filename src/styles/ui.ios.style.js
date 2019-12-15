@@ -12,10 +12,10 @@ export default StyleSheet.create({
     padding: 24,
   },
   marginTop: {
-    marginTop: 32,
+    marginTop: 24,
   },
   marginBottom: {
-    marginBottom: 32,
+    marginBottom: 24,
   },
   margin: {
     marginVertical: 32,
@@ -51,7 +51,11 @@ export default StyleSheet.create({
     fontWeight: 'bold',
     color: colors.navy,
   },
-  heading3: {},
+  heading3: {
+    fontSize: 18,
+    fontWeight: 'bold',
+    color: colors.navy,
+  },
   heading4: {
     fontSize: 18,
     opacity: 0.5,
@@ -362,7 +366,7 @@ export default StyleSheet.create({
   },
   bigButton: {
     backgroundColor: colors.darkBlue,
-    paddingVertical: 16,
+    height: 60,
     borderRadius: 0,
   },
   remove: {
@@ -527,5 +531,33 @@ export default StyleSheet.create({
   },
   infoParam: {
     fontSize: 10,
+  },
+  buttonGroupContainer: {
+    borderWidth: 0,
+    borderRadius: 0,
+    marginTop: 0,
+    marginLeft: 0,
+    marginRight: 0,
+    width: '100%',
+    height: 60,
+    backgroundColor: '#eee',
+  },
+  startDateTime: {
+    fontSize: 14,
+    fontWeight: 'bold',
+
+    borderColor: colors.navy,
+    borderWidth: 2,
+    borderRadius: 8,
+    color: colors.navy,
+    padding: 8,
+    paddingHorizontal: 16,
+    lineHeight: 16,
+  },
+  tripTypes: {
+    flexDirection: 'row',
+    alignItems: 'baseline',
+    justifyContent: 'space-between',
+    marginBottom: -32,
   },
 });

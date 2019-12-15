@@ -1,5 +1,5 @@
 import React, {Component} from 'react';
-import {View, Platform, Alert} from 'react-native';
+import {View, Platform, Alert, Dimensions} from 'react-native';
 import {Button, Overlay, ButtonGroup} from 'react-native-elements';
 
 import androidUI from '../../../styles/ui.android.style.js';
@@ -47,14 +47,20 @@ export class CreateTripScreen extends Component {
     const buttons = ['Solo', 'Party'];
 
     return (
-      <View>
+      <View style={{flex: 1}}>
         <ButtonGroup
           onPress={this.updateIndex}
           selectedIndex={this.state.selectedIndex}
           buttons={buttons}
-          containerStyle={{borderWidth: 0, width: '100%', left: 0}}
+          containerStyle={this.styles.buttonGroupContainer}
           buttonStyle={{borderWidth: 0}}
+          textStyle={{
+            textTransform: 'uppercase',
+            letterSpacing: 2,
+            fontSize: 14,
+          }}
           selectedButtonStyle={{backgroundColor: '#110b84'}}
+          innerBorderStyle={{color: 'transparent'}}
         />
 
         {this.state.selectedIndex === 0 ? (

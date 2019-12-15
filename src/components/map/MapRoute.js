@@ -112,27 +112,44 @@ class MapRoute extends Component {
   render() {
     return (
       <>
-        <View style={[this.styles.container, {backgroundColor: 'white'}]}>
-          <Text>
-            Distance:{' '}
-            {this.distance < 1
-              ? String(this.distance).replace('0.', '') + ' m'
-              : this.distance + ' km'}
-          </Text>
-          <Text>
-            Walkingtime:{' '}
-            {this.state.hours === undefined ? (
-              'calculating'
-            ) : (
-              <>
-                {' '}
-                {this.state.hours > 0
-                  ? this.state.hours + 'u' + this.state.minutes
-                  : this.state.minutes + ' min'}
-              </>
-            )}
-          </Text>
-        </View>
+        {this.state.landmarkSelection ? (
+          <View style={{paddingHorizontal: 8, marginTop: -16}}>
+            <View style={this.styles.tripCardContent}>
+              <View style={this.styles.tripInfo}>
+                <View style={this.styles.tripInfoBlock}>
+                  <Text style={this.styles.tripInfoTitle}>
+                    {this.distance < 1
+                      ? String(this.distance).replace('0.', '')
+                      : this.distance}
+                  </Text>
+                  <Text style={this.styles.infoParam}>
+                    {this.distance < 1 ? 'meters' : 'kilometers'}
+                  </Text>
+                </View>
+                <View style={this.styles.tripInfoBlock}>
+                  <Text style={this.styles.tripInfoTitle}>
+                    {this.hours > 0
+                      ? this.state.hours + 'u' + this.state.minutes
+                      : this.state.minutes}
+                  </Text>
+                  <Text style={this.styles.infoParam}>min walk</Text>
+                </View>
+
+                <View
+                  style={[
+                    this.styles.tripInfoBlock,
+                    this.styles.lastInfoBlock,
+                  ]}>
+                  <Text style={this.styles.tripInfoTitle}>
+                    {this.state.landmarkSelection.length}
+                  </Text>
+                  <Text style={this.styles.infoParam}>landmarks</Text>
+                </View>
+              </View>
+            </View>
+          </View>
+        ) : null}
+
         <MapView
           ref={map => (this._map = map)}
           toolbarEnabled={false}

@@ -12,6 +12,7 @@
   "dependencies": {
     "@babel/parser": "^7.7.4",
     "@babel/plugin-proposal-decorators": "^7.7.4",
+    "@react-native-community/datetimepicker": "^2.1.0",
     "@react-native-firebase/app": "^6.2.0",
     "@react-native-firebase/auth": "^6.2.0",
     "@react-native-firebase/firestore": "^6.2.0",
@@ -35,6 +36,7 @@
     "react-native-linear-gradient": "^2.5.6",
     "react-native-maps": "^0.26.1",
     "react-native-maps-directions": "^1.7.3",
+    "react-native-modal-datetime-picker": "8.x.x",
     "react-native-reanimated": "^1.4.0",
     "react-native-screens": "^2.0.0-alpha.11",
     "react-native-snap-carousel": "^3.8.4",

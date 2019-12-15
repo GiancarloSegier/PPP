@@ -101,7 +101,12 @@ export class MyTrips extends Component {
             <ScrollView>
               <>
                 <View style={this.styles.container}>
-                  <Text style={this.styles.heading2}>My solo trips</Text>
+                  <View style={this.styles.tripTypes}>
+                    <Text style={this.styles.heading2}>My solo trips:</Text>
+                    <Text style={this.styles.landmarksAmount}>
+                      {this.props.tripStore.userSoloTrips.length}
+                    </Text>
+                  </View>
                 </View>
                 {this.props.tripStore.userSoloTrips.length > 0 ? (
                   <Carousel
@@ -118,10 +123,17 @@ export class MyTrips extends Component {
                     itemWidth={Dimensions.get('window').width * 0.8}
                   />
                 ) : (
-                  <Text>You haven't made any solo trips yet!</Text>
+                  <View style={this.styles.container}>
+                    <Text>You haven't made any solo trips yet!</Text>
+                  </View>
                 )}
                 <View style={this.styles.container}>
-                  <Text style={this.styles.heading2}>Parties</Text>
+                  <View style={this.styles.tripTypes}>
+                    <Text style={this.styles.heading2}>My parties:</Text>
+                    <Text style={this.styles.landmarksAmount}>
+                      {this.props.tripStore.userPartyTrips.length}
+                    </Text>
+                  </View>
                 </View>
                 {this.props.tripStore.userPartyTrips.length > 0 ? (
                   <Carousel
@@ -135,10 +147,13 @@ export class MyTrips extends Component {
                       Dimensions.get('screen').width +
                       Dimensions.get('screen').width * 0.02
                     }
+                    slideStyle={Platform.OS === 'android' ? {padding: 4} : null}
                     itemWidth={Dimensions.get('window').width * 0.8}
                   />
                 ) : (
-                  <Text>You haven't made any party trips yet!</Text>
+                  <View style={this.styles.container}>
+                    <Text>You haven't made any party trips yet!</Text>
+                  </View>
                 )}
               </>
             </ScrollView>

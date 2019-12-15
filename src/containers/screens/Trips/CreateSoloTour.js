@@ -1,5 +1,14 @@
 import React, {Component} from 'react';
-import {View, Text, Platform, TextInput, Alert} from 'react-native';
+import {
+  View,
+  Text,
+  Platform,
+  TextInput,
+  Alert,
+  ScrollView,
+  Dimensions,
+  ActivityIndicator,
+} from 'react-native';
 import {Button} from 'react-native-elements';
 
 import androidUI from '../../../styles/ui.android.style.js';
@@ -8,6 +17,7 @@ import auth from '@react-native-firebase/auth';
 import firestore from '@react-native-firebase/firestore';
 import {inject, observer} from 'mobx-react';
 import MapRoute from '../../../components/map/MapRoute.js';
+import SelectionOverlay from '../../../components/map/SelectionOverlay.js';
 
 export class CreateSoloTour extends Component {
   constructor(props) {
@@ -33,6 +43,8 @@ export class CreateSoloTour extends Component {
       tourDistance: this.props.tripStore.tourDistance,
       originLocation: {},
       tourCity: null,
+      selectionVisible: false,
+      removeAllPressed: false,
     };
 
     this.firestoreCollection = firestore().collection('trips');
@@ -78,11 +90,12 @@ export class CreateSoloTour extends Component {
       duration: this.props.tripStore.tourDuration,
       landmarks: newLandmarks,
     };
-    this.setState({landmarkSelection: []});
-    await this.props.tripStore.addSoloTour(newTour);
+    this.setState({landmarkSelection: [], loading: true});
+    await this.props.tripStore.addPartyTour(newTour);
 
     this.setState({
       newTripTitle: '',
+      loading: false,
     });
     this.showSucces();
   };
@@ -111,65 +124,121 @@ export class CreateSoloTour extends Component {
     );
   };
 
+  onPressShowSelection = () => {
+    this.setState({selectionVisible: true});
+  };
+  onHideSelection = async (removeAll = false) => {
+    this.setState({selectionVisible: false});
+    if (removeAll) {
+      this.setState({loading: true, removeAllPressed: removeAll});
+      await this.props.tripStore.resetLandmarks();
+      this.setState({
+        landmarkSelection: this.props.tripStore.landmarkSelection,
+        loading: false,
+        removeAllPressed: false,
+      });
+    }
+  };
+
   render() {
-    return (
-      <View style={this.styles.container}>
-        <Text style={this.styles.heading2}>Create your tour</Text>
-        <TextInput
-          style={this.styles.formField}
-          keyboardType="default"
-          placeholder="Enter a tourname"
-          value={this.state.newTripTitle === '' ? '' : this.state.newTripTitle}
-          onChangeText={text => this.setState({newTripTitle: text})}
-        />
-        {this.state.landmarkSelection &&
-        this.state.landmarkSelection.length > 1 ? (
-          <Button
-            buttonStyle={this.styles.primaryFormButton}
-            titleStyle={this.styles.primaryFormButtonTitle}
-            title={'add more landmarks'}
-            onPress={() => this.props.navigation.navigate('Map')}
-          />
-        ) : null}
-        {this.state.landmarkSelection &&
-        this.state.landmarkSelection.length > 1 ? (
-          <MapRoute
-            createTour={true}
-            waypoints={true}
-            mapSize={'big'}
-            origin={{
-              latitude: this.props.tripStore.landmarkSelection[0].coords
-                .latitude,
-              longitude: this.props.tripStore.landmarkSelection[0].coords
-                .longitude,
-            }}
-            landmarkSelection={this.state.landmarkSelection}
-            destinationLocation={{
-              latitude: this.state.landmarkSelection[
-                this.state.landmarkSelection.length - 1
-              ].coords.latitude,
-              longitude: this.state.landmarkSelection[
-                this.state.landmarkSelection.length - 1
-              ].coords.longitude,
-            }}
-          />
-        ) : (
-          <Button
-            buttonStyle={this.styles.primaryFormButton}
-            titleStyle={this.styles.primaryFormButtonTitle}
-            title={'add landmarks'}
-            onPress={() => this.props.navigation.navigate('Map')}
-          />
-        )}
-        <Button
-          buttonStyle={this.styles.bigButton}
-          titleStyle={this.styles.primaryFormButtonTitle}
-          title={'Create tour'}
-          disabled={this.state.landmarkSelection.length < 2 ? true : false}
-          onPress={this.onPressAdd}
-        />
-      </View>
-    );
+    if (!this.state.loading) {
+      return (
+        <>
+          <ScrollView style={{flex: 1}}>
+            <View>
+              <View style={this.styles.container}>
+                <Text style={this.styles.heading2}>Create your tour</Text>
+                <View style={this.styles.marginTop}>
+                  <TextInput
+                    style={this.styles.formField}
+                    keyboardType="default"
+                    placeholder="Enter a tourtitle"
+                    value={
+                      this.state.newTripTitle === ''
+                        ? ''
+                        : this.state.newTripTitle
+                    }
+                    onChangeText={text => this.setState({newTripTitle: text})}
+                  />
+                </View>
+              </View>
+
+              {this.state.landmarkSelection &&
+              this.state.landmarkSelection.length > 1 ? (
+                <>
+                  <MapRoute
+                    createTour={true}
+                    waypoints={true}
+                    mapSize={'small'}
+                    origin={{
+                      latitude: this.props.tripStore.landmarkSelection[0].coords
+                        .latitude,
+                      longitude: this.props.tripStore.landmarkSelection[0]
+                        .coords.longitude,
+                    }}
+                    landmarkSelection={this.state.landmarkSelection}
+                    destinationLocation={{
+                      latitude: this.state.landmarkSelection[
+                        this.state.landmarkSelection.length - 1
+                      ].coords.latitude,
+                      longitude: this.state.landmarkSelection[
+                        this.state.landmarkSelection.length - 1
+                      ].coords.longitude,
+                    }}
+                  />
+                  <Button
+                    buttonStyle={this.styles.secondaryFormButton}
+                    titleStyle={this.styles.primaryFormButtonTitle}
+                    title={'customize landmarks'}
+                    onPress={() => this.setState({selectionVisible: true})}
+                  />
+                </>
+              ) : (
+                <View style={this.styles.container}>
+                  <Text style={this.styles.body}>
+                    Seems like you haven't selected at least 2 landmarks. Go
+                    pick them right away!
+                  </Text>
+                  <Button
+                    buttonStyle={this.styles.primaryFormButton}
+                    titleStyle={this.styles.primaryFormButtonTitle}
+                    title={'add landmarks'}
+                    onPress={() => this.props.navigation.navigate('Map')}
+                  />
+                </View>
+              )}
+            </View>
+          </ScrollView>
+          <View style={{height: 60}}>
+            <Button
+              buttonStyle={[this.styles.bigButton]}
+              titleStyle={this.styles.primaryFormButtonTitle}
+              title={'Create tour'}
+              disabled={this.state.landmarkSelection.length < 2 ? true : false}
+              onPress={this.onPressAdd}
+            />
+            {this.state.selectionVisible ? (
+              <SelectionOverlay
+                onHideSelection={this.onHideSelection}
+                navigation={this.props.navigation}
+                createTour={true}
+              />
+            ) : null}
+          </View>
+        </>
+      );
+    } else {
+      return (
+        <View style={this.styles.loadScreen}>
+          <ActivityIndicator size={'large'} color="#192BC2" />
+          <Text>
+            {this.state.removeAllPressed !== true
+              ? 'Turist is uploading your trip!'
+              : 'Turist is clearing your selected landmarks!'}{' '}
+          </Text>
+        </View>
+      );
+    }
   }
 }
 

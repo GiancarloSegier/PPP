@@ -12,13 +12,13 @@ export default StyleSheet.create({
     padding: 24,
   },
   marginTop: {
-    marginTop: 32,
+    marginTop: 24,
   },
   marginBottom: {
     marginBottom: 32,
   },
   margin: {
-    marginVertical: 32,
+    marginVertical: 24,
   },
   blueBox: {
     backgroundColor: colors.blue,
@@ -51,7 +51,11 @@ export default StyleSheet.create({
     fontWeight: 'bold',
     color: colors.navy,
   },
-  heading3: {},
+  heading3: {
+    fontSize: 18,
+    fontWeight: 'bold',
+    color: colors.navy,
+  },
   heading4: {
     fontSize: 18,
     opacity: 0.5,
@@ -298,16 +302,13 @@ export default StyleSheet.create({
   },
   carouselContainer: {
     paddingVertical: 24,
-    shadowColor: colors.navy,
-    shadowOffset: {width: 0, height: 1},
-    shadowOpacity: 0.15,
-    shadowRadius: 6,
-    elevation: 2,
+
     marginLeft: -Dimensions.get('screen').width * 0.02,
   },
   carouselCardTouchableHighlight: {
     flex: 1,
     borderRadius: 16,
+    overflow: 'visible',
   },
   carouselCard: {
     flexDirection: 'row',
@@ -362,7 +363,7 @@ export default StyleSheet.create({
   },
   bigButton: {
     backgroundColor: colors.darkBlue,
-    paddingVertical: 16,
+    height: 60,
     borderRadius: 0,
   },
   remove: {
@@ -474,6 +475,7 @@ export default StyleSheet.create({
     backgroundColor: colors.white,
     overflow: 'hidden',
     borderRadius: 16,
+    elevation: 3,
   },
   tripCardHeading: {
     padding: 16,
@@ -527,5 +529,36 @@ export default StyleSheet.create({
   },
   infoParam: {
     fontSize: 10,
+  },
+  buttonGroupContainer: {
+    borderWidth: 0,
+    borderRadius: 0,
+    marginTop: 0,
+    marginLeft: 0,
+    marginRight: 0,
+    width: '100%',
+    height: 60,
+    marginBottom: 0,
+    backgroundColor: '#eee',
+  },
+
+  startDateTime: {
+    fontSize: 14,
+    fontWeight: 'bold',
+
+    borderColor: colors.navy,
+    borderWidth: 2,
+    borderRadius: 8,
+    color: colors.navy,
+    padding: 8,
+    lineHeight: 20,
+
+    paddingHorizontal: 12,
+  },
+  tripTypes: {
+    flexDirection: 'row',
+    alignItems: 'baseline',
+    justifyContent: 'space-between',
+    marginBottom: -32,
   },
 });

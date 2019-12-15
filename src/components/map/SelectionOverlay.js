@@ -169,20 +169,34 @@ class SelectionOverlay extends Component {
                   destinationLocation={this.state.destinationLocation}
                 />
               )}
-              <Button
-                title="Create my trip"
-                onPress={() => {
-                  this.props.onHideSelection(this.removeAll);
-                  this.props.navigation.navigate('CreateRouteScreen');
-                }}
-                disabled={
-                  this.state.landmarkSelection.length < 2 ? true : false
-                }
-                containerStyle={{flex: 1}}
-                style={{flex: 1}}
-                buttonStyle={this.styles.bigButton}
-                titleStyle={this.styles.primaryFormButtonTitle}
-              />
+              {this.props.createTour === true ? (
+                <Button
+                  title="Add landmarks"
+                  onPress={() => {
+                    this.props.onHideSelection(this.removeAll);
+                    this.props.navigation.navigate('Map');
+                  }}
+                  containerStyle={{flex: 1}}
+                  style={{flex: 1}}
+                  buttonStyle={this.styles.bigButton}
+                  titleStyle={this.styles.primaryFormButtonTitle}
+                />
+              ) : (
+                <Button
+                  title="Create my trip"
+                  onPress={() => {
+                    this.props.onHideSelection(this.removeAll);
+                    this.props.navigation.navigate('CreateRouteScreen');
+                  }}
+                  disabled={
+                    this.state.landmarkSelection.length < 2 ? true : false
+                  }
+                  containerStyle={{flex: 1}}
+                  style={{flex: 1}}
+                  buttonStyle={this.styles.bigButton}
+                  titleStyle={this.styles.primaryFormButtonTitle}
+                />
+              )}
             </View>
           </View>
         </>
