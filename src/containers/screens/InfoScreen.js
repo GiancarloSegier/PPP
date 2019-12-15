@@ -69,7 +69,9 @@ export class InfoScreen extends Component {
 
   getImage = item => {
     if (item.photos) {
-      this.placeImage = `https://maps.googleapis.com/maps/api/place/photo?maxwidth=1000&photoreference=${item.photos[0].photo_reference}&key=${this.state.googleAPI}`;
+      this.placeImage = `https://maps.googleapis.com/maps/api/place/photo?maxwidth=1000&photoreference=${
+        item.photos[0].photo_reference
+      }&key=${this.state.googleAPI}`;
       this.setState({
         placeImage: this.placeImage,
       });
@@ -196,8 +198,6 @@ export class InfoScreen extends Component {
   }
 }
 
-export default inject(
-  'wikiStore',
-  'mapStore',
-  'tripStore',
-)(observer(InfoScreen));
+export default inject('wikiStore', 'mapStore', 'tripStore')(
+  observer(InfoScreen),
+);

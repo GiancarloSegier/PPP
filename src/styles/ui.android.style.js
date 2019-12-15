@@ -237,8 +237,9 @@ export default StyleSheet.create({
   // Home
 
   carouselPlaceCard: {
-    backgroundColor: 'rgba(255,255,255,0.9)',
-
+    backgroundColor: colors.white,
+    overflow: 'hidden',
+    elevation: 3,
     borderRadius: 24,
   },
   carouselPlaceContainer: {
@@ -317,6 +318,7 @@ export default StyleSheet.create({
     padding: 16,
     borderRadius: 16,
     justifyContent: 'space-between',
+    elevation: 3,
   },
   carouselTitle: {
     color: colors.navy,
@@ -381,7 +383,7 @@ export default StyleSheet.create({
     shadowOffset: {width: 0, height: 2},
     shadowOpacity: 0.35,
     shadowRadius: 3,
-    // elevation: 1,
+    elevation: 3,
   },
   filterContainer: {
     position: 'relative',
@@ -525,7 +527,7 @@ export default StyleSheet.create({
   tripInfoTitle: {
     fontWeight: 'bold',
     color: colors.blue,
-    fontSize: 28,
+    fontSize: 24,
   },
   infoParam: {
     fontSize: 10,

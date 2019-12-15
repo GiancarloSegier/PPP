@@ -190,7 +190,9 @@ export class Home extends Component {
         ) {
           const cityImageReference =
             respons.results[0].photos[0].photo_reference;
-          const cityImageUrl = `https://maps.googleapis.com/maps/api/place/photo?maxwidth=${maxWidth}&photoreference=${cityImageReference}&key=${this.state.googleAPI}`;
+          const cityImageUrl = `https://maps.googleapis.com/maps/api/place/photo?maxwidth=${maxWidth}&photoreference=${cityImageReference}&key=${
+            this.state.googleAPI
+          }`;
 
           this.setState({
             cityImage: cityImageUrl,
@@ -224,7 +226,9 @@ export class Home extends Component {
   renderCarouselPlace = ({item}) => {
     if (item.photos[0].photo_reference) {
       const maxWidth = 500;
-      this.placeImage = `https://maps.googleapis.com/maps/api/place/photo?maxwidth=${maxWidth}&photoreference=${item.photos[0].photo_reference}&key=${this.state.googleAPI}`;
+      this.placeImage = `https://maps.googleapis.com/maps/api/place/photo?maxwidth=${maxWidth}&photoreference=${
+        item.photos[0].photo_reference
+      }&key=${this.state.googleAPI}`;
     }
     return (
       <TouchableHighlight
@@ -331,6 +335,7 @@ export class Home extends Component {
                     Dimensions.get('screen').width +
                     Dimensions.get('screen').width * 0.02
                   }
+                  slideStyle={Platform.OS === 'android' ? {padding: 4} : null}
                   itemWidth={Dimensions.get('screen').width * 0.8}
                   onSnapToItem={index => this.setState({activeSlide: index})}
                 />
@@ -396,6 +401,7 @@ export class Home extends Component {
                   Dimensions.get('screen').width +
                   Dimensions.get('screen').width * 0.02
                 }
+                slideStyle={Platform.OS === 'android' ? {padding: 4} : null}
                 itemWidth={Dimensions.get('window').width * 0.8}
               />
             </View>

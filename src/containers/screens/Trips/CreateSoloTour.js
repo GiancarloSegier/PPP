@@ -8,6 +8,7 @@ import {
   ScrollView,
   Dimensions,
   ActivityIndicator,
+  Linking,
 } from 'react-native';
 import {Button} from 'react-native-elements';
 
@@ -45,6 +46,7 @@ export class CreateSoloTour extends Component {
       tourCity: null,
       selectionVisible: false,
       removeAllPressed: false,
+      prevLandmarkSelection: null,
     };
 
     this.firestoreCollection = firestore().collection('trips');
@@ -90,8 +92,12 @@ export class CreateSoloTour extends Component {
       duration: this.props.tripStore.tourDuration,
       landmarks: newLandmarks,
     };
-    this.setState({landmarkSelection: [], loading: true});
-    await this.props.tripStore.addPartyTour(newTour);
+    this.setState({
+      landmarkSelection: [],
+      prevLandmarkSelection: this.state.landmarkSelection,
+      loading: true,
+    });
+    await this.props.tripStore.addSoloTour(newTour);
 
     this.setState({
       newTripTitle: '',
@@ -109,7 +115,10 @@ export class CreateSoloTour extends Component {
           text: 'Do it now',
           onPress: () => {
             console.log('Do it now');
-            this.props.navigation.goBack();
+            this.props.mapStore.handleOpenMaps(
+              this.state.prevLandmarkSelection,
+            );
+            this.props.navigation.navigate('MyTrips');
           },
         },
         {

@@ -171,9 +171,14 @@ class TripStore {
   setTourDuration = duration => {
     this.tourDuration = duration;
   };
-  deleteTour = async tour => {
+  deleteSoloTour = async tour => {
     console.log(tour);
     await this.soloTripsDatabase.doc(tour.tourId).delete();
+    this.getAllUserTrips();
+  };
+  deletePartyTour = async tour => {
+    console.log(tour);
+    await this.partyTripsDatabase.doc(tour.tourId).delete();
     this.getAllUserTrips();
   };
 
@@ -207,8 +212,10 @@ decorate(TripStore, {
   userPartyTrips: observable,
   getTourCity: action,
   tourCity: observable,
-  deleteTour: action,
+  deleteSoloTour: action,
+  deletePartyTour: action,
   addSoloTour: action,
+  addPartyTour: action,
 });
 
 export default TripStore;

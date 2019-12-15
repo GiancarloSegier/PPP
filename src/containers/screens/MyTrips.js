@@ -48,7 +48,7 @@ export class MyTrips extends Component {
     this.setState({loading: false});
   };
 
-  onDeleteTour = (tour, type) => {
+  onDeleteSoloTour = tour => {
     Alert.alert(
       'Remove trip',
       'Are you sure you want to delete this trip?',
@@ -62,7 +62,7 @@ export class MyTrips extends Component {
           text: 'Delete trip',
           onPress: async () => {
             this.setState({deleteLoading: true});
-            await this.props.tripStore.deleteTour(tour);
+            await this.props.tripStore.deleteSoloTour(tour);
             this.setState({deleteLoading: false});
 
             // if (type === 'solo') {
@@ -77,8 +77,39 @@ export class MyTrips extends Component {
     );
   };
 
-  renderCarouselTrip = ({item}) => {
-    return <TripCard item={item} onDeleteTour={this.onDeleteTour} />;
+  onDeletePartyTour = tour => {
+    Alert.alert(
+      'Remove trip',
+      'Are you sure you want to delete this party?',
+      [
+        {
+          text: 'Cancel',
+          onPress: () => console.log('Cancel Pressed'),
+          style: 'cancel',
+        },
+        {
+          text: 'Delete trip',
+          onPress: async () => {
+            this.setState({deleteLoading: true});
+            await this.props.tripStore.deletePartyTour(tour);
+            this.setState({deleteLoading: false});
+
+            // if (type === 'solo') {
+            //   await this.props.tripStore.getUserSoloTrips(userId);
+            // } else {
+            //   await this.props.tripStore.getUserPartyTrips(userId);
+            // }
+          },
+        },
+      ],
+      {cancelable: false},
+    );
+  };
+  renderCarouselSoloTrip = ({item}) => {
+    return <TripCard item={item} onDeleteTour={this.onDeleteSoloTour} />;
+  };
+  renderCarouselPartyTrip = ({item}) => {
+    return <TripCard item={item} onDeleteTour={this.onDeletePartyTour} />;
   };
 
   render() {
@@ -115,11 +146,12 @@ export class MyTrips extends Component {
                       this._carousel = c;
                     }}
                     data={this.props.tripStore.userSoloTrips}
-                    renderItem={this.renderCarouselTrip}
+                    renderItem={this.renderCarouselSoloTrip}
                     sliderWidth={
                       Dimensions.get('screen').width +
                       Dimensions.get('screen').width * 0.02
                     }
+                    slideStyle={Platform.OS === 'android' ? {padding: 4} : null}
                     itemWidth={Dimensions.get('window').width * 0.8}
                   />
                 ) : (
@@ -142,7 +174,7 @@ export class MyTrips extends Component {
                       this._carousel = c;
                     }}
                     data={this.props.tripStore.userPartyTrips}
-                    renderItem={this.renderCarouselTrip}
+                    renderItem={this.renderCarouselPartyTrip}
                     sliderWidth={
                       Dimensions.get('screen').width +
                       Dimensions.get('screen').width * 0.02

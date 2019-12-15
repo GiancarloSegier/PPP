@@ -1,6 +1,7 @@
 import {action, observable, decorate, configure} from 'mobx';
 import Geolocation from 'react-native-geolocation-service';
 import Geocoder from 'react-native-geocoding';
+import {Linking} from 'react-native';
 
 // configure({enforceActions: 'observed'});
 
@@ -64,6 +65,37 @@ class MapStore {
     const key = `&key=${API}`;
     return `${url}${location}${typeData}${key}`;
   };
+
+  handleOpenMaps = landmarkSelection => {
+    const origin = this.userLocation;
+    const destination = landmarkSelection[0].coords;
+    const waypoints = [];
+
+    for (let i = 0; i < landmarkSelection.length; i++) {
+      const landmark = landmarkSelection[i];
+      console.log(landmark.coords.latitude);
+      let landmarkString;
+      if (i === 0) {
+        landmarkString = `${landmark.coords.latitude},${landmark.coords.longitude}`;
+      } else {
+        landmarkString = `@${landmark.coords.latitude},${landmark.coords.longitude}`;
+      }
+      waypoints.push(landmarkString);
+    }
+
+    const waypointsQuerry = waypoints.toString().replace(/,@/g, '%7C');
+
+    console.log(waypoints);
+    const googleUrl = `https://www.google.com/maps/dir/?api=1&origin=${origin.latitude},${origin.longitude}&waypoints=${waypointsQuerry}&destination=${destination.latitude},${destination.longitude}&dir_action=navigate&travelmode=walking`;
+
+    Linking.canOpenURL(googleUrl).then(supported => {
+      if (supported) {
+        Linking.openURL(googleUrl);
+      } else {
+        console.log("Don't know how to open URI: " + googleUrl);
+      }
+    });
+  };
 }
 
 decorate(MapStore, {
@@ -74,6 +106,7 @@ decorate(MapStore, {
   currentCity: observable,
   getUrlWithParameters: action,
   setCurrentCity: action,
+  handleOpenMaps: action,
 });
 
 export default MapStore;

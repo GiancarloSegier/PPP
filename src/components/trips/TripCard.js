@@ -30,7 +30,13 @@ const TripCard = ({item, onDeleteTour, type}) => {
             <Icon name="map-marker" size={18} color="#fff" /> {item.tourCity}
           </Text>
           <Text style={this.styles.tripDateAdded}>{item.dateAdded}</Text>
-          {onDeleteTour ? <Button title="delete" onPress={onDelete} /> : null}
+          {onDeleteTour ? (
+            <Button
+              buttonStyle={{backgroundColor: 'transparent', padding: 0}}
+              icon={<Icon name="trash" size={20} color="white" />}
+              onPress={onDelete}
+            />
+          ) : null}
         </View>
         <View style={this.styles.tripCardContent}>
           <Text style={this.styles.tripCardTitle}>

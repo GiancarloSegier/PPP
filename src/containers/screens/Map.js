@@ -223,9 +223,7 @@ export class Map extends Component {
   renderCarouselItem = ({item}) => {
     let placeImage;
     if (item.photos) {
-      placeImage = `https://maps.googleapis.com/maps/api/place/photo?maxwidth=200&photoreference=${
-        item.photos[0].photo_reference
-      }&key=${this.state.googleAPI}`;
+      placeImage = `https://maps.googleapis.com/maps/api/place/photo?maxwidth=200&photoreference=${item.photos[0].photo_reference}&key=${this.state.googleAPI}`;
     }
 
     return (
@@ -389,6 +387,7 @@ export class Map extends Component {
                   Dimensions.get('screen').width +
                   Dimensions.get('screen').width * 0.02
                 }
+                slideStyle={Platform.OS === 'android' ? {padding: 4} : null}
                 itemWidth={Dimensions.get('window').width * 0.8}
                 onSnapToItem={index =>
                   this.state.places.length > 0
