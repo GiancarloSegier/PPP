@@ -223,7 +223,9 @@ export class Map extends Component {
   renderCarouselItem = ({item}) => {
     let placeImage;
     if (item.photos) {
-      placeImage = `https://maps.googleapis.com/maps/api/place/photo?maxwidth=200&photoreference=${item.photos[0].photo_reference}&key=${this.state.googleAPI}`;
+      placeImage = `https://maps.googleapis.com/maps/api/place/photo?maxwidth=200&photoreference=${
+        item.photos[0].photo_reference
+      }&key=${this.state.googleAPI}`;
     }
 
     return (
@@ -305,7 +307,7 @@ export class Map extends Component {
                 {this.state.places.map((place, index) => {
                   return (
                     <Marker
-                      icon={GOOGLEPIN}
+                      icon={Platform.OS !== 'ios' ? GOOGLEPIN : null}
                       key={index}
                       ref={ref => (this.state.markers[index] = ref)}
                       coordinate={{

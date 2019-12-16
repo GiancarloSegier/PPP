@@ -202,17 +202,30 @@ class MapRoute extends Component {
                 return (
                   <Marker
                     icon={
+                      Platform.OS !== 'ios'
+                        ? index === 0
+                          ? googlepinStart
+                          : index === this.state.waypoints.length - 1
+                          ? googlePinFinish
+                          : googlepin
+                        : null
+                    }
+                    pinColor={
                       index === 0
-                        ? googlepinStart
+                        ? 'green'
                         : index === this.state.waypoints.length - 1
-                        ? googlePinFinish
-                        : googlepin
+                        ? 'red'
+                        : 'blue'
                     }
                     key={index}
-                    coordinate={{
-                      latitude: landmark.latitude,
-                      longitude: landmark.longitude,
-                    }}>
+                    coordinate={
+                      landmark.latitude
+                        ? {
+                            latitude: landmark.latitude,
+                            longitude: landmark.longitude,
+                          }
+                        : null
+                    }>
                     <Callout tooltip style={this.styles.calloutContainer}>
                       <View>
                         {index === this.state.waypoints.length - 1 ? (
@@ -235,7 +248,8 @@ class MapRoute extends Component {
           {!this.props.waypoints ? (
             <>
               <Marker
-                icon={googlepin}
+                icon={Platform.OS !== 'ios' ? googlepin : null}
+                pinColor={'red'}
                 key={'start'}
                 coordinate={this.state.origin}>
                 <Callout tooltip style={this.styles.calloutContainer}>
@@ -245,12 +259,17 @@ class MapRoute extends Component {
                 </Callout>
               </Marker>
               <Marker
-                icon={googlePinFinish}
+                icon={Platform.OS !== 'ios' ? googlePinFinish : null}
+                pinColor={'red'}
                 key={'finish'}
-                coordinate={{
-                  latitude: this.state.destinationLocation.latitude,
-                  longitude: this.state.destinationLocation.longitude,
-                }}>
+                coordinate={
+                  this.state.destinationLocation.latitude
+                    ? {
+                        latitude: this.state.destinationLocation.latitude,
+                        longitude: this.state.destinationLocation.longitude,
+                      }
+                    : null
+                }>
                 <Callout tooltip style={this.styles.calloutContainer}>
                   <View>
                     <Text style={this.styles.calloutText}>

@@ -26,7 +26,7 @@
    [[FBSDKApplicationDelegate sharedInstance] application:application
     didFinishLaunchingWithOptions:launchOptions];
 
-    [GMSServices provideAPIKey:@"AIzaSyCPn8IKX986Xj8vyPzVhFDhUg6U7_SGnz4"];
+    [GMSServices provideAPIKey:@"AIzaSyBKHOKyghn31QDS5h7Eomcuvc7H1PWhzbQ"];
 
 
   RCTBridge *bridge = [[RCTBridge alloc] initWithDelegate:self launchOptions:launchOptions];

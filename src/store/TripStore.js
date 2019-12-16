@@ -9,9 +9,9 @@ class TripStore {
   userPartyTrips = [];
   tourDistance;
   tourDuration;
-  googleAPI = 'AIzaSyBLSLqH_qXkSrU5qK1M71zmWU3gpjs8C4g';
+  googleAPI = 'AIzaSyBKHOKyghn31QDS5h7Eomcuvc7H1PWhzbQ';
   tourCity = '';
-  userId = auth().currentUser.uid;
+  // userId = auth().currentUser.uid;
   constructor(rootStore) {
     this.rootStore = rootStore;
     this.soloTripsDatabase = firestore().collection('soloTrips');

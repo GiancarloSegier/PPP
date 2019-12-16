@@ -98,7 +98,7 @@ export class Home extends Component {
     const url = await this.props.mapStore.getUrlWithParameters(
       this.props.mapStore.userLocation.latitude,
       this.props.mapStore.userLocation.longitude,
-      1000,
+      10,
       'tourist_attraction',
       this.state.googleAPI,
     );
@@ -115,33 +115,6 @@ export class Home extends Component {
         });
       });
 
-    if (places.length > 5) {
-      this.setState({nearbyPlaces: places});
-    } else {
-      this.getAllPlaces();
-    }
-  };
-
-  getAllPlaces = async () => {
-    const url = await this.props.mapStore.getUrlWithParameters(
-      this.props.mapStore.userLocation.latitude,
-      this.props.mapStore.userLocation.longitude,
-      3000,
-      'tourist_attraction',
-      this.state.googleAPI,
-    );
-
-    const places = [];
-
-    await fetch(url)
-      .then(data => data.json())
-      .then(respons => {
-        respons.results.map(place => {
-          if (place.photos) {
-            places.push(place);
-          }
-        });
-      });
     this.setState({nearbyPlaces: places});
   };
 

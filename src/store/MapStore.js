@@ -10,7 +10,7 @@ class MapStore {
   longitude;
   userLocation = {};
   currentCity = null;
-  googleAPI = 'AIzaSyBLSLqH_qXkSrU5qK1M71zmWU3gpjs8C4g';
+  googleAPI = 'AIzaSyBKHOKyghn31QDS5h7Eomcuvc7H1PWhzbQ';
   constructor(rootStore) {
     this.rootStore = rootStore;
     Geocoder.init(this.googleAPI), {language: 'en'};
@@ -76,9 +76,13 @@ class MapStore {
       console.log(landmark.coords.latitude);
       let landmarkString;
       if (i === 0) {
-        landmarkString = `${landmark.coords.latitude},${landmark.coords.longitude}`;
+        landmarkString = `${landmark.coords.latitude},${
+          landmark.coords.longitude
+        }`;
       } else {
-        landmarkString = `@${landmark.coords.latitude},${landmark.coords.longitude}`;
+        landmarkString = `@${landmark.coords.latitude},${
+          landmark.coords.longitude
+        }`;
       }
       waypoints.push(landmarkString);
     }
@@ -86,7 +90,11 @@ class MapStore {
     const waypointsQuerry = waypoints.toString().replace(/,@/g, '%7C');
 
     console.log(waypoints);
-    const googleUrl = `https://www.google.com/maps/dir/?api=1&origin=${origin.latitude},${origin.longitude}&waypoints=${waypointsQuerry}&destination=${destination.latitude},${destination.longitude}&dir_action=navigate&travelmode=walking`;
+    const googleUrl = `https://www.google.com/maps/dir/?api=1&origin=${
+      origin.latitude
+    },${origin.longitude}&waypoints=${waypointsQuerry}&destination=${
+      destination.latitude
+    },${destination.longitude}&dir_action=navigate&travelmode=walking`;
 
     Linking.canOpenURL(googleUrl).then(supported => {
       if (supported) {
