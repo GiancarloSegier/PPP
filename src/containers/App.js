@@ -48,11 +48,14 @@ const requestCameraPermission = async () => {
   }
 };
 let headerHeight;
+let paddingTop;
 
 if (Platform.OS === 'ios') {
   headerHeight = 50;
+  paddingTop = 0;
 } else {
   headerHeight = 70;
+  paddingTop = 16;
 }
 
 const AppStack = createStackNavigator(
@@ -69,10 +72,14 @@ const AppStack = createStackNavigator(
         elevation: 0,
         shadowOpacity: 0,
         height: headerHeight,
+        paddingTop: paddingTop,
       },
+      headerBackTitleStyle: {color: '#fff', alignSelf: 'center'},
       headerTintColor: '#fff',
       headerTitleContainerStyle: {
-        left: 0, // THIS RIGHT HERE
+        width: '100%',
+        left: 0,
+        alignContent: 'center',
         color: 'white',
       },
 
@@ -89,15 +96,10 @@ const AppStack = createStackNavigator(
               Platform.OS === 'ios'
                 ? {
                     height: 24,
-                    marginLeft: 'auto',
-                    marginRight: 'auto',
-                    marginBottom: 16,
                   }
                 : {
                     height: 24,
-                    marginLeft: 'auto',
-                    marginRight: 'auto',
-                    marginBottom: -16,
+                    paddingBottom: -16,
                   }
             }
             source={require('../assets/logo.png')}
