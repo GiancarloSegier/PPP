@@ -1,5 +1,13 @@
 import React, {Component} from 'react';
-import {View, Text, Platform, Image, ScrollView, Alert} from 'react-native';
+import {
+  View,
+  Text,
+  Platform,
+  Image,
+  ScrollView,
+  Alert,
+  Dimensions,
+} from 'react-native';
 
 import androidUI from '../../styles/ui.android.style.js';
 import iosUI from '../../styles/ui.ios.style.js';
@@ -59,9 +67,7 @@ class SelectionOverlay extends Component {
   onRemoveLandmark = landmark => {
     Alert.alert(
       'Remove landmark',
-      `Are you sure you want to remove ${
-        landmark.placeName
-      } out of your selection?`,
+      `Are you sure you want to remove ${landmark.placeName} out of your selection?`,
       [
         {
           text: 'Cancel',
@@ -77,9 +83,7 @@ class SelectionOverlay extends Component {
   onPressRemoveAll() {
     Alert.alert(
       'Remove all landmarks',
-      `Are you sure you want to remove ${
-        this.state.landmarkSelection.length
-      } landmarks out of your selection?`,
+      `Are you sure you want to remove ${this.state.landmarkSelection.length} landmarks out of your selection?`,
       [
         {
           text: 'Cancel',
@@ -139,7 +143,10 @@ class SelectionOverlay extends Component {
             </View>
           </View>
 
-          <ScrollView style={{flex: 1, marginHorizontal: 24}}>
+          <ScrollView
+            style={{
+              marginHorizontal: 24,
+            }}>
             {this.state.landmarkSelection.map((landmark, index) => {
               return (
                 <View
@@ -167,52 +174,51 @@ class SelectionOverlay extends Component {
               </Text>
             ) : null}
           </ScrollView>
-          <View
-            style={
-              this.state.loading || this.state.landmarkSelection.length < 2
-                ? null
-                : {height: 290}
-            }>
-            <View
-              style={{position: 'absolute', bottom: 0, width: '100%', flex: 1}}>
-              {this.state.loading ||
-              this.state.landmarkSelection.length < 2 ? null : (
+          <View>
+            {this.state.loading ||
+            this.state.landmarkSelection.length < 2 ? null : (
+              <View style={{marginBottom: 60}}>
                 <MapRoute
                   waypoints={true}
                   landmarkSelection={this.state.landmarkSelection}
                   origin={this.state.originLocation}
                   destinationLocation={this.state.destinationLocation}
                 />
-              )}
-              {this.props.createTour === true ? (
-                <Button
-                  title="Add landmarks"
-                  onPress={() => {
-                    this.props.onHideSelection(this.removeAll);
-                    this.props.navigation.navigate('Map');
-                  }}
-                  containerStyle={{flex: 1}}
-                  style={{flex: 1}}
-                  buttonStyle={this.styles.bigButton}
-                  titleStyle={this.styles.primaryFormButtonTitle}
-                />
-              ) : (
-                <Button
-                  title="Create my trip"
-                  onPress={() => {
-                    this.props.onHideSelection(this.removeAll);
-                    this.props.navigation.navigate('CreateRouteScreen');
-                  }}
-                  disabled={
-                    this.state.landmarkSelection.length < 2 ? true : false
-                  }
-                  containerStyle={{flex: 1}}
-                  style={{flex: 1}}
-                  buttonStyle={this.styles.bigButton}
-                  titleStyle={this.styles.primaryFormButtonTitle}
-                />
-              )}
-            </View>
+              </View>
+            )}
+            {this.props.createTour === true ? (
+              <Button
+                title="Add landmarks"
+                onPress={() => {
+                  this.props.onHideSelection(this.removeAll);
+                  this.props.navigation.navigate('Map');
+                }}
+                containerStyle={{flex: 1}}
+                style={{flex: 1}}
+                buttonStyle={this.styles.bigButton}
+                titleStyle={this.styles.primaryFormButtonTitle}
+              />
+            ) : (
+              <Button
+                title="Create my trip"
+                onPress={() => {
+                  this.props.onHideSelection(this.removeAll);
+                  this.props.navigation.navigate('CreateRouteScreen');
+                }}
+                disabled={
+                  this.state.landmarkSelection.length < 2 ? true : false
+                }
+                containerStyle={{
+                  bottom: 0,
+                  position: 'absolute',
+                  width: '100%',
+                  marginTop: 60,
+                }}
+                style={{flex: 1}}
+                buttonStyle={this.styles.bigButton}
+                titleStyle={this.styles.primaryFormButtonTitle}
+              />
+            )}
           </View>
         </>
       </Overlay>

@@ -160,19 +160,7 @@ export class CreatePartyTour extends Component {
       "You're party has been created and saved!",
       [
         {
-          text: 'Do it now',
-          onPress: () => {
-            console.log('Do it now');
-            this.props.mapStore.handleOpenMaps(
-              this.state.prevLandmarkSelection,
-            );
-            this.props.navigation.navigate('TripInfoScreen', {
-              trip: this.state.thisTour,
-            });
-          },
-        },
-        {
-          text: 'Do it later',
+          text: 'Okay!',
           onPress: () => {
             console.log('Do it later');
             this.props.navigation.navigate('TripInfoScreen', {

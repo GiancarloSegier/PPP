@@ -117,7 +117,7 @@ class MapRoute extends Component {
     return (
       <>
         {this.state.landmarkSelection ? (
-          <View style={{paddingHorizontal: 8, marginTop: -16}}>
+          <View>
             <View style={this.styles.tripCardContent}>
               <View style={this.styles.tripInfo}>
                 <View style={this.styles.tripInfoBlock}>

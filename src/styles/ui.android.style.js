@@ -495,7 +495,11 @@ export default StyleSheet.create({
     alignItems: 'baseline',
   },
   tripCardContent: {
+    backgroundColor: colors.white,
     padding: 16,
+    borderTopWidth: 2,
+    borderColor: colors.darkWhite,
+    marginBottom: 16,
   },
   tripCity: {
     color: colors.white,
@@ -516,11 +520,8 @@ export default StyleSheet.create({
   tripInfo: {
     flexDirection: 'row',
     justifyContent: 'space-between',
-    borderTopWidth: 2,
-    borderColor: colors.darkWhite,
   },
   tripInfoBlock: {
-    marginTop: 16,
     padding: 8,
     borderRightColor: colors.darkWhite,
     borderRightWidth: 2,
@@ -534,7 +535,7 @@ export default StyleSheet.create({
   tripInfoTitle: {
     fontWeight: 'bold',
     color: colors.blue,
-    fontSize: 28,
+    fontSize: 24,
   },
   infoParam: {
     fontSize: 10,
