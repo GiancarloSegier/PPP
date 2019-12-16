@@ -102,7 +102,7 @@ export class Home extends Component {
     const url = await this.props.mapStore.getUrlWithParameters(
       this.props.mapStore.userLocation.latitude,
       this.props.mapStore.userLocation.longitude,
-      10,
+      2000,
       'tourist_attraction',
       this.state.googleAPI,
     );
@@ -151,7 +151,7 @@ export class Home extends Component {
     const url = await this.props.mapStore.getUrlWithParameters(
       this.props.mapStore.userLocation.latitude,
       this.props.mapStore.userLocation.longitude,
-      1000,
+      2000,
       '',
       this.state.googleAPI,
     );
@@ -159,15 +159,13 @@ export class Home extends Component {
     await fetch(url)
       .then(data => data.json())
       .then(respons => {
-        const maxWidth = Dimensions.get('screen').width;
-
         if (
           this.state.currentCity !== '' &&
           respons.results[0].photos[0].photo_reference
         ) {
           const cityImageReference =
             respons.results[0].photos[0].photo_reference;
-          const cityImageUrl = `https://maps.googleapis.com/maps/api/place/photo?maxwidth=${maxWidth}&photoreference=${cityImageReference}&key=${this.state.googleAPI}`;
+          const cityImageUrl = `https://maps.googleapis.com/maps/api/place/photo?maxwidth=1200&photoreference=${cityImageReference}&key=${this.state.googleAPI}`;
 
           this.setState({
             cityImage: cityImageUrl,
@@ -200,8 +198,7 @@ export class Home extends Component {
 
   renderCarouselPlace = ({item}) => {
     if (item.photos[0].photo_reference) {
-      const maxWidth = 500;
-      this.placeImage = `https://maps.googleapis.com/maps/api/place/photo?maxwidth=${maxWidth}&photoreference=${item.photos[0].photo_reference}&key=${this.state.googleAPI}`;
+      this.placeImage = `https://maps.googleapis.com/maps/api/place/photo?maxwidth=1200&photoreference=${item.photos[0].photo_reference}&key=${this.state.googleAPI}`;
     }
     return (
       <TouchableHighlight
@@ -294,7 +291,7 @@ export class Home extends Component {
           <View style={this.styles.marginBottom}>
             {this.state.nearbyPlaces.length > 0 ? (
               <>
-                <View style={this.styles.container}>
+                <View style={[this.styles.container, this.styles.tripTypes]}>
                   <Text style={this.styles.heading2}>Nearby places:</Text>
                 </View>
                 <Carousel
@@ -318,20 +315,19 @@ export class Home extends Component {
                 <Text style={this.styles.heading2}>
                   Not so much to do here...
                 </Text>
+
+                <Button
+                  buttonStyle={this.styles.primaryFormButton}
+                  titleStyle={this.styles.primaryFormButtonTitle}
+                  onPress={() => this.props.navigation.navigate('Map')}
+                  title={
+                    this.state.nearbyPlaces > 0
+                      ? 'See all nearby places'
+                      : 'Look for nearby places'
+                  }
+                />
               </View>
             )}
-            <View style={this.styles.container}>
-              <Button
-                buttonStyle={this.styles.primaryFormButton}
-                titleStyle={this.styles.primaryFormButtonTitle}
-                onPress={() => this.props.navigation.navigate('Map')}
-                title={
-                  this.state.nearbyPlaces > 0
-                    ? 'See all nearby places'
-                    : 'Look for nearby places'
-                }
-              />
-            </View>
           </View>
           <View style={this.styles.marginBottom}>
             <View style={[this.styles.container, this.styles.blueBox]}>

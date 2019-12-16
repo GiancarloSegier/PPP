@@ -47,6 +47,13 @@ const requestCameraPermission = async () => {
     console.warn(err);
   }
 };
+let headerHeight;
+
+if (Platform.OS === 'ios') {
+  headerHeight = 50;
+} else {
+  headerHeight = 70;
+}
 
 const AppStack = createStackNavigator(
   {
@@ -61,26 +68,38 @@ const AppStack = createStackNavigator(
         backgroundColor: '#182ac1',
         elevation: 0,
         shadowOpacity: 0,
-        height: 60,
+        height: headerHeight,
       },
+      headerTintColor: '#fff',
       headerTitleContainerStyle: {
         left: 0, // THIS RIGHT HERE
+        color: 'white',
       },
 
       headerTitle: (
         <View>
           <StatusBar
-            backgroundColor="transparent"
+            backgroundColor="#182ac1"
             translucent
             barStyle="light-content"
           />
           <Image
             resizeMode="contain"
-            style={{
-              height: 24,
-              marginLeft: 'auto',
-              marginRight: 'auto',
-            }}
+            style={
+              Platform.OS === 'ios'
+                ? {
+                    height: 24,
+                    marginLeft: 'auto',
+                    marginRight: 'auto',
+                    marginBottom: 16,
+                  }
+                : {
+                    height: 24,
+                    marginLeft: 'auto',
+                    marginRight: 'auto',
+                    marginBottom: -16,
+                  }
+            }
             source={require('../assets/logo.png')}
           />
         </View>

@@ -22,7 +22,6 @@ import iosUI from '../../styles/ui.ios.style.js';
 import auth from '@react-native-firebase/auth';
 import {inject, observer} from 'mobx-react';
 import TripCard from '../../components/trips/TripCard.js';
-const userId = auth().currentUser.uid;
 
 export class MyTrips extends Component {
   constructor(props) {
@@ -34,15 +33,17 @@ export class MyTrips extends Component {
     }
 
     this.state = {
+      userId: auth().currentUser.uid,
       loading: true,
       deleteLoading: false,
       refreshing: false,
     };
+    console.log(this.state.userId);
   }
 
   async componentDidMount() {
-    await this.props.tripStore.getUserSoloTrips(userId);
-    await this.props.tripStore.getUserPartyTrips(userId);
+    await this.props.tripStore.getUserSoloTrips(this.state.userId);
+    await this.props.tripStore.getUserPartyTrips(this.state.userId);
     this.checkLoading();
   }
 
@@ -66,12 +67,6 @@ export class MyTrips extends Component {
             this.setState({deleteLoading: true});
             await this.props.tripStore.deleteSoloTour(tour);
             this.setState({deleteLoading: false});
-
-            // if (type === 'solo') {
-            //   await this.props.tripStore.getUserSoloTrips(userId);
-            // } else {
-            //   await this.props.tripStore.getUserPartyTrips(userId);
-            // }
           },
         },
       ],
@@ -95,12 +90,6 @@ export class MyTrips extends Component {
             this.setState({deleteLoading: true});
             await this.props.tripStore.deletePartyTour(tour);
             this.setState({deleteLoading: false});
-
-            // if (type === 'solo') {
-            //   await this.props.tripStore.getUserSoloTrips(userId);
-            // } else {
-            //   await this.props.tripStore.getUserPartyTrips(userId);
-            // }
           },
         },
       ],
@@ -118,8 +107,8 @@ export class MyTrips extends Component {
     });
     //timeout to simulate loading
     setTimeout(async () => {
-      await this.props.tripStore.getUserSoloTrips(userId);
-      await this.props.tripStore.getUserPartyTrips(userId);
+      await this.props.tripStore.getUserSoloTrips(this.state.userId);
+      await this.props.tripStore.getUserPartyTrips(this.state.userId);
       this.setState({
         refreshing: false,
         pageNo: 1,

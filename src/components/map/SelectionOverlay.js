@@ -59,7 +59,9 @@ class SelectionOverlay extends Component {
   onRemoveLandmark = landmark => {
     Alert.alert(
       'Remove landmark',
-      `Are you sure you want to remove ${landmark.placeName} out of your selection?`,
+      `Are you sure you want to remove ${
+        landmark.placeName
+      } out of your selection?`,
       [
         {
           text: 'Cancel',
@@ -75,7 +77,9 @@ class SelectionOverlay extends Component {
   onPressRemoveAll() {
     Alert.alert(
       'Remove all landmarks',
-      `Are you sure you want to remove ${this.state.landmarkSelection.length} landmarks out of your selection?`,
+      `Are you sure you want to remove ${
+        this.state.landmarkSelection.length
+      } landmarks out of your selection?`,
       [
         {
           text: 'Cancel',
@@ -138,7 +142,13 @@ class SelectionOverlay extends Component {
           <ScrollView style={{flex: 1, marginHorizontal: 24}}>
             {this.state.landmarkSelection.map((landmark, index) => {
               return (
-                <View key={index} style={this.styles.landmarkListItem}>
+                <View
+                  key={index}
+                  style={
+                    index === this.state.landmarkSelection.length - 1
+                      ? [this.styles.landmarkListItemLast]
+                      : [this.styles.landmarkListItem]
+                  }>
                   <Text style={{maxWidth: '85%'}}>{landmark.placeName}</Text>
                   <Button
                     buttonStyle={{
@@ -157,7 +167,12 @@ class SelectionOverlay extends Component {
               </Text>
             ) : null}
           </ScrollView>
-          <View style={{height: 290}}>
+          <View
+            style={
+              this.state.loading || this.state.landmarkSelection.length < 2
+                ? null
+                : {height: 290}
+            }>
             <View
               style={{position: 'absolute', bottom: 0, width: '100%', flex: 1}}>
               {this.state.loading ||

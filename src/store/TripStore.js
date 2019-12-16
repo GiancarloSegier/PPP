@@ -165,22 +165,24 @@ class TripStore {
       .orderBy('startDate')
       .orderBy('startTime');
 
-    this.unsubscribeAllTrips = timePartyTrips.onSnapshot(querySnapshots => {
-      querySnapshots.forEach(doc => {
-        this.userPartyTrips.push({
-          tourId: doc.id,
-          tripTitle: doc.data().tripTitle,
-          dateAdded: doc.data().dateAdded,
-          landmarks: doc.data().landmarks,
-          distance: doc.data().distance,
-          duration: doc.data().duration,
-          tourCity: doc.data().tourCity,
-          userId: doc.data().userId,
-          startDate: doc.data().startDate,
-          startTime: doc.data().startTime,
+    this.unsubscribeAllTrips = fetchedUserPartyTrips.onSnapshot(
+      querySnapshots => {
+        querySnapshots.forEach(doc => {
+          this.userPartyTrips.push({
+            tourId: doc.id,
+            tripTitle: doc.data().tripTitle,
+            dateAdded: doc.data().dateAdded,
+            landmarks: doc.data().landmarks,
+            distance: doc.data().distance,
+            duration: doc.data().duration,
+            tourCity: doc.data().tourCity,
+            userId: doc.data().userId,
+            startDate: doc.data().startDate,
+            startTime: doc.data().startTime,
+          });
         });
-      });
-    });
+      },
+    );
   };
 
   addToSelection = landmark => {
