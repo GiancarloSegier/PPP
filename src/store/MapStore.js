@@ -3,6 +3,8 @@ import Geolocation from 'react-native-geolocation-service';
 import Geocoder from 'react-native-geocoding';
 import {Linking} from 'react-native';
 
+import config from '../../config.js';
+
 // configure({enforceActions: 'observed'});
 
 class MapStore {
@@ -10,7 +12,7 @@ class MapStore {
   longitude;
   userLocation = {};
   currentCity = null;
-  googleAPI = 'AIzaSyBKHOKyghn31QDS5h7Eomcuvc7H1PWhzbQ';
+  googleAPI = config.GOOGLEAPI;
   constructor(rootStore) {
     this.rootStore = rootStore;
     Geocoder.init(this.googleAPI), {language: 'en'};
@@ -76,13 +78,9 @@ class MapStore {
       console.log(landmark.coords.latitude);
       let landmarkString;
       if (i === 0) {
-        landmarkString = `${landmark.coords.latitude},${
-          landmark.coords.longitude
-        }`;
+        landmarkString = `${landmark.coords.latitude},${landmark.coords.longitude}`;
       } else {
-        landmarkString = `@${landmark.coords.latitude},${
-          landmark.coords.longitude
-        }`;
+        landmarkString = `@${landmark.coords.latitude},${landmark.coords.longitude}`;
       }
       waypoints.push(landmarkString);
     }
@@ -90,11 +88,7 @@ class MapStore {
     const waypointsQuerry = waypoints.toString().replace(/,@/g, '%7C');
 
     console.log(waypoints);
-    const googleUrl = `https://www.google.com/maps/dir/?api=1&origin=${
-      origin.latitude
-    },${origin.longitude}&waypoints=${waypointsQuerry}&destination=${
-      destination.latitude
-    },${destination.longitude}&dir_action=navigate&travelmode=walking`;
+    const googleUrl = `https://www.google.com/maps/dir/?api=1&origin=${origin.latitude},${origin.longitude}&waypoints=${waypointsQuerry}&destination=${destination.latitude},${destination.longitude}&dir_action=navigate&travelmode=walking`;
 
     Linking.canOpenURL(googleUrl).then(supported => {
       if (supported) {

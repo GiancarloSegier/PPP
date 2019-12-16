@@ -2,6 +2,7 @@ import {action, observable, decorate} from 'mobx';
 import firestore from '@react-native-firebase/firestore';
 import auth from '@react-native-firebase/auth';
 import Geocoder from 'react-native-geocoding';
+import config from '../../config.js';
 class TripStore {
   landmarkSelection = [];
   userSoloTrips = [];
@@ -10,7 +11,7 @@ class TripStore {
   cityPartyTrips = [];
   tourDistance;
   tourDuration;
-  googleAPI = 'AIzaSyBKHOKyghn31QDS5h7Eomcuvc7H1PWhzbQ';
+  googleAPI = config.GOOGLEAPI;
   tourCity = '';
   userId = auth().currentUser.uid;
   constructor(rootStore) {

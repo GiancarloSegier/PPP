@@ -1,10 +1,10 @@
 import React, {Component} from 'react';
 import {Platform} from 'react-native';
 import Scan from '../../components/scanner/Scan';
-import config from '../../../config.json';
 import androidUI from '../../styles/ui.android.style.js';
 import iosUI from '../../styles/ui.ios.style.js';
 import {withNavigationFocus} from 'react-navigation';
+import config from '../../../config.js';
 class CameraContainer extends Component {
   constructor(props) {
     super(props);
@@ -43,7 +43,8 @@ class CameraContainer extends Component {
   };
   callGoogleVIsionApi = async base64 => {
     let googleVisionRes = await fetch(
-      config.googleCloud.api + config.googleCloud.apiKey,
+      'https://vision.googleapis.com/v1/images:annotate?key=' +
+        config.GOOGLEAPI,
       {
         method: 'POST',
         body: JSON.stringify({
