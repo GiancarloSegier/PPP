@@ -132,11 +132,15 @@ class MapRoute extends Component {
                 </View>
                 <View style={this.styles.tripInfoBlock}>
                   <Text style={this.styles.tripInfoTitle}>
-                    {this.hours > 0
+                    {this.state.hours > 0 && this.state.minutes < 10
+                      ? this.state.hours + 'u' + '0' + this.state.minutes
+                      : this.state.hours > 0 && this.state.minutes > 10
                       ? this.state.hours + 'u' + this.state.minutes
                       : this.state.minutes}
                   </Text>
-                  <Text style={this.styles.infoParam}>min walk</Text>
+                  <Text style={this.styles.infoParam}>
+                    {this.state.hours > 0 ? 'walk' : 'min walk'}
+                  </Text>
                 </View>
 
                 <View
