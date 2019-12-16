@@ -105,8 +105,13 @@ class TripStore {
       '==',
       city,
     );
+    const currentDateTrips = fetchedCityPartyTrips.where(
+      'startDate',
+      '==',
+      `${this.day}/${this.month}/${this.year}`,
+    );
 
-    const timePartyTrips = fetchedCityPartyTrips.where('startTime', '>', time);
+    const timePartyTrips = currentDateTrips.where('startTime', '>', time);
 
     this.unsubscribeAllTrips = timePartyTrips.onSnapshot(querySnapshots => {
       querySnapshots.forEach(doc => {
