@@ -15,7 +15,7 @@ export default StyleSheet.create({
     marginTop: 24,
   },
   marginBottom: {
-    marginBottom: 32,
+    marginBottom: 24,
   },
   margin: {
     marginVertical: 24,
@@ -70,8 +70,8 @@ export default StyleSheet.create({
   body: {
     fontSize: 16,
     color: colors.grey,
-    marginBottom: 16,
-    lineHeight: 24,
+    marginBottom: 10,
+    lineHeight: 22,
   },
 
   // LoginScreen

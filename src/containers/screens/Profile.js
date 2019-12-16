@@ -53,7 +53,7 @@ class Profile extends Component {
   render() {
     return (
       <>
-        <View style={[this.styles.container, {height: '100%'}]}>
+        <View style={[this.styles.container, {flex: 1}]}>
           <View style={{flex: 1}}>
             <View style={this.styles.marginBottom}>
               <Text style={this.styles.title}>Goodday,</Text>
