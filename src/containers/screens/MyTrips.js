@@ -106,10 +106,22 @@ export class MyTrips extends Component {
     );
   };
   renderCarouselSoloTrip = ({item}) => {
-    return <TripCard item={item} onDeleteTour={this.onDeleteSoloTour} />;
+    return (
+      <TripCard
+        item={item}
+        onDeleteTour={this.onDeleteSoloTour}
+        navigation={this.props.navigation}
+      />
+    );
   };
   renderCarouselPartyTrip = ({item}) => {
-    return <TripCard item={item} onDeleteTour={this.onDeletePartyTour} />;
+    return (
+      <TripCard
+        item={item}
+        onDeleteTour={this.onDeletePartyTour}
+        navigation={this.props.navigation}
+      />
+    );
   };
 
   render() {

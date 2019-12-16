@@ -7,7 +7,7 @@ import androidUI from '../../styles/ui.android.style.js';
 import iosUI from '../../styles/ui.ios.style.js';
 import {Button} from 'react-native-elements';
 
-const TripCard = ({item, onDeleteTour, type}) => {
+const TripCard = ({item, onDeleteTour, type, navigation}) => {
   if (Platform.OS === 'ios') {
     this.styles = iosUI;
   } else {
@@ -20,10 +20,16 @@ const TripCard = ({item, onDeleteTour, type}) => {
     onDeleteTour(item, type);
   };
 
+  const onPressTrip = item => {
+    navigation.navigate('TripInfoScreen', {
+      trip: item,
+    });
+  };
+
   return (
     <TouchableHighlight
       style={this.styles.carouselCardTouchableHighlight}
-      onPress={() => this.onPressPlace(item)}>
+      onPress={() => onPressTrip(item)}>
       <View style={this.styles.carouselTripCard}>
         <View style={this.styles.tripCardHeading}>
           <Text style={this.styles.tripCity}>

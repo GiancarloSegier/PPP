@@ -17,6 +17,7 @@ import {
 } from 'react-native';
 import CreateTripScreen from './screens/Trips/CreateTripScreen.js';
 import InfoScreen from './screens/InfoScreen.js';
+import TripInfoScreen from './screens/Trips/TripInfoScreen.js';
 
 const requestLocationPermission = async () => {
   try {
@@ -52,6 +53,7 @@ const AppStack = createStackNavigator(
     StartScreen: TabNavigator,
     CreateRouteScreen: CreateTripScreen,
     InfoScreen: InfoScreen,
+    TripInfoScreen: TripInfoScreen,
   },
   {
     defaultNavigationOptions: {

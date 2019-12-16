@@ -266,7 +266,7 @@ export class Home extends Component {
   };
 
   renderCarouselTrip = ({item}) => {
-    return <TripCard item={item} />;
+    return <TripCard item={item} navigation={this.props.navigation} />;
   };
 
   render() {
