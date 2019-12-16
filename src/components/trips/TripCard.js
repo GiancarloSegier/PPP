@@ -71,7 +71,9 @@ const TripCard = ({item, onDeleteTour, type, navigation}) => {
             </View>
             <View style={this.styles.tripInfoBlock}>
               <Text style={this.styles.tripInfoTitle}>
-                {this.hours > 0
+                {this.hours > 0 && this.minutes < 10
+                  ? this.hours + 'u' + '0' + this.minutes
+                  : this.hours > 0 && this.minutes > 10
                   ? this.hours + 'u' + this.minutes
                   : this.minutes}
               </Text>
