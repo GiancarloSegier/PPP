@@ -13,15 +13,10 @@ class TripStore {
   tourDuration;
   googleAPI = config.GOOGLEAPI;
   tourCity = '';
-  userId = auth().currentUser.uid;
   constructor(rootStore) {
     this.rootStore = rootStore;
     this.soloTripsDatabase = firestore().collection('soloTrips');
     this.partyTripsDatabase = firestore().collection('partyTrips');
-  }
-
-  componentDidMount() {
-    // this.getAllUserTrips();
   }
 
   getAllUserTrips = () => {

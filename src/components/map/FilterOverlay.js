@@ -94,7 +94,7 @@ class FilterOverlay extends Component {
         animationType="fade"
         overlayStyle={[
           this.styles.overlayContainer,
-          {height: 'auto', minHeight: '70%'},
+          {height: 'auto', minHeight: '75%'},
         ]}>
         <>
           <View style={[this.styles.container]}>
