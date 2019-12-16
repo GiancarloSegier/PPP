@@ -468,10 +468,17 @@ export default StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
-    padding: 4,
+    paddingVertical: 8,
     paddingRight: 0,
     borderBottomColor: colors.darkWhite,
     borderBottomWidth: 2,
+  },
+  landmarkListItemLast: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    paddingVertical: 8,
+    paddingRight: 0,
   },
   carouselTripCard: {
     backgroundColor: colors.white,
@@ -527,7 +534,7 @@ export default StyleSheet.create({
   tripInfoTitle: {
     fontWeight: 'bold',
     color: colors.blue,
-    fontSize: 24,
+    fontSize: 28,
   },
   infoParam: {
     fontSize: 10,
@@ -540,10 +547,8 @@ export default StyleSheet.create({
     marginRight: 0,
     width: '100%',
     height: 60,
-    marginBottom: 0,
     backgroundColor: '#eee',
   },
-
   startDateTime: {
     fontSize: 14,
     fontWeight: 'bold',
@@ -553,14 +558,19 @@ export default StyleSheet.create({
     borderRadius: 8,
     color: colors.navy,
     padding: 8,
-    lineHeight: 20,
-
-    paddingHorizontal: 12,
+    paddingHorizontal: 16,
+    lineHeight: 16,
   },
   tripTypes: {
     flexDirection: 'row',
     alignItems: 'baseline',
     justifyContent: 'space-between',
     marginBottom: -32,
+  },
+  partyInfo: {
+    color: 'blue',
+    fontWeight: 'bold',
+    fontSize: 16,
+    marginTop: 6,
   },
 });

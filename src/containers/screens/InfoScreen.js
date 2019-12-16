@@ -27,17 +27,26 @@ export class InfoScreen extends Component {
     }
 
     const data = props.navigation.state.params;
+    if (data.place.coords) {
+      this.placeLocation = {
+        latitude: data.place.coords.latitude,
+        longitude: data.place.coords.longitude,
+      };
+    } else {
+      this.placeLocation = {
+        latitude: data.place.geometry.location.lat,
+        longitude: data.place.geometry.location.lng,
+      };
+    }
 
     this.state = {
       googleAPI: this.props.mapStore.googleAPI,
       place: data.place,
       placeName: data.placeName,
-      location: {
-        latitude: data.place.geometry.location.lat,
-        longitude: data.place.geometry.location.lng,
-      },
+      location: this.placeLocation,
       landmarkSelection: this.props.tripStore.landmarkSelection,
       landmarkInCollection: null,
+      photoReference: data.place.photoReference,
     };
   }
   componentDidMount = async () => {
@@ -74,6 +83,14 @@ export class InfoScreen extends Component {
       }&key=${this.state.googleAPI}`;
       this.setState({
         placeImage: this.placeImage,
+        photoReference: item.photos[0].photo_reference,
+      });
+    } else if (this.state.photoReference) {
+      this.placeImage = `https://maps.googleapis.com/maps/api/place/photo?maxwidth=1000&photoreference=${
+        this.state.photoReference
+      }&key=${this.state.googleAPI}`;
+      this.setState({
+        placeImage: this.placeImage,
       });
     }
   };
@@ -89,10 +106,12 @@ export class InfoScreen extends Component {
   };
 
   addToLandmarkSelection = async () => {
+    console.log();
     const landmark = {
       placeId: this.state.place.place_id,
       placeName: this.state.placeName,
       coords: this.state.location,
+      photoReference: this.state.photoReference,
     };
     await this.props.tripStore.addToSelection(landmark);
     this.checkLandmarkInCollection(landmark);

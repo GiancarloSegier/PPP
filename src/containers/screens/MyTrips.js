@@ -11,6 +11,7 @@ import {
   ActivityIndicator,
   Dimensions,
   Image,
+  RefreshControl,
 } from 'react-native';
 import {Button} from 'react-native-elements';
 import Carousel from 'react-native-snap-carousel';
@@ -35,6 +36,7 @@ export class MyTrips extends Component {
     this.state = {
       loading: true,
       deleteLoading: false,
+      refreshing: false,
     };
   }
 
@@ -105,6 +107,27 @@ export class MyTrips extends Component {
       {cancelable: false},
     );
   };
+
+  onRefreshHandler = () => {
+    //reset pageNo to 1
+    this.setState({
+      refreshing: true,
+      pageNo: 1,
+      data: [],
+      dataReceived: false,
+    });
+    //timeout to simulate loading
+    setTimeout(async () => {
+      await this.props.tripStore.getUserSoloTrips(userId);
+      await this.props.tripStore.getUserPartyTrips(userId);
+      this.setState({
+        refreshing: false,
+        pageNo: 1,
+        data: [],
+        dataReceived: false,
+      });
+    }, 1500);
+  };
   renderCarouselSoloTrip = ({item}) => {
     return (
       <TripCard
@@ -141,7 +164,17 @@ export class MyTrips extends Component {
         <>
           {this.props.tripStore.userSoloTrips.length > 0 ||
           this.props.tripStore.userPartyTrips.length > 0 ? (
-            <ScrollView>
+            <ScrollView
+              refreshControl={
+                <RefreshControl
+                  tintColor="#182ac1"
+                  progressBackgroundColor={'rgba(255,255,255, 0.8)'}
+                  size="large"
+                  title="Turist is searching for more!"
+                  refreshing={this.state.refreshing}
+                  onRefresh={this.onRefreshHandler}
+                />
+              }>
               <>
                 <View style={this.styles.container}>
                   <View style={this.styles.tripTypes}>

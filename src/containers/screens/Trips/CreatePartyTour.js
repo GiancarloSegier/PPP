@@ -35,9 +35,10 @@ export class CreatePartyTour extends Component {
     this.year = new Date().getFullYear();
     this.hours = new Date().getHours();
     this.minutes = new Date().getMinutes();
-    const startDateTimeString = `${this.day}/${this.month}/${this.year}, ${
-      this.hours < 10 ? '0' + this.hours : this.hours
-    }:${this.minutes < 10 ? '0' + this.minutes : this.minutes}`;
+    const startDate = `${this.day}/${this.month}/${this.year}`;
+    const startTime = `${this.hours < 10 ? '0' + this.hours : this.hours}:${
+      this.minutes < 10 ? '0' + this.minutes : this.minutes
+    }`;
 
     this.state = {
       trips: [],
@@ -51,9 +52,10 @@ export class CreatePartyTour extends Component {
       originLocation: {},
       tourCity: null,
       startHour: null,
-      startDate: new Date(),
+      // startDate: new Date(),
       startdateTime: new Date(),
-      startDateTimeString: startDateTimeString,
+      startDate: startDate,
+      startTime: startTime,
       loading: false,
     };
 
@@ -77,15 +79,16 @@ export class CreatePartyTour extends Component {
     const hours = date.getHours();
     const minutes = date.getMinutes();
 
-    console.log(year);
-
-    const startDateTimeString = `${day}/${month}/${year}, ${
-      hours < 10 ? '0' + hours : hours
-    }:${minutes < 10 ? '0' + minutes : minutes}`;
+    console.log(date);
+    const startDate = `${day}/${month}/${year}`;
+    const startTime = `${hours < 10 ? '0' + hours : hours}:${
+      minutes < 10 ? '0' + minutes : minutes
+    }`;
 
     this.setState({
       startdateTime: date,
-      startDateTimeString: startDateTimeString,
+      startDate: startDate,
+      startTime: startTime,
     });
     this.hideDateTimePicker();
   };
@@ -113,9 +116,13 @@ export class CreatePartyTour extends Component {
     } else {
       this.state.landmarkSelection.map(landmark => {
         const newLandmark = {
-          latitude: landmark.coords.latitude,
-          longitude: landmark.coords.longitude,
+          coords: {
+            latitude: landmark.coords.latitude,
+            longitude: landmark.coords.longitude,
+          },
           placeName: landmark.placeName,
+          placeId: landmark.placeId,
+          photoReference: landmark.photoReference,
         };
         newLandmarks.push(newLandmark);
       });
@@ -129,10 +136,15 @@ export class CreatePartyTour extends Component {
       distance: this.props.tripStore.tourDistance,
       duration: this.props.tripStore.tourDuration,
       landmarks: newLandmarks,
-      participants: 0,
-      startdateTime: this.state.startdateTime,
+      startDate: this.state.startDate,
+      startTime: parseInt(this.state.startTime.replace(':', ''), 0),
     };
-    this.setState({landmarkSelection: [], loading: true});
+    this.setState({
+      landmarkSelection: [],
+      prevLandmarkSelection: this.state.landmarkSelection,
+      thisTour: newTour,
+      loading: true,
+    });
     await this.props.tripStore.addPartyTour(newTour);
 
     this.setState({
@@ -151,14 +163,21 @@ export class CreatePartyTour extends Component {
           text: 'Do it now',
           onPress: () => {
             console.log('Do it now');
-            this.props.navigation.goBack();
+            this.props.mapStore.handleOpenMaps(
+              this.state.prevLandmarkSelection,
+            );
+            this.props.navigation.navigate('TripInfoScreen', {
+              trip: this.state.thisTour,
+            });
           },
         },
         {
           text: 'Do it later',
           onPress: () => {
             console.log('Do it later');
-            this.props.navigation.goBack();
+            this.props.navigation.navigate('TripInfoScreen', {
+              trip: this.state.thisTour,
+            });
           },
         },
       ],
@@ -202,7 +221,7 @@ export class CreatePartyTour extends Component {
                     style={{borderRadius: 8}}
                     onPress={this.showDateTimePicker}>
                     <Text style={this.styles.startDateTime}>
-                      {this.state.startDateTimeString}
+                      {this.state.startDate}, {this.state.startTime}
                     </Text>
                   </TouchableHighlight>
 

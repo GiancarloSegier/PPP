@@ -7,6 +7,7 @@ import {
   ScrollView,
   Linking,
   Dimensions,
+  TouchableHighlight,
 } from 'react-native';
 import androidUI from '../../../styles/ui.android.style.js';
 import iosUI from '../../../styles/ui.ios.style.js';
@@ -27,12 +28,22 @@ export class TripInfoScreen extends Component {
     }
 
     const data = props.navigation.state.params;
-    console.log(data.trip.landmarks[0]);
+
+    console.log(data);
     this.state = {
       googleAPI: this.props.mapStore.googleAPI,
       tourCity: data.trip.tourCity,
       tripTitle: data.trip.tripTitle,
       landmarks: data.trip.landmarks,
+      startTime: data.trip.startTime,
+      startDate: data.trip.startDate,
+
+      destinationLocation: {
+        latitude:
+          data.trip.landmarks[data.trip.landmarks.length - 1].coords.latitude,
+        longitude:
+          data.trip.landmarks[data.trip.landmarks.length - 1].coords.longitude,
+      },
       cityImage: null,
     };
   }
@@ -42,8 +53,8 @@ export class TripInfoScreen extends Component {
 
   getCurrentCityImage = async () => {
     const url = await this.props.mapStore.getUrlWithParameters(
-      this.state.landmarks[0].latitude,
-      this.state.landmarks[0].longitude,
+      this.state.landmarks[0].coords.latitude,
+      this.state.landmarks[0].coords.longitude,
       2000,
       '',
       this.state.googleAPI,
@@ -52,23 +63,31 @@ export class TripInfoScreen extends Component {
     await fetch(url)
       .then(data => data.json())
       .then(respons => {
-        const maxWidth = Dimensions.get('screen').width;
-
         if (
           this.state.currentCity !== '' &&
           respons.results[0].photos[0].photo_reference
         ) {
           const cityImageReference =
             respons.results[0].photos[0].photo_reference;
-          const cityImageUrl = `https://maps.googleapis.com/maps/api/place/photo?maxwidth=${maxWidth}&photoreference=${cityImageReference}&key=${
-            this.state.googleAPI
-          }`;
+          const cityImageUrl = `https://maps.googleapis.com/maps/api/place/photo?maxwidth=1000&photoreference=${cityImageReference}&key=${this.state.googleAPI}`;
 
           this.setState({
             cityImage: cityImageUrl,
           });
         }
       });
+  };
+
+  onPressPlace = landmark => {
+    this.props.navigation.navigate('InfoScreen', {
+      place: landmark,
+      placeName: landmark.placeName,
+      location: landmark.coords,
+    });
+  };
+
+  onPressRoute = () => {
+    this.props.mapStore.handleOpenMaps(this.state.landmarks);
   };
 
   render() {
@@ -93,41 +112,73 @@ export class TripInfoScreen extends Component {
         <Button
           buttonStyle={this.styles.bigButton}
           titleStyle={this.styles.primaryFormButtonTitle}
-          title={' follow this route'}
-          icon={<Icon name="location-arrow" size={24} color="white" />}
-          onPress={
-            this.state.landmarkInCollection
-              ? this.removeFromCollection
-              : this.addToLandmarkSelection
+          title={
+            this.state.startDate ? 'Join this party' : ' follow this route'
           }
+          icon={<Icon name="location-arrow" size={24} color="white" />}
+          onPress={this.onPressRoute}
         />
+
         <ScrollView>
           <View style={this.styles.container}>
-            <View style={this.styles.scanUpperContainer}>
-              <Text style={this.styles.heading2}>
-                {tourCity === '' ||
-                tourCity === undefined ||
-                tourCity === ' ' ||
-                tourCity === 'undefined'
-                  ? 'Turist is not sure...'
-                  : tourCity}
-              </Text>
+            <View
+              style={[
+                this.styles.scanUpperContainer,
+                this.styles.marginBottom,
+              ]}>
+              <Text style={[this.styles.heading2]}>{this.state.tripTitle}</Text>
+              {this.state.startDate ? (
+                <Text style={this.styles.partyInfo}>
+                  {this.state.startDate},{' '}
+                  {String(this.state.startTime).slice(0, 2)}:
+                  {String(this.state.startTime).slice(2, 4)}
+                </Text>
+              ) : null}
             </View>
+            {this.state.landmarks.map((landmark, index) => {
+              return (
+                <View
+                  key={index}
+                  style={
+                    index === this.state.landmarks.length - 1
+                      ? [this.styles.landmarkListItemLast]
+                      : [this.styles.landmarkListItem]
+                  }>
+                  <TouchableHighlight
+                    onPress={() => this.onPressPlace(landmark)}>
+                    <Text>{landmark.placeName}</Text>
+                  </TouchableHighlight>
+                </View>
+              );
+            })}
           </View>
-          {/* <View>
-              <MapRoute
-                waypoints={false}
-                destinationLocation={this.state.location}
-                placeName={tourCity}
-                mapSize={'big'}
-              />
-            </View> */}
+          <View>
+            <MapRoute
+              waypoints={true}
+              landmarkSelection={this.state.landmarks}
+              origin={{
+                latitude: this.state.landmarks[0].coords.latitude,
+                longitude: this.state.landmarks[0].coords.longitude,
+              }}
+              destinationLocation={this.state.destinationLocation}
+              placeName={this.state.tripTitle}
+              mapSize={'big'}
+            />
+            {/* <MapRoute
+              waypoints={false}
+              destinationLocation={this.state.destinationLocation}
+              placeName={this.state.tripTitle}
+              mapSize={'big'}
+            /> */}
+          </View>
         </ScrollView>
       </>
     );
   }
 }
 
-export default inject('wikiStore', 'mapStore', 'tripStore')(
-  observer(TripInfoScreen),
-);
+export default inject(
+  'wikiStore',
+  'mapStore',
+  'tripStore',
+)(observer(TripInfoScreen));

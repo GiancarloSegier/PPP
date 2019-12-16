@@ -44,6 +44,8 @@ export class Home extends Component {
       activeDotIndex: 0,
       loading: true,
       citySoloTrips: props.tripStore.citySoloTrips,
+      cityPartyTrips: props.tripStore.cityPartyTrips,
+      currentTime: null,
     };
 
     Geocoder.init(props.mapStore.googleAPI), {language: 'en'};
@@ -51,12 +53,14 @@ export class Home extends Component {
 
   async componentDidMount() {
     await this.fetchData();
-    this.collectTrips(this.state.currentCity);
+    await this.collectTrips(this.state.currentCity);
   }
-  collectTrips = city => {
-    this.props.tripStore.getCitySoloTrips(this.state.currentCity);
+  collectTrips = async city => {
+    await this.props.tripStore.getCitySoloTrips(this.state.currentCity);
+    await this.props.tripStore.getCityPartyTrips(this.state.currentCity);
     this.setState({
       citySoloTrips: this.props.tripStore.citySoloTrips,
+      cityPartyTrips: this.props.tripStore.cityPartyTrips,
     });
   };
 
@@ -163,9 +167,7 @@ export class Home extends Component {
         ) {
           const cityImageReference =
             respons.results[0].photos[0].photo_reference;
-          const cityImageUrl = `https://maps.googleapis.com/maps/api/place/photo?maxwidth=${maxWidth}&photoreference=${cityImageReference}&key=${
-            this.state.googleAPI
-          }`;
+          const cityImageUrl = `https://maps.googleapis.com/maps/api/place/photo?maxwidth=${maxWidth}&photoreference=${cityImageReference}&key=${this.state.googleAPI}`;
 
           this.setState({
             cityImage: cityImageUrl,
@@ -199,9 +201,7 @@ export class Home extends Component {
   renderCarouselPlace = ({item}) => {
     if (item.photos[0].photo_reference) {
       const maxWidth = 500;
-      this.placeImage = `https://maps.googleapis.com/maps/api/place/photo?maxwidth=${maxWidth}&photoreference=${
-        item.photos[0].photo_reference
-      }&key=${this.state.googleAPI}`;
+      this.placeImage = `https://maps.googleapis.com/maps/api/place/photo?maxwidth=${maxWidth}&photoreference=${item.photos[0].photo_reference}&key=${this.state.googleAPI}`;
     }
     return (
       <TouchableHighlight
@@ -360,7 +360,7 @@ export class Home extends Component {
           </View>
           {this.state.citySoloTrips.length > 0 ? (
             <View style={this.styles.marginBottom}>
-              <View style={this.styles.container}>
+              <View style={[this.styles.container, this.styles.tripTypes]}>
                 <Text style={this.styles.heading2}>Featured trips:</Text>
               </View>
               <Carousel
@@ -369,6 +369,27 @@ export class Home extends Component {
                   this._carousel = c;
                 }}
                 data={this.state.citySoloTrips}
+                renderItem={this.renderCarouselTrip}
+                sliderWidth={
+                  Dimensions.get('screen').width +
+                  Dimensions.get('screen').width * 0.02
+                }
+                slideStyle={Platform.OS === 'android' ? {padding: 4} : null}
+                itemWidth={Dimensions.get('window').width * 0.8}
+              />
+            </View>
+          ) : null}
+          {this.state.cityPartyTrips.length > 0 ? (
+            <View>
+              <View style={[this.styles.container, this.styles.tripTypes]}>
+                <Text style={this.styles.heading2}>Current parties:</Text>
+              </View>
+              <Carousel
+                containerCustomStyle={this.styles.carouselContainer}
+                ref={c => {
+                  this._carousel = c;
+                }}
+                data={this.state.cityPartyTrips}
                 renderItem={this.renderCarouselTrip}
                 sliderWidth={
                   Dimensions.get('screen').width +

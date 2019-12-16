@@ -61,7 +61,10 @@ const AppStack = createStackNavigator(
         backgroundColor: '#182ac1',
         elevation: 0,
         shadowOpacity: 0,
-        height: 80,
+        height: 60,
+      },
+      headerTitleContainerStyle: {
+        left: 0, // THIS RIGHT HERE
       },
 
       headerTitle: (

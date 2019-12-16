@@ -7,11 +7,12 @@ class TripStore {
   userSoloTrips = [];
   citySoloTrips = [];
   userPartyTrips = [];
+  cityPartyTrips = [];
   tourDistance;
   tourDuration;
   googleAPI = 'AIzaSyBKHOKyghn31QDS5h7Eomcuvc7H1PWhzbQ';
   tourCity = '';
-  // userId = auth().currentUser.uid;
+  userId = auth().currentUser.uid;
   constructor(rootStore) {
     this.rootStore = rootStore;
     this.soloTripsDatabase = firestore().collection('soloTrips');
@@ -60,17 +61,84 @@ class TripStore {
   }
 
   getCitySoloTrips = async city => {
-    console.log(city);
     this.citySoloTrips = [];
-    const getCitySoloTrips = await this.soloTripsDatabase.where(
+    const fetchedCitySoloTrips = this.soloTripsDatabase.where(
       'tourCity',
       '==',
       city,
     );
 
-    this.unsubscribeAllTrips = getCitySoloTrips.onSnapshot(querySnapshots => {
+    this.unsubscribeAllTrips = fetchedCitySoloTrips.onSnapshot(
+      querySnapshots => {
+        querySnapshots.forEach(doc => {
+          this.citySoloTrips.push({
+            tourId: doc.id,
+            tripTitle: doc.data().tripTitle,
+            dateAdded: doc.data().dateAdded,
+            landmarks: doc.data().landmarks,
+            distance: doc.data().distance,
+            duration: doc.data().duration,
+            tourCity: doc.data().tourCity,
+            userId: doc.data().userId,
+          });
+        });
+      },
+    );
+  };
+  getCityPartyTrips = async city => {
+    this.day = new Date().getDate();
+    this.month = new Date().getMonth() + 1;
+    this.year = new Date().getFullYear();
+    this.hours = new Date().getHours();
+    this.minutes = new Date().getMinutes();
+    const startTime = `${this.hours < 10 ? '0' + this.hours : this.hours}${
+      this.minutes < 10 ? '0' + this.minutes : this.minutes
+    }`;
+    const time = parseInt(startTime, 0);
+
+    const startDate = `${this.day}/${this.month}/${this.year}`;
+
+    this.cityPartyTrips = [];
+    const fetchedCityPartyTrips = this.partyTripsDatabase.where(
+      'tourCity',
+      '==',
+      city,
+    );
+
+    const timePartyTrips = fetchedCityPartyTrips.where('startTime', '>', time);
+
+    this.unsubscribeAllTrips = timePartyTrips.onSnapshot(querySnapshots => {
       querySnapshots.forEach(doc => {
-        this.citySoloTrips.push({
+        this.cityPartyTrips.push({
+          tourId: doc.id,
+          tripTitle: doc.data().tripTitle,
+          dateAdded: doc.data().dateAdded,
+          landmarks: doc.data().landmarks,
+          distance: doc.data().distance,
+          duration: doc.data().duration,
+          tourCity: doc.data().tourCity,
+          userId: doc.data().userId,
+          startDate: doc.data().startDate,
+          startTime: doc.data().startTime,
+        });
+      });
+    });
+    console.log(this.cityPartyTrips);
+  };
+
+  getUserSoloTrips = async userId => {
+    this.userSoloTrips = [];
+    const fetchedUserSoloTrips = this.soloTripsDatabase.where(
+      'userId',
+      '==',
+      userId,
+    );
+
+    const orderedSoloTrips = fetchedUserSoloTrips.orderBy('dateAdded');
+
+    this.unsubscribeAllTrips = orderedSoloTrips.onSnapshot(querySnapshots => {
+      querySnapshots.forEach(doc => {
+        this.userSoloTrips.push({
           tourId: doc.id,
           tripTitle: doc.data().tripTitle,
           dateAdded: doc.data().dateAdded,
@@ -83,56 +151,35 @@ class TripStore {
       });
     });
   };
-  getCityPartyTrips = () => {};
-  getUserSoloTrips = async userId => {
-    this.userSoloTrips = [];
-    const fetchedUserSoloTrips = await this.soloTripsDatabase.where(
-      'userId',
-      '==',
-      userId,
-    );
-
-    this.unsubscribeAllTrips = fetchedUserSoloTrips.onSnapshot(
-      querySnapshots => {
-        querySnapshots.forEach(doc => {
-          this.userSoloTrips.push({
-            tourId: doc.id,
-            tripTitle: doc.data().tripTitle,
-            dateAdded: doc.data().dateAdded,
-            landmarks: doc.data().landmarks,
-            distance: doc.data().distance,
-            duration: doc.data().duration,
-            tourCity: doc.data().tourCity,
-            userId: doc.data().userId,
-          });
-        });
-      },
-    );
-  };
   getUserPartyTrips = async userId => {
     this.userPartyTrips = [];
-    const fetchedUserPartyTrips = await this.partyTripsDatabase.where(
+
+    const fetchedUserPartyTrips = this.partyTripsDatabase.where(
       'userId',
       '==',
       userId,
     );
 
-    this.unsubscribeAllTrips = fetchedUserPartyTrips.onSnapshot(
-      querySnapshots => {
-        querySnapshots.forEach(doc => {
-          this.userPartyTrips.push({
-            tourId: doc.id,
-            tripTitle: doc.data().tripTitle,
-            dateAdded: doc.data().dateAdded,
-            landmarks: doc.data().landmarks,
-            distance: doc.data().distance,
-            duration: doc.data().duration,
-            tourCity: doc.data().tourCity,
-            userId: doc.data().userId,
-          });
+    const timePartyTrips = fetchedUserPartyTrips
+      .orderBy('startDate')
+      .orderBy('startTime');
+
+    this.unsubscribeAllTrips = timePartyTrips.onSnapshot(querySnapshots => {
+      querySnapshots.forEach(doc => {
+        this.userPartyTrips.push({
+          tourId: doc.id,
+          tripTitle: doc.data().tripTitle,
+          dateAdded: doc.data().dateAdded,
+          landmarks: doc.data().landmarks,
+          distance: doc.data().distance,
+          duration: doc.data().duration,
+          tourCity: doc.data().tourCity,
+          userId: doc.data().userId,
+          startDate: doc.data().startDate,
+          startTime: doc.data().startTime,
         });
-      },
-    );
+      });
+    });
   };
 
   addToSelection = landmark => {
@@ -210,6 +257,8 @@ decorate(TripStore, {
   citySoloTrips: observable,
   getUserPartyTrips: action,
   userPartyTrips: observable,
+  getCityPartyTrips: action,
+  cityPartyTrips: observable,
   getTourCity: action,
   tourCity: observable,
   deleteSoloTour: action,

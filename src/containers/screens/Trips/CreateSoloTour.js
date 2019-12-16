@@ -74,10 +74,15 @@ export class CreateSoloTour extends Component {
       return;
     } else {
       this.state.landmarkSelection.map(landmark => {
+        console.log(landmark);
         const newLandmark = {
-          latitude: landmark.coords.latitude,
-          longitude: landmark.coords.longitude,
+          coords: {
+            latitude: landmark.coords.latitude,
+            longitude: landmark.coords.longitude,
+          },
           placeName: landmark.placeName,
+          placeId: landmark.placeId,
+          photoReference: landmark.photoReference,
         };
         newLandmarks.push(newLandmark);
       });
@@ -95,6 +100,7 @@ export class CreateSoloTour extends Component {
     this.setState({
       landmarkSelection: [],
       prevLandmarkSelection: this.state.landmarkSelection,
+      thisTour: newTour,
       loading: true,
     });
     await this.props.tripStore.addSoloTour(newTour);
@@ -118,14 +124,18 @@ export class CreateSoloTour extends Component {
             this.props.mapStore.handleOpenMaps(
               this.state.prevLandmarkSelection,
             );
-            this.props.navigation.navigate('MyTrips');
+            this.props.navigation.navigate('TripInfoScreen', {
+              trip: this.state.thisTour,
+            });
           },
         },
         {
           text: 'Do it later',
           onPress: () => {
             console.log('Do it later');
-            this.props.navigation.goBack();
+            this.props.navigation.navigate('TripInfoScreen', {
+              trip: this.state.thisTour,
+            });
           },
         },
       ],

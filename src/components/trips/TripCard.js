@@ -13,6 +13,7 @@ const TripCard = ({item, onDeleteTour, type, navigation}) => {
   } else {
     this.styles = androidUI;
   }
+
   this.hours = Math.floor(item.duration / 60);
   this.minutes = Math.floor(item.duration % 60);
 
@@ -35,7 +36,12 @@ const TripCard = ({item, onDeleteTour, type, navigation}) => {
           <Text style={this.styles.tripCity}>
             <Icon name="map-marker" size={18} color="#fff" /> {item.tourCity}
           </Text>
-          <Text style={this.styles.tripDateAdded}>{item.dateAdded}</Text>
+          {item.startDate ? (
+            <Text style={this.styles.tripDateAdded}>
+              {item.startDate}, {String(item.startTime).slice(0, 2)}:
+              {String(item.startTime).slice(2, 4)}
+            </Text>
+          ) : null}
           {onDeleteTour ? (
             <Button
               buttonStyle={{backgroundColor: 'transparent', padding: 0}}

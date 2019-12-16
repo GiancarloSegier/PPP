@@ -16,7 +16,7 @@ const googlepinStart = require('../../assets/googlepinStart.png');
 const googlePinFinish = require('../../assets/googlepinFinish.png');
 
 class MapRoute extends Component {
-  distance = 'calculating ';
+  distance = 'calc...';
   constructor(props) {
     super(props);
     if (Platform.OS === 'ios') {
@@ -24,6 +24,8 @@ class MapRoute extends Component {
     } else {
       this.styles = androidUI;
     }
+
+    console.log(props.destinationLocation);
 
     this.state = {
       googleAPI: props.mapStore.googleAPI,
@@ -62,6 +64,8 @@ class MapRoute extends Component {
     const newWaypoints = [];
     for (let i = 0; i < landmarkSelection.length; i++) {
       const landmark = landmarkSelection[i];
+      console.log(landmark.coords);
+
       const newWaypoint = {
         latitude: landmark.coords.latitude,
         longitude: landmark.coords.longitude,
@@ -210,13 +214,7 @@ class MapRoute extends Component {
                           : googlepin
                         : null
                     }
-                    pinColor={
-                      index === 0
-                        ? 'green'
-                        : index === this.state.waypoints.length - 1
-                        ? 'red'
-                        : 'blue'
-                    }
+                    pinColor={'red'}
                     key={index}
                     coordinate={
                       landmark.latitude
@@ -224,7 +222,7 @@ class MapRoute extends Component {
                             latitude: landmark.latitude,
                             longitude: landmark.longitude,
                           }
-                        : null
+                        : this.state.userLocation
                     }>
                     <Callout tooltip style={this.styles.calloutContainer}>
                       <View>
@@ -251,7 +249,11 @@ class MapRoute extends Component {
                 icon={Platform.OS !== 'ios' ? googlepin : null}
                 pinColor={'red'}
                 key={'start'}
-                coordinate={this.state.origin}>
+                coordinate={
+                  this.state.origin
+                    ? this.state.origin
+                    : this.state.userLocation
+                }>
                 <Callout tooltip style={this.styles.calloutContainer}>
                   <View>
                     <Text style={this.styles.calloutText}>Your location</Text>

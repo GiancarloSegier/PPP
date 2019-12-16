@@ -469,10 +469,17 @@ export default StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
-    padding: 4,
+    paddingVertical: 8,
     paddingRight: 0,
     borderBottomColor: colors.darkWhite,
     borderBottomWidth: 2,
+  },
+  landmarkListItemLast: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    paddingVertical: 8,
+    paddingRight: 0,
   },
   carouselTripCard: {
     backgroundColor: colors.white,
@@ -559,5 +566,11 @@ export default StyleSheet.create({
     alignItems: 'baseline',
     justifyContent: 'space-between',
     marginBottom: -32,
+  },
+  partyInfo: {
+    color: 'blue',
+    fontWeight: 'bold',
+    fontSize: 16,
+    marginTop: 6,
   },
 });
