@@ -222,12 +222,12 @@ class TripStore {
   deleteSoloTour = async tour => {
     console.log(tour);
     await this.soloTripsDatabase.doc(tour.tourId).delete();
-    this.getAllUserTrips();
+    this.getAllUserTrips(tour.tourId);
   };
   deletePartyTour = async tour => {
     console.log(tour);
     await this.partyTripsDatabase.doc(tour.tourId).delete();
-    this.getAllUserTrips();
+    this.getAllUserTrips(tour.tourId);
   };
 
   addSoloTour = async tour => {
