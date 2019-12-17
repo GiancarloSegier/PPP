@@ -220,6 +220,7 @@ export class CreatePartyTour extends Component {
                     onConfirm={this.handleDatePicked}
                     onCancel={this.hideDateTimePicker}
                     minimumDate={new Date()}
+                    isDarkModeEnabled={true}
                   />
                 </View>
               </View>
